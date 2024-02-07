@@ -2,7 +2,7 @@
 
 * Докеризация
 * php 8.3
-* Symfony 6
+* Symfony 6.4
 * AdminLTE 3.2.0
 
 ## При разработке
