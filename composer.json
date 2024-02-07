@@ -1,6 +1,7 @@
 {
   "type": "trading-platform",
   "author": "pers1307",
+  "version": "0.0.1",
   "license": "proprietary",
   "minimum-stability": "stable",
   "prefer-stable": true,
