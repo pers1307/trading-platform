@@ -1,0 +1,28 @@
+version: '3'
+services:
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: php.dockerfile
+    ports:
+      - '127.0.0.1:80:8000'
+    working_dir: '/var/www/app'
+    volumes:
+      - ./:/var/www/app
+    networks:
+      - internal
+  mysql8:
+    image: mysql:8.0.33-debian
+    container_name: mysql8
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'symfony'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '127.0.0.1:3306:3306'
+    volumes:
+      - '${HOME}/mysql8/data:/var/lib/mysql'
+    networks:
+      - internal
+networks:
+  internal:
