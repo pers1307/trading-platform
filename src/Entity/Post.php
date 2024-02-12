@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\StrategyRepository;
+use App\Repository\PostRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: StrategyRepository::class)]
-class Strategy
+#[ORM\Entity(repositoryClass: PostRepository::class)]
+class Post
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,21 +18,15 @@ class Strategy
     private string $title;
 
     #[ORM\Column(type: 'text', length: 65535, nullable: false)]
-    private string $description;
-
-    #[ORM\Column(type: 'string', nullable: false, options: ['default' => 'active'], columnDefinition: "ENUM('active', 'pause', 'decommission')")]
-    private string $status;
+    private string $text;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private DateTimeImmutable $created;
-
-    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'])]
-    private DateTimeImmutable $updated;
-
+    
     public function __construct()
     {
         $this->title = '';
-        $this->description = '';
+        $this->text = '';
     }
 
     public function getId(): ?int
@@ -52,14 +46,14 @@ class Strategy
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getText(): ?string
     {
-        return $this->description;
+        return $this->text;
     }
 
-    public function setDescription(string $description): static
+    public function setText(string $text): static
     {
-        $this->description = $description;
+        $this->text = $text;
 
         return $this;
     }
@@ -67,10 +61,5 @@ class Strategy
     public function getCreated(): DateTimeImmutable
     {
         return $this->created;
-    }
-
-    public function getUpdated(): DateTimeImmutable
-    {
-        return $this->updated;
     }
 }
