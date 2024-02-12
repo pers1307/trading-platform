@@ -3,9 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\StrategyRepository;
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Monolog\DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: StrategyRepository::class)]
 class Strategy
@@ -25,10 +26,10 @@ class Strategy
     private string $status;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private DateTimeImmutable $created;
+    private DateTime $created;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'])]
-    private DateTimeImmutable $updated;
+    private DateTime $updated;
 
     #[ORM\OneToMany(targetEntity: Trade::class, mappedBy: 'strategy')]
     private Collection $trades;
@@ -68,12 +69,12 @@ class Strategy
         return $this;
     }
 
-    public function getCreated(): DateTimeImmutable
+    public function getCreated(): DateTime
     {
         return $this->created;
     }
 
-    public function getUpdated(): DateTimeImmutable
+    public function getUpdated(): DateTime
     {
         return $this->updated;
     }
@@ -84,5 +85,17 @@ class Strategy
     public function getTrades(): Collection
     {
         return $this->trades;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
     }
 }

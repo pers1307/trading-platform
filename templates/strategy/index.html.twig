@@ -1,0 +1,133 @@
+{% extends 'base.admin.html.twig' %}
+
+{% block menu %}
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+            <a href="{{ path('app_dashboard_index') }}" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>Дашборд</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-briefcase"></i>
+                <p>Позиции</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path('app_strategies_index') }}" class="nav-link active">
+                <i class="nav-icon fas fa-chess"></i>
+                <p>Стратегии</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-sticky-note"></i>
+                <p>Счета</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-calculator"></i>
+                <p>
+                    Калькулятор
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fa fa-stop-circle nav-icon"></i>
+                        <p>От стопа</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fa fa-percent nav-icon"></i>
+                        <p>Процент от счета</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-book"></i>
+                <p>
+                    Сравочники
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>Акции</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Стратегии</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
+                            </li>
+                            <li class="breadcrumb-item active">Стратегии</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Список</h3>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>Название</th>
+                                        <th>Описание</th>
+                                        <th>Статус</th>
+                                        <th>Дата создания</th>
+                                        <th>Дата последнего изменения</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for index,strategy in strategies %}
+                                        <tr>
+                                            <td>{{ index + 1 }}.</td>
+                                            <td>{{ strategy.title }}</td>
+                                            <td>{{ strategy.description }}</td>
+                                            <td>{{ strategy.status }}</td>
+                                            <td>{{ strategy.created|date('Y-m-d H:i:s') }}</td>
+                                            <td>{{ strategy.updated|date('Y-m-d H:i:s') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
