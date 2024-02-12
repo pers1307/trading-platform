@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\AccauntRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -24,13 +25,14 @@ class Accaunt
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private DateTimeImmutable $created;
 
-    #[ORM\OneToMany(targetEntity: AccauntHistory::class, mappedBy: 'accauntHistory')]
+    #[ORM\OneToMany(targetEntity: AccauntHistory::class, mappedBy: 'accaunt')]
     private Collection $accauntHistories;
 
     public function __construct()
     {
         $this->title = '';
         $this->brockerTitle = '';
+        $this->accauntHistories = new ArrayCollection();
     }
 
     public function getId(): ?int

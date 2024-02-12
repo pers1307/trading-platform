@@ -33,7 +33,7 @@ class AccauntHistory
         return $this->id;
     }
 
-    public function getAccaunt(): ?Accaunt
+    public function getAccaunt(): Accaunt
     {
         return $this->accaunt;
     }

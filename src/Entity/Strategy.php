@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\StrategyRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StrategyRepository::class)]
@@ -28,6 +29,9 @@ class Strategy
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'])]
     private DateTimeImmutable $updated;
+
+    #[ORM\OneToMany(targetEntity: Trade::class, mappedBy: 'strategy')]
+    private Collection $trades;
 
     public function __construct()
     {
@@ -72,5 +76,13 @@ class Strategy
     public function getUpdated(): DateTimeImmutable
     {
         return $this->updated;
+    }
+
+    /**
+     * @return Collection<int, Trade>
+     */
+    public function getTrades(): Collection
+    {
+        return $this->trades;
     }
 }
