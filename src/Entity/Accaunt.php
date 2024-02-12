@@ -22,7 +22,7 @@ class Accaunt
     private string $brockerTitle;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private DateTimeImmutable $createdAt;
+    private DateTimeImmutable $created;
 
     #[ORM\OneToMany(targetEntity: AccauntHistory::class, mappedBy: 'accauntHistory')]
     private Collection $accauntHistories;
@@ -65,13 +65,6 @@ class Accaunt
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     /**
