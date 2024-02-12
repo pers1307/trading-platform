@@ -16,8 +16,6 @@ class StrategyController extends AbstractController
         $strategyRepository = $entityManager->getRepository(Strategy::class);
         $strategies = $strategyRepository->findAll();
 
-        dump($strategies);
-
         return $this->render('strategy/index.html.twig', [
             'strategies' => $strategies,
         ]);
