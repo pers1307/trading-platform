@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\AccauntRepository;
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,7 +23,7 @@ class Accaunt
     private string $brockerTitle;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private DateTimeImmutable $created;
+    private DateTime $created;
 
     #[ORM\OneToMany(targetEntity: AccauntHistory::class, mappedBy: 'accaunt')]
     private Collection $accauntHistories;
@@ -64,9 +64,9 @@ class Accaunt
         return $this;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
+    public function getCreated(): DateTime
     {
-        return $this->createdAt;
+        return $this->created;
     }
 
     /**

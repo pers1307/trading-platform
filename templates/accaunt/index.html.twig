@@ -15,13 +15,13 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ path('app_strategies_index') }}" class="nav-link active">
+            <a href="{{ path('app_strategies_index') }}" class="nav-link">
                 <i class="nav-icon fas fa-chess"></i>
                 <p>Стратегии</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ path('app_accaunts_index') }}" class="nav-link">
+            <a href="{{ path('app_accaunts_index') }}" class="nav-link active">
                 <i class="nav-icon fas fa-sticky-note"></i>
                 <p>Счета</p>
             </a>
@@ -82,7 +82,7 @@
                             <li class="breadcrumb-item">
                                 <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
                             </li>
-                            <li class="breadcrumb-item active">Стратегии</li>
+                            <li class="breadcrumb-item active">Счета</li>
                         </ol>
                     </div>
                 </div>
@@ -103,21 +103,17 @@
                                     <tr>
                                         <th style="width: 10px">#</th>
                                         <th>Название</th>
-                                        <th>Описание</th>
-                                        <th>Статус</th>
+                                        <th>Код</th>
                                         <th>Дата создания</th>
-                                        <th>Дата последнего изменения</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for index,strategy in strategies %}
+                                    {% for index,accaunt in accaunts %}
                                         <tr>
                                             <td>{{ index + 1 }}.</td>
-                                            <td>{{ strategy.title }}</td>
-                                            <td>{{ strategy.description }}</td>
-                                            <td>{{ strategy.status }}</td>
-                                            <td>{{ strategy.created|date('Y-m-d H:i:s') }}</td>
-                                            <td>{{ strategy.updated|date('Y-m-d H:i:s') }}</td>
+                                            <td>{{ accaunt.title }}</td>
+                                            <td>{{ accaunt.brockerTitle }}</td>
+                                            <td>{{ accaunt.created|date('Y-m-d H:i:s') }}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
