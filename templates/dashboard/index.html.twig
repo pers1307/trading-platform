@@ -1,2 +1,124 @@
 {% extends 'base.admin.html.twig' %}
 
+{% block content %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Главная панель</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item active">Главная панель</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3>150</h3>
+                                <p>Дней уже торгуем</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-forward"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3>200+</h3>
+
+                                <p>Совершенных сделок</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                                <h3>1,25<sup style="font-size: 20px">%</sup></h3>
+
+                                <p>Математическое ожидание</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-calculator"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3>75<sup style="font-size: 20px">%</sup> / 25<sup style="font-size: 20px">%</sup></h3>
+
+                                <p>Profit / Loss</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-pie-graph"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    {% set count = 1 %}
+                    {% for index,accauntDataForGraph in accauntsDataForGraph %}
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Счет: {{ index }}</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card bg-gradient-info">
+                                        <div class="card-body">
+                                            <canvas
+                                                    class="chart"
+                                                    id="line-chart-accaunt-{{ count }}"
+                                                    style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"
+                                                    data-graph-data-encode="{{ accauntDataForGraph }}"
+                                                    data-accaunt-name="{{ index }}"
+                                            ></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% set count = count + 1 %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{{ asset('vendor/js/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/jquery-ui/jquery-ui.min.js') }}"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    <script src="{{ asset('vendor/js/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/sparklines/sparkline.js') }}"></script>
+    <script src="{{ asset('vendor/jqvmap/jquery.vmap.min.js') }}"></script>
+    <script src="{{ asset('vendor/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
+    <script src="{{ asset('vendor/js/jquery-knob/jquery.knob.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('vendor/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('vendor/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <script src="{{ asset('vendor/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/adminlte.js') }}"></script>
+    <script src="{{ asset('vendor/js/demo.js') }}"></script>
+    <script src="{{ asset('vendor/js/dasboard_index.js') }}"></script>
+{% endblock %}

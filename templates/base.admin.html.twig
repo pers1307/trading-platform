@@ -6,16 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Торговая платформа{% endblock %}</title>
 
-    <link rel="stylesheet" href="{{ asset('vendor/css/font.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/css/fontawesome-free/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/css/ionicons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/css/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/jqvmap/jqvmap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/css/adminlte.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/daterangepicker/daterangepicker.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/summernote/summernote-bs4.min.css') }}">
+    {% block css %}
+        <link rel="stylesheet" href="{{ asset('vendor/css/font.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/css/fontawesome-free/css/all.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/css/ionicons/css/ionicons.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/css/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/jqvmap/jqvmap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/css/adminlte.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/daterangepicker/daterangepicker.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/summernote/summernote-bs4.min.css') }}">
+    {% endblock %}
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -163,10 +165,6 @@
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item active">Главная панель</li>
                             </ol>
-                            {#                        <ol class="breadcrumb float-sm-right"> #}
-                            {#                            <li class="breadcrumb-item"><a href="#">Home</a></li> #}
-                            {#                            <li class="breadcrumb-item active">Dashboard v1</li> #}
-                            {#                        </ol> #}
                         </div>
                     </div>
                 </div>
@@ -367,7 +365,7 @@
         <strong>Copyright &copy; 2024 <a href="/">Торговая платформа</a></strong>
         Все права защищены.
         <div class="float-right d-none d-sm-inline-block">
-            <b>Версия</b> 0.0.1
+            <b>Версия</b> 0.1.0
         </div>
     </footer>
 </div>
