@@ -1,0 +1,192 @@
+{% extends 'base.admin.html.twig' %}
+
+{% block menu %}
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+            <a href="{{ path('app_dashboard_index') }}" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>Дашборд</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-briefcase"></i>
+                <p>Позиции</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path('app_strategies_index') }}" class="nav-link">
+                <i class="nav-icon fas fa-chess"></i>
+                <p>Стратегии</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path('app_accaunts_index') }}" class="nav-link active">
+                <i class="nav-icon fas fa-sticky-note"></i>
+                <p>Счета</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-calculator"></i>
+                <p>
+                    Калькулятор
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fa fa-stop-circle nav-icon"></i>
+                        <p>От стопа</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fa fa-percent nav-icon"></i>
+                        <p>Процент от счета</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-book"></i>
+                <p>
+                    Сравочники
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>Акции</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">История счета: {{ accaunt.title }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_accaunts_index') }}">Счета</a>
+                            </li>
+                            <li class="breadcrumb-item active">История</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                {% if accauntHistoryItems is not empty %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">График</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card bg-gradient-info">
+                                        <div class="card-body">
+                                            <canvas
+                                                    class="chart"
+                                                    id="line-chart"
+                                                    style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"
+                                                    data-graph-data-encode="{{ graphDataEncode }}"
+                                                    data-accaunt-name="{{ accaunt.title }}"
+                                            ></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Список</h3>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 10px">#</th>
+                                            <th>Название счета</th>
+                                            <th>Значение</th>
+                                            <th>Дата</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for index,accauntHistoryItem in accauntHistoryItems %}
+                                            <tr>
+                                                <td>{{ accauntHistoryItem.id }}.</td>
+                                                <td>{{ accaunt.title }}</td>
+                                                <td>{{ accauntHistoryItem.value|number_format(null, null, ' ') }}</td>
+                                                <td>{{ accauntHistoryItem.created|date('Y-m-d H:i:s') }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Список</h3>
+                                </div>
+                                <div class="card-body">
+                                    Здесь ещё нет значений. <a href="{{ path('app_accaunt_history_add_form', {id: accaunt.id}) }}">Добавить</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{{ asset('vendor/js/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/jquery-ui/jquery-ui.min.js') }}"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    <script src="{{ asset('vendor/js/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/sparklines/sparkline.js') }}"></script>
+    <script src="{{ asset('vendor/jqvmap/jquery.vmap.min.js') }}"></script>
+    <script src="{{ asset('vendor/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
+    <script src="{{ asset('vendor/js/jquery-knob/jquery.knob.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('vendor/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('vendor/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <script src="{{ asset('vendor/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/adminlte.js') }}"></script>
+    <script src="{{ asset('vendor/js/demo.js') }}"></script>
+    <script src="{{ asset('vendor/js/accaunt_history.js') }}"></script>
+{% endblock %}

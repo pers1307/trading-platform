@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\AccauntHistoryRepository;
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AccauntHistoryRepository::class)]
@@ -22,10 +22,11 @@ class AccauntHistory
     private float $value;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private DateTimeImmutable $created;
+    private DateTime $created;
 
     public function __construct()
     {
+        $this->created = new DateTime();
     }
 
     public function getId(): ?int
@@ -57,7 +58,7 @@ class AccauntHistory
         return $this;
     }
 
-    public function getCreated(): DateTimeImmutable
+    public function getCreated(): DateTime
     {
         return $this->created;
     }
