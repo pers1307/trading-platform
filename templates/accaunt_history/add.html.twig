@@ -75,14 +75,17 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Стратегии</h1>
+                        <h1 class="m-0">Добавить значение к счету: {{ accaunt.title }}</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
                                 <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
                             </li>
-                            <li class="breadcrumb-item active">Счета</li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_accaunts_index') }}">Счета</a>
+                            </li>
+                            <li class="breadcrumb-item active">Добавить значение</li>
                         </ol>
                     </div>
                 </div>
@@ -93,43 +96,21 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card card-primary">
                             <div class="card-header">
-                                <h3 class="card-title">Список</h3>
+                                <h3 class="card-title">Форма</h3>
                             </div>
-                            <div class="card-body">
-                                <table class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th style="width: 10px">#</th>
-                                        <th>Название</th>
-                                        <th>Код</th>
-                                        <th>Дата создания</th>
-                                        <th style="width: 50px"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for index,accaunt in accaunts %}
-                                        <tr>
-                                            <td>{{ index + 1 }}.</td>
-                                            <td>{{ accaunt.title }}</td>
-                                            <td>{{ accaunt.brockerTitle }}</td>
-                                            <td>{{ accaunt.created|date('Y-m-d H:i:s') }}</td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a href="{{ path('app_accaunt_history_list', {id: accaunt.id}) }}" type="button" class="btn btn-info">
-                                                        <i class="fas fa-list"></i>
-                                                    </a>
-                                                    <a href="{{ path('app_accaunt_history_add_form', {id: accaunt.id}) }}" type="button" class="btn btn-success">
-                                                        <i class="fas fa-plus"></i>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
+                            <form action="{{ path('app_accaunt_history_add', {id: accaunt.id}) }}" method="post">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="value">Новое значение</label>
+                                        <input type="number" class="form-control" id="value" name="value" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Отправить</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -138,3 +119,24 @@
     </div>
 {% endblock %}
 
+{% block js %}
+    <script src="{{ asset('vendor/js/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/jquery-ui/jquery-ui.min.js') }}"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    <script src="{{ asset('vendor/js/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/sparklines/sparkline.js') }}"></script>
+    <script src="{{ asset('vendor/jqvmap/jquery.vmap.min.js') }}"></script>
+    <script src="{{ asset('vendor/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
+    <script src="{{ asset('vendor/js/jquery-knob/jquery.knob.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('vendor/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('vendor/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <script src="{{ asset('vendor/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/adminlte.js') }}"></script>
+    <script src="{{ asset('vendor/js/demo.js') }}"></script>
+{% endblock %}

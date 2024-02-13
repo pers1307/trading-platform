@@ -6,7 +6,6 @@ use App\Repository\StrategyRepository;
 use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Monolog\DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: StrategyRepository::class)]
 class Strategy
