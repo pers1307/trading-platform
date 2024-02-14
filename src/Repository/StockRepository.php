@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Stock;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,33 +17,47 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class StockRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        ManagerRegistry $registry
+    ) {
         parent::__construct($registry, Stock::class);
     }
 
-    //    /**
-    //     * @return VinylMix[] Returns an array of VinylMix objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('v')
-    //            ->andWhere('v.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('v.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function upsertSecurity(array $securityData): void
+    {
+        foreach ($securityData as $securityDataItem) {
+            $command = "
+                INSERT INTO `stock` 
+                    (title, sec_id, lot_size, min_step)
+                VALUES 
+                    (:title, :secId, :lotSize, :minStep)
+                ON DUPLICATE KEY UPDATE
+                    lot_size = VALUES(lot_size),
+                    min_step = VALUES(min_step);
+            ";
 
-    //    public function findOneBySomeField($value): ?VinylMix
-    //    {
-    //        return $this->createQueryBuilder('v')
-    //            ->andWhere('v.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+            $this->entityManager
+                ->createNativeQuery($command, new ResultSetMapping())
+                ->setParameter('title', $securityDataItem[9])
+                ->setParameter('secId', $securityDataItem[0])
+                ->setParameter('lotSize', $securityDataItem[4])
+                ->setParameter('minStep', $securityDataItem[14])
+                ->execute();
+        }
+    }
+
+    public function updatePrices(array $marketData): void
+    {
+        foreach ($marketData as $marketDataItem) {
+            $this->entityManager->createQueryBuilder()
+                ->update(Stock::class, 's')
+                ->set('s.price', ':price')
+                ->where('s.secId = :secId')
+                ->setParameter('price', $marketDataItem[12])
+                ->setParameter('secId', $marketDataItem[0])
+                ->getQuery()
+                ->execute();
+        }
+    }
 }
