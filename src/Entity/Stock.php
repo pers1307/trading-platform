@@ -25,7 +25,7 @@ class Stock
     private string $secId;
 
     #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: true)]
-    private float $price;
+    private ?float $price;
 
     #[ORM\Column(type: 'integer', nullable: false)]
     private int $lotSize;
@@ -82,12 +82,12 @@ class Stock
         return $this;
     }
 
-    public function getPrice(): float
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    public function setPrice(float $price): static
+    public function setPrice(?float $price): static
     {
         $this->price = $price;
 
