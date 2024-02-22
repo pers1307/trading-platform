@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TradeRepository;
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TradeRepository::class)]
@@ -30,22 +30,22 @@ class Trade
     private string $type;
 
     #[ORM\Column(type: 'datetime', nullable: false)]
-    private DateTimeImmutable $openDateTime;
+    private DateTime $openDateTime;
 
     #[ORM\Column(type: 'float', precision: 5, scale: 6)]
     private float $openPrice;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
-    private DateTimeImmutable $closeDateTime;
+    private ?DateTime $closeDateTime;
 
-    #[ORM\Column(type: 'float', precision: 5, scale: 6)]
-    private float $closePrice;
+    #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: true)]
+    private ?float $closePrice;
 
-    #[ORM\Column(type: 'float', precision: 5, scale: 6)]
-    private float $stopLoss;
+    #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: true)]
+    private ?float $stopLoss;
 
-    #[ORM\Column(type: 'float', precision: 5, scale: 6)]
-    private float $takeProfit;
+    #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: true)]
+    private ?float $takeProfit;
 
     #[ORM\Column]
     private int $lots;
@@ -53,15 +53,15 @@ class Trade
     #[ORM\Column(type: 'string', nullable: false, options: ['default' => 'open'], columnDefinition: "ENUM('open', 'close')")]
     private string $status;
 
-    #[ORM\Column(type: 'text', length: 65535, nullable: false)]
-    private string $description;
+    #[ORM\Column(type: 'text', length: 65535, nullable: true)]
+    private ?string $description;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private DateTimeImmutable $created;
+    private DateTime $created;
 
     public function __construct()
     {
-        $this->openDateTime = new DateTimeImmutable();
+        $this->openDateTime = new DateTime();
     }
 
     public function getId(): ?int
@@ -117,12 +117,12 @@ class Trade
         return $this;
     }
 
-    public function getOpenDateTime(): DateTimeImmutable
+    public function getOpenDateTime(): DateTime
     {
         return $this->openDateTime;
     }
 
-    public function setOpenDateTime(DateTimeImmutable $openDateTime): static
+    public function setOpenDateTime(DateTime $openDateTime): static
     {
         $this->openDateTime = $openDateTime;
 
@@ -141,48 +141,48 @@ class Trade
         return $this;
     }
 
-    public function getCloseDateTime(): DateTimeImmutable
+    public function getCloseDateTime(): ?DateTime
     {
         return $this->closeDateTime;
     }
 
-    public function setCloseDateTime(DateTimeImmutable $closeDateTime): static
+    public function setCloseDateTime(?DateTime $closeDateTime): static
     {
         $this->closeDateTime = $closeDateTime;
 
         return $this;
     }
 
-    public function getClosePrice(): float
+    public function getClosePrice(): ?float
     {
         return $this->closePrice;
     }
 
-    public function setClosePrice(float $closePrice): static
+    public function setClosePrice(?float $closePrice): static
     {
         $this->closePrice = $closePrice;
 
         return $this;
     }
 
-    public function getStopLoss(): float
+    public function getStopLoss(): ?float
     {
         return $this->stopLoss;
     }
 
-    public function setStopLoss(float $stopLoss): static
+    public function setStopLoss(?float $stopLoss): static
     {
         $this->stopLoss = $stopLoss;
 
         return $this;
     }
 
-    public function getTakeProfit(): float
+    public function getTakeProfit(): ?float
     {
         return $this->takeProfit;
     }
 
-    public function setTakeProfit(float $takeProfit): static
+    public function setTakeProfit(?float $takeProfit): static
     {
         $this->takeProfit = $takeProfit;
 
@@ -213,19 +213,19 @@ class Trade
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getCreated(): DateTimeImmutable
+    public function getCreated(): DateTime
     {
         return $this->created;
     }

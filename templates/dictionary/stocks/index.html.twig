@@ -12,7 +12,22 @@
             <a href="/" class="nav-link">
                 <i class="nav-icon fas fa-briefcase"></i>
                 <p>Позиции</p>
+                <i class="right fas fa-angle-left"></i>
             </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ path('app_trade_list') }}" class="nav-link">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>Все</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_trade_strategy_list') }}" class="nav-link">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>По стратегиям</p>
+                    </a>
+                </li>
+            </ul>
         </li>
         <li class="nav-item">
             <a href="{{ path('app_strategies_index') }}" class="nav-link">

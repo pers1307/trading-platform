@@ -8,7 +8,7 @@
                 <p>Дашборд</p>
             </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item menu-open">
             <a href="/" class="nav-link">
                 <i class="nav-icon fas fa-briefcase"></i>
                 <p>Позиции</p>
@@ -16,7 +16,7 @@
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
-                    <a href="{{ path('app_trade_list') }}" class="nav-link">
+                    <a href="{{ path('app_trade_list') }}" class="nav-link active">
                         <i class="fa fa-circle-notch nav-icon"></i>
                         <p>Все</p>
                     </a>
@@ -36,7 +36,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ path('app_accaunts_index') }}" class="nav-link active">
+            <a href="{{ path('app_accaunts_index') }}" class="nav-link">
                 <i class="nav-icon fas fa-sticky-note"></i>
                 <p>Счета</p>
             </a>
@@ -90,17 +90,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Добавить значение к счету: {{ accaunt.title }}</h1>
+                        <h1 class="m-0">Позиции</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
                                 <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
                             </li>
-                            <li class="breadcrumb-item">
-                                <a href="{{ path('app_accaunts_index') }}">Счета</a>
-                            </li>
-                            <li class="breadcrumb-item active">Добавить значение</li>
+                            <li class="breadcrumb-item active">Позиции</li>
                         </ol>
                     </div>
                 </div>
@@ -109,26 +106,72 @@
 
         <section class="content">
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card card-primary">
-                            <div class="card-header">
-                                <h3 class="card-title">Форма</h3>
-                            </div>
-                            <form action="{{ path('app_accaunt_history_add', {id: accaunt.id}) }}" method="post">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Список</h3>
+                                </div>
                                 <div class="card-body">
-                                    <div class="form-group">
-                                        <label for="value">Новое значение</label>
-                                        <input type="number" class="form-control" id="value" name="value" placeholder="">
-                                    </div>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 10px">#</th>
+                                            <th>Счет</th>
+                                            <th>Стратегия</th>
+                                            <th>Акция</th>
+                                            <th>Тип</th>
+                                            <th>Время открытия</th>
+                                            <th>Цена открытия</th>
+                                            <th>Stop Loss</th>
+                                            <th>Take Profit</th>
+                                            <th>Лот</th>
+                                            <th>Время закрытия</th>
+                                            <th>Цена закрытия</th>
+                                            <th>Статус</th>
+                                            <th>Описание</th>
+                                            <th style="width: 50px">
+                                                <a href="{{ path('app_trade_add_form') }}" type="button" class="btn btn-success">
+                                                    <i class="fa fa-plus"></i>
+                                                </a>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for trade in trades %}
+                                            <tr>
+                                                <td>{{ trade.id }}</td>
+                                                <td>{{ trade.accaunt.title }}</td>
+                                                <td>{{ trade.strategy.title }}</td>
+                                                <td>{{ trade.stock.secId }}</td>
+                                                <td>{{ trade.type }}</td>
+                                                <td>{{ trade.openDateTime|date('Y-m-d') }}</td>
+                                                <td>{{ trade.openPrice|stockPrice }}</td>
+                                                <td>{{ trade.stopLoss|stockPrice }}</td>
+                                                <td>{{ trade.takeProfit|stockPrice }}</td>
+                                                <td>{{ trade.lots }}</td>
+                                                <td>{{ trade.closeDateTime }}</td>
+                                                <td>{{ trade.closePrice|stockPrice }}</td>
+                                                <td>{{ trade.status }}</td>
+                                                <td>{{ trade.description }}</td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="{{ path('app_trade_edit_form', {id: trade.id}) }}" type="button" class="btn btn-info">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                        <a href="{{ path('app_trade_remove', {id: trade.id}) }}" type="button" class="btn btn-danger">
+                                                            <i class="fa fa-window-close"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Отправить</button>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
-                </div>
             </div>
         </section>
     </div>
@@ -154,4 +197,5 @@
     <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
     <script src="{{ asset('vendor/js/adminlte.js') }}"></script>
     <script src="{{ asset('vendor/js/demo.js') }}"></script>
+    <script src="{{ asset('vendor/js/accaunt_history.js') }}"></script>
 {% endblock %}

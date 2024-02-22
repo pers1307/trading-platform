@@ -30,6 +30,6 @@ class StockPriceExtension extends AbstractExtension
             return number_format($number, 6, '.', ' ');
         }
 
-        return $number;
+        return number_format($number, 2, '.', ' ');
     }
 }
