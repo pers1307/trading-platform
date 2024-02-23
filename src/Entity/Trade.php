@@ -62,6 +62,7 @@ class Trade
     public function __construct()
     {
         $this->openDateTime = new DateTime();
+        $this->created = new DateTime();
     }
 
     public function getId(): ?int

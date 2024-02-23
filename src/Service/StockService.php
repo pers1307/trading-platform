@@ -13,7 +13,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class StockService
 {
-    const URL = 'https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities.json';
+    const TQBR_URL = 'https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities.json';
+    const TQPI_URL = 'https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQPI/securities.json';
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -30,7 +31,15 @@ class StockService
      */
     public function update(): void
     {
-        $response = $this->httpClient->request('GET', self::URL);
+        $response = $this->httpClient->request('GET', self::TQBR_URL);
+        $data = $response->toArray();
+
+        $stockRepository = $this->entityManager->getRepository(Stock::class);
+        $stockRepository->upsertSecurity($data['securities']['data']);
+        $stockRepository->updatePrices($data['marketdata']['data']);
+
+        // Для TQPI
+        $response = $this->httpClient->request('GET', self::TQPI_URL);
         $data = $response->toArray();
 
         $stockRepository = $this->entityManager->getRepository(Stock::class);
