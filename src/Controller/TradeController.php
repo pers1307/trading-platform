@@ -19,7 +19,7 @@ class TradeController extends AbstractController
     public function statistics(EntityManagerInterface $entityManager): Response
     {
         $tradeRepository = $entityManager->getRepository(Trade::class);
-        $trades = $tradeRepository->findBy(['strategy' => 2, 'status' => 'close'], ['openDateTime' => 'ASC']);
+        $trades = $tradeRepository->findBy(['strategy' => 1, 'status' => 'close'], ['openDateTime' => 'ASC']);
 
         $finamTrades = [];
         $history = 0;
@@ -27,19 +27,18 @@ class TradeController extends AbstractController
             $stock = $trade->getStock();
 
             // всегда 1 лот
-            //всегдв фиксированный риск
+            // всегда фиксированный риск
 
             /**
              *
              */
 
-
             if ('long' === $trade->getType()) {
-//                $result = ($trade->getClosePrice() - $trade->getOpenPrice()) * $stock->getLotSize() * $trade->getLots();
-                $result = ($trade->getClosePrice() - $trade->getOpenPrice()) * $stock->getLotSize() * 1;
+                $result = ($trade->getClosePrice() - $trade->getOpenPrice()) * $stock->getLotSize() * $trade->getLots();
+//                $result = ($trade->getClosePrice() - $trade->getOpenPrice()) * $stock->getLotSize() * 1;
             } else {
-//                $result = ($trade->getOpenPrice() - $trade->getClosePrice()) * $stock->getLotSize() * $trade->getLots();
-                $result = ($trade->getOpenPrice() - $trade->getClosePrice()) * $stock->getLotSize() * 1;
+                $result = ($trade->getOpenPrice() - $trade->getClosePrice()) * $stock->getLotSize() * $trade->getLots();
+//                $result = ($trade->getOpenPrice() - $trade->getClosePrice()) * $stock->getLotSize() * 1;
             }
 
             $history = $history + $result;

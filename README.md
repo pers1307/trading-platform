@@ -11,3 +11,9 @@
 ```bash
 symfony serve -d
 ```
+
+## Тестирование
+
+```bash
+php bin/phpunit
+```
