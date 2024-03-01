@@ -2,19 +2,22 @@
 
 namespace App\Controller;
 
-use App\Entity\Accaunt;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\AccauntService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AccauntController extends AbstractController
 {
+    public function __construct(
+        private readonly AccauntService $accauntService
+    ) {
+    }
+
     #[Route('/accaunts', name: 'app_accaunts_index')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(): Response
     {
-        $accauntRepository = $entityManager->getRepository(Accaunt::class);
-        $accaunts = $accauntRepository->findAll();
+        $accaunts = $this->accauntService->findAll();
 
         return $this->render('accaunt/index.html.twig', [
             'accaunts' => $accaunts,

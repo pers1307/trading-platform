@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DictionaryStockController extends AbstractController
 {
     public function __construct(
-        private DictionaryStockService $dictionaryStockService
+        private readonly DictionaryStockService $dictionaryStockService
     ) {
     }
 

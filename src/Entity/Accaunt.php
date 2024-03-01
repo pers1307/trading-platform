@@ -32,6 +32,7 @@ class Accaunt
     {
         $this->title = '';
         $this->brockerTitle = '';
+        $this->created = new DateTime();
         $this->accauntHistories = new ArrayCollection();
     }
 
