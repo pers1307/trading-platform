@@ -14,22 +14,41 @@ class StockPriceExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @todo эту функцию точно нужно будет покрыть тестами
-     * @todo вторым аргументов закидывать минимальный шаг цены для правильного форматирования!
-     */
-    public function formatStockPrice(?float $number): string
+    public function formatStockPrice(?float $number, float $minStep): string
     {
         if (is_null($number)) {
             return '';
         }
 
-        if ($number === 0.000005) {
-            return number_format($number, 6, '.', ' ');
-        } elseif ($number <= 0.00001) {
-            return number_format($number, 6, '.', ' ');
+        $decimals = $this->getDecimals($minStep);
+        if ($minStep < 1) {
+            if ($this->normalize($number, $decimals) % $this->normalize($minStep, $decimals) !== 0) {
+                return 'Цена не соответствует шагу цены';
+            }
+        } else {
+            if (fmod($number, $minStep) !== 0.0) {
+                return 'Цена не соответствует шагу цены';
+            }
         }
 
-        return number_format($number, 2, '.', ' ');
+        return number_format($number, $decimals, '.', '');
+    }
+
+    private function normalize(float $number, int $decimals): float
+    {
+        return $number * (10 ** $decimals);
+    }
+
+    private function getDecimals(float $valueAsString): int
+    {
+        $valueAsString = (string)$valueAsString;
+        if (preg_match('/(\d).0E-(\d)/', $valueAsString, $matches)) {
+            $decimals = $matches[2];
+        } else {
+            $explodeDigits = explode('.', $valueAsString);
+            $decimals = isset($explodeDigits[1]) ? strlen($explodeDigits[1]) : 0;
+        }
+
+        return $decimals;
     }
 }

@@ -9,11 +9,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractController
 {
-
     public function __construct(
         private bool $isDebug
-    )
-    {
+    ) {
     }
 
     #[Route('/', name: 'app_dashboard_index')]

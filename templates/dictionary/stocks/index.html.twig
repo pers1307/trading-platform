@@ -133,8 +133,8 @@
                                             <td>{{ stock.secId }}</td>
                                             <td>{{ stock.title }}</td>
                                             <td>{{ stock.lotSize|number_format(null, null, ' ') }}</td>
-                                            <td>{{ stock.minStep|stockPrice }}</td>
-                                            <td>{{ stock.price|stockPrice }}</td>
+                                            <td>{{ stock.minStep|stockPrice(stock.minStep) }}</td>
+                                            <td>{{ stock.price|stockPrice(stock.minStep) }}</td>
                                             <td>{{ stock.updated|date('Y-m-d H:i:s') }}</td>
                                         </tr>
                                     {% endfor %}
