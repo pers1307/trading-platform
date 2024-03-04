@@ -16,9 +16,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TradeController extends AbstractController
 {
-    public function __construct(
-        private readonly TradeService $tradeService
-    ) {
+    public function __construct()
+    {
     }
 
     #[Route('/trades/statistics', name: 'app_trade_statistics')]
@@ -84,9 +83,10 @@ class TradeController extends AbstractController
     }
 
     #[Route('/trades', name: 'app_trade_list')]
-    public function list(): Response
+    public function list(EntityManagerInterface $entityManager): Response
     {
-        $trades = $this->tradeService->findAll();
+        $tradeRepository = $entityManager->getRepository(Trade::class);
+        $trades = $tradeRepository->findAll();
 
         return $this->render('trades/list.html.twig', [
             'trades' => $trades,
@@ -94,22 +94,25 @@ class TradeController extends AbstractController
     }
 
     #[Route('/trades/strategies', name: 'app_trade_strategy_list')]
-    public function listByStrategies(): Response
+    public function listByStrategies(EntityManagerInterface $entityManager): Response
     {
-        // По стратегиям
-        return new Response();
+        $tradeRepository = $entityManager->getRepository(Trade::class);
+        $strategiesByAccaunts = $tradeRepository->getStrategiesByAccaunts();
 
-        //        [$accauntHistoryItems, $accaunt, $graphDataEncode] = $accauntHistoryService->getDataByAccauntId($id);
-        //
-        //        if (is_null($accaunt)) {
-        //            throw new NotFoundHttpException();
-        //        }
-        //
-        //        return $this->render('accaunt_history/list.html.twig', [
-        //            'accauntHistoryItems' => $accauntHistoryItems,
-        //            'accaunt' => $accaunt,
-        //            'graphDataEncode' => $graphDataEncode,
-        //        ]);
+        return $this->render('trades/list.by.strategies.html.twig', [
+            'strategiesByAccaunts' => $strategiesByAccaunts,
+        ]);
+    }
+
+    #[Route('/trades/strategy/{strategyId<\d+>}/accaunt/{accauntId<\d+>}', name: 'app_trade_strategy_accaunt')]
+    public function listByStrategyAndAccaunt(int $strategyId, int $accauntId, EntityManagerInterface $entityManager): Response
+    {
+        $tradeRepository = $entityManager->getRepository(Trade::class);
+        $strategiesByAccaunts = $tradeRepository->getStrategiesByAccaunts();
+
+        return $this->render('trades/list.by.strategies.html.twig', [
+            'strategiesByAccaunts' => $strategiesByAccaunts,
+        ]);
     }
 
     #[Route('/trades/add', name: 'app_trade_add_form', methods: ['GET'])]

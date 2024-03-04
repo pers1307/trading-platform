@@ -16,13 +16,13 @@
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
-                    <a href="{{ path('app_trade_list') }}" class="nav-link active">
+                    <a href="{{ path('app_trade_list') }}" class="nav-link">
                         <i class="fa fa-circle-notch nav-icon"></i>
                         <p>Все</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('app_trade_strategy_list') }}" class="nav-link">
+                    <a href="{{ path('app_trade_strategy_list') }}" class="nav-link active">
                         <i class="fa fa-circle-notch nav-icon"></i>
                         <p>По стратегиям</p>
                     </a>
@@ -90,14 +90,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Позиции</h1>
+                        <h1 class="m-0">Позиции по стратегиям</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
                                 <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
                             </li>
-                            <li class="breadcrumb-item active">Позиции</li>
+                            <li class="breadcrumb-item active">Позиции по стратегиям</li>
                         </ol>
                     </div>
                 </div>
@@ -117,50 +117,22 @@
                                         <thead>
                                         <tr>
                                             <th style="width: 10px">#</th>
-                                            <th>Счет</th>
                                             <th>Стратегия</th>
-                                            <th>Акция</th>
-                                            <th>Тип</th>
-                                            <th>Время открытия</th>
-                                            <th>Цена открытия</th>
-                                            <th>Stop Loss</th>
-                                            <th>Take Profit</th>
-                                            <th>Лот</th>
-                                            <th>Время закрытия</th>
-                                            <th>Цена закрытия</th>
-                                            <th>Статус</th>
-                                            <th>Описание</th>
+                                            <th>Счет</th>
                                             <th style="width: 50px">
-                                                <a href="{{ path('app_trade_add_form') }}" type="button" class="btn btn-success new-trade">
-                                                    <i class="fa fa-plus"></i>
-                                                </a>
                                             </th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% for trade in trades %}
+                                        {% for key,strategiesByAccaunt in strategiesByAccaunts %}
                                             <tr>
-                                                <td>{{ trade.id }}</td>
-                                                <td>{{ trade.accaunt.title }}</td>
-                                                <td>{{ trade.strategy.title }}</td>
-                                                <td>{{ trade.stock.secId }}</td>
-                                                <td>{{ trade.type }}</td>
-                                                <td>{{ trade.openDateTime|date('Y-m-d H:m:s') }}</td>
-                                                <td>{{ trade.openPrice|stockPrice(trade.stock.minStep) }}</td>
-                                                <td>{{ trade.stopLoss|stockPrice(trade.stock.minStep) }}</td>
-                                                <td>{{ trade.takeProfit|stockPrice(trade.stock.minStep) }}</td>
-                                                <td>{{ trade.lots }}</td>
-                                                <td>{{ trade.closeDateTime|date('Y-m-d H:m:s') }}</td>
-                                                <td>{{ trade.closePrice|stockPrice(trade.stock.minStep) }}</td>
-                                                <td>{{ trade.status }}</td>
-                                                <td>{{ trade.description }}</td>
+                                                <td>{{ key + 1 }}</td>
+                                                <td>{{ strategiesByAccaunt.strategyTitle }}</td>
+                                                <td>{{ strategiesByAccaunt.accauntTitle }}</td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        <a href="{{ path('app_trade_edit_form', {id: trade.id}) }}" type="button" class="btn btn-info">
-                                                            <i class="fa fa-edit"></i>
-                                                        </a>
-                                                        <a href="{{ path('app_trade_remove', {id: trade.id}) }}" type="button" class="btn btn-danger">
-                                                            <i class="fa fa-window-close"></i>
+                                                        <a href="{{ path('app_trade_strategy_accaunt', {strategyId: strategiesByAccaunt.strategyId, accauntId: strategiesByAccaunt.accauntId}) }}" type="button" class="btn btn-success">
+                                                            <i class="fa fa-list"></i>
                                                         </a>
                                                     </div>
                                                 </td>

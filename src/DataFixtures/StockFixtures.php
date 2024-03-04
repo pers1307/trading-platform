@@ -8,6 +8,9 @@ use Doctrine\Persistence\ObjectManager;
 
 class StockFixtures extends Fixture
 {
+    public const SBER = 'SBER';
+    public const GAZP = 'GAZP';
+
     public function load(ObjectManager $manager): void
     {
         $sber = new Stock();
@@ -27,5 +30,8 @@ class StockFixtures extends Fixture
         $manager->persist($gazp);
 
         $manager->flush();
+
+        $this->addReference(self::SBER, $sber);
+        $this->addReference(self::GAZP, $gazp);
     }
 }

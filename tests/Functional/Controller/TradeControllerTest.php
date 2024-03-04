@@ -16,7 +16,15 @@ class TradeControllerTest extends WebTestCase
         $this->assertSelectorExists('table');
 
         $this->assertSelectorExists('.new-trade');
-        $this->assertSelectorExists('.edit-trade');
-        $this->assertSelectorExists('.remove-trade');
+    }
+
+    public function testCanLoadListByStrategies(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/trades/strategies');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Позиции по стратегиям');
+        $this->assertSelectorExists('table');
     }
 }

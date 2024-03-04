@@ -37,6 +37,8 @@ class Strategy
     {
         $this->title = '';
         $this->description = '';
+        $this->created = new DateTime();
+        $this->updated = new DateTime();
     }
 
     public function getId(): ?int
