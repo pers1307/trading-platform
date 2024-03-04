@@ -131,7 +131,7 @@
                                             <th>Статус</th>
                                             <th>Описание</th>
                                             <th style="width: 50px">
-                                                <a href="{{ path('app_trade_add_form') }}" type="button" class="btn btn-success">
+                                                <a href="{{ path('app_trade_add_form') }}" type="button" class="btn btn-success new-trade">
                                                     <i class="fa fa-plus"></i>
                                                 </a>
                                             </th>
@@ -145,21 +145,21 @@
                                                 <td>{{ trade.strategy.title }}</td>
                                                 <td>{{ trade.stock.secId }}</td>
                                                 <td>{{ trade.type }}</td>
-                                                <td>{{ trade.openDateTime|date('Y-m-d') }}</td>
-                                                <td>{{ trade.openPrice|stockPrice }}</td>
-                                                <td>{{ trade.stopLoss|stockPrice }}</td>
-                                                <td>{{ trade.takeProfit|stockPrice }}</td>
+                                                <td>{{ trade.openDateTime|date('Y-m-d H:m:s') }}</td>
+                                                <td>{{ trade.openPrice|stockPrice(trade.stock.minStep) }}</td>
+                                                <td>{{ trade.stopLoss|stockPrice(trade.stock.minStep) }}</td>
+                                                <td>{{ trade.takeProfit|stockPrice(trade.stock.minStep) }}</td>
                                                 <td>{{ trade.lots }}</td>
-                                                <td>{{ trade.closeDateTime }}</td>
-                                                <td>{{ trade.closePrice|stockPrice }}</td>
+                                                <td>{{ trade.closeDateTime|date('Y-m-d H:m:s') }}</td>
+                                                <td>{{ trade.closePrice|stockPrice(trade.stock.minStep) }}</td>
                                                 <td>{{ trade.status }}</td>
                                                 <td>{{ trade.description }}</td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        <a href="{{ path('app_trade_edit_form', {id: trade.id}) }}" type="button" class="btn btn-info">
+                                                        <a href="{{ path('app_trade_edit_form', {id: trade.id}) }}" type="button" class="btn btn-info edit-trade">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
-                                                        <a href="{{ path('app_trade_remove', {id: trade.id}) }}" type="button" class="btn btn-danger">
+                                                        <a href="{{ path('app_trade_remove', {id: trade.id}) }}" type="button" class="btn btn-danger remove-trade">
                                                             <i class="fa fa-window-close"></i>
                                                         </a>
                                                     </div>

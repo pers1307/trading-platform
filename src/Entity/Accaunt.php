@@ -28,12 +28,16 @@ class Accaunt
     #[ORM\OneToMany(targetEntity: AccauntHistory::class, mappedBy: 'accaunt')]
     private Collection $accauntHistories;
 
+    #[ORM\OneToMany(targetEntity: Trade::class, mappedBy: 'accaunt')]
+    private Collection $trades;
+
     public function __construct()
     {
         $this->title = '';
         $this->brockerTitle = '';
         $this->created = new DateTime();
         $this->accauntHistories = new ArrayCollection();
+        $this->trades = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -76,5 +80,13 @@ class Accaunt
     public function getAccauntHistories(): Collection
     {
         return $this->accauntHistories;
+    }
+
+    /**
+     * @return Collection<int, Trade>
+     */
+    public function getTrades(): Collection
+    {
+        return $this->trades;
     }
 }

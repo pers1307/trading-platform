@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Accaunt;
 use App\Entity\AccauntHistory;
 use App\Entity\Trade;
+use App\Service\TradeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -15,6 +16,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TradeController extends AbstractController
 {
+    public function __construct(
+        private readonly TradeService $tradeService
+    ) {
+    }
+
     #[Route('/trades/statistics', name: 'app_trade_statistics')]
     public function statistics(EntityManagerInterface $entityManager): Response
     {
@@ -35,10 +41,10 @@ class TradeController extends AbstractController
 
             if ('long' === $trade->getType()) {
                 $result = ($trade->getClosePrice() - $trade->getOpenPrice()) * $stock->getLotSize() * $trade->getLots();
-//                $result = ($trade->getClosePrice() - $trade->getOpenPrice()) * $stock->getLotSize() * 1;
+                //                $result = ($trade->getClosePrice() - $trade->getOpenPrice()) * $stock->getLotSize() * 1;
             } else {
                 $result = ($trade->getOpenPrice() - $trade->getClosePrice()) * $stock->getLotSize() * $trade->getLots();
-//                $result = ($trade->getOpenPrice() - $trade->getClosePrice()) * $stock->getLotSize() * 1;
+                //                $result = ($trade->getOpenPrice() - $trade->getClosePrice()) * $stock->getLotSize() * 1;
             }
 
             $history = $history + $result;
@@ -61,16 +67,14 @@ class TradeController extends AbstractController
             }
         }
 
-//        dd($finamTrades);
+        //        dd($finamTrades);
 
-//        $tradeRepository = $entityManager->getRepository(Trade::class);
-//        $trades = $tradeRepository->findAll();
+        //        $tradeRepository = $entityManager->getRepository(Trade::class);
+        //        $trades = $tradeRepository->findAll();
 
         /**
          * Считать ещё риск / прибыль!
          */
-
-
 
         return $this->render('trades/statistics.html.twig', [
             'finamTrades' => $finamTrades,
@@ -79,13 +83,10 @@ class TradeController extends AbstractController
         ]);
     }
 
-
-
     #[Route('/trades', name: 'app_trade_list')]
-    public function list(EntityManagerInterface $entityManager): Response
+    public function list(): Response
     {
-        $tradeRepository = $entityManager->getRepository(Trade::class);
-        $trades = $tradeRepository->findAll();
+        $trades = $this->tradeService->findAll();
 
         return $this->render('trades/list.html.twig', [
             'trades' => $trades,
