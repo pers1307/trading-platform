@@ -34,6 +34,20 @@ class TradeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAllCloseByStrategyIdAndAccauntId(int $strategyId, int $accauntId): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where('IDENTITY(t.strategy) = :strategyId')
+            ->andWhere('IDENTITY(t.accaunt) = :accauntId')
+            ->andWhere('t.status = :status')
+            ->orderBy('t.id', 'ASC')
+            ->setParameter('strategyId', $strategyId)
+            ->setParameter('accauntId', $accauntId)
+            ->setParameter('status', Trade::STATUS_CLOSE)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getStrategiesByAccaunts(): array
     {
         $command = "

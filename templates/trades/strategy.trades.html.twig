@@ -1,0 +1,273 @@
+{% extends 'base.admin.html.twig' %}
+
+{% block menu %}
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+            <a href="{{ path('app_dashboard_index') }}" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>Дашборд</p>
+            </a>
+        </li>
+        <li class="nav-item menu-open">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-briefcase"></i>
+                <p>Позиции</p>
+                <i class="right fas fa-angle-left"></i>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ path('app_trade_list') }}" class="nav-link">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>Все</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_trade_strategy_list') }}" class="nav-link active">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>По стратегиям</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path('app_strategies_index') }}" class="nav-link">
+                <i class="nav-icon fas fa-chess"></i>
+                <p>Стратегии</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path('app_accaunts_index') }}" class="nav-link">
+                <i class="nav-icon fas fa-sticky-note"></i>
+                <p>Счета</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-calculator"></i>
+                <p>
+                    Калькулятор
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fa fa-stop-circle nav-icon"></i>
+                        <p>От стопа</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fa fa-percent nav-icon"></i>
+                        <p>Процент от счета</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-book"></i>
+                <p>
+                    Сравочники
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ path('app_dictionary_stock_index') }}" class="nav-link">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>Акции</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">{{ strategy.title }}. {{ accaunt.title }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_trade_strategy_list') }}">Позиции по стратегиям</a>
+                            </li>
+                            <li class="breadcrumb-item active">Стратегия</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3>150</h3>
+                                <p>Дней уже торгуем</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-forward"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3>{{ strategyStatistics.countTrades }}</h3>
+
+                                <p>Совершенных сделок</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                                <h3>{{ strategyStatistics.expectedValue|number_format(2) }}</h3>
+
+                                <p>Математическое ожидание</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-calculator"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3>
+                                    {{ strategyStatistics.countProfitTrades }} / {{ strategyStatistics.countLossTrades }}
+{#                                    | {{ strategyStatistics.averageProfit|number_format(2) }} / {{ strategyStatistics.averageLoss|number_format(2) }}#}
+                                </h3>
+                                <p>Прибыльные / Убыточные сделки</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-pie-graph"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">График</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="card bg-gradient-success">
+                                    <div class="card-body">
+                                        <canvas
+                                                class="chart"
+                                                id="line-chart"
+                                                style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"
+                                                data-graph-data-encode="{{ graphDataEncode }}"
+                                                data-accaunt-name="{{ 'Динамика стратегии' }}"
+                                        ></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Список</h3>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>Акция</th>
+                                        <th>Тип</th>
+                                        <th>Время открытия</th>
+                                        <th>Цена открытия</th>
+                                        <th>Stop Loss</th>
+                                        <th>Take Profit</th>
+                                        <th>Лот</th>
+                                        <th>Время закрытия</th>
+                                        <th>Цена закрытия</th>
+                                        <th>Статус</th>
+                                        <th>Результат</th>
+                                        <th>Накопительный итог</th>
+                                        <th style="width: 50px"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for key,extensionTrade in extensionTrades %}
+                                        <tr>
+                                            <td>{{ extensionTrade.trade.id }}</td>
+                                            <td>{{ extensionTrade.trade.stock.secId }}</td>
+                                            <td>{{ extensionTrade.trade.type }}</td>
+                                            <td>{{ extensionTrade.trade.openDateTime|date('Y-m-d H:m:s') }}</td>
+                                            <td>{{ extensionTrade.trade.openPrice|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
+                                            <td>{{ extensionTrade.trade.stopLoss|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
+                                            <td>{{ extensionTrade.trade.takeProfit|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
+                                            <td>{{ extensionTrade.trade.lots }}</td>
+                                            <td>{{ extensionTrade.trade.closeDateTime|date('Y-m-d H:m:s') }}</td>
+                                            <td>{{ extensionTrade.trade.closePrice|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
+                                            <td>{{ extensionTrade.trade.status }}</td>
+                                            <td>{{ extensionTrade.tradeResult }}</td>
+                                            <td>{{ extensionTrade.cumulativeTotal }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    {#                                                    <a href="{{ path('app_trade_edit_form', {id: trade.id}) }}" type="button" class="btn btn-info"> #}
+                                                    {#                                                        <i class="fa fa-edit"></i> #}
+                                                    {#                                                    </a> #}
+                                                    {#                                                    <a href="{{ path('app_trade_remove', {id: trade.id}) }}" type="button" class="btn btn-danger"> #}
+                                                    {#                                                        <i class="fa fa-window-close"></i> #}
+                                                    {#                                                    </a> #}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{{ asset('vendor/js/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/jquery-ui/jquery-ui.min.js') }}"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    <script src="{{ asset('vendor/js/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/sparklines/sparkline.js') }}"></script>
+    <script src="{{ asset('vendor/jqvmap/jquery.vmap.min.js') }}"></script>
+    <script src="{{ asset('vendor/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
+    <script src="{{ asset('vendor/js/jquery-knob/jquery.knob.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('vendor/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('vendor/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <script src="{{ asset('vendor/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/adminlte.js') }}"></script>
+    <script src="{{ asset('vendor/js/demo.js') }}"></script>
+    <script src="{{ asset('vendor/js/trades_strategy.js') }}"></script>
+{% endblock %}

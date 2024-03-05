@@ -9,6 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TradeRepository::class)]
 class Trade
 {
+    public const TYPE_LONG = 'long';
+    public const TYPE_SHORT = 'short';
+
+    public const STATUS_OPEN = 'open';
+    public const STATUS_CLOSE = 'close';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

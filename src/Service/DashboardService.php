@@ -12,7 +12,7 @@ class DashboardService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private CacheInterface $cache,
+        private readonly CacheInterface $cache,
     ) {
     }
 

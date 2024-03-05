@@ -42,7 +42,9 @@
         <testsuite name="Trade">
             <file>tests/Functional/Controller/TradeControllerTest.php</file>
             <file>tests/Integration/TradeRepositoryTest.php</file>
+            <file>tests/Integration/TradeServiceTest.php</file>
             <file>tests/Unit/Twig/StockPriceExtensionTest.php</file>
+            <file>tests/Unit/TradeServiceTest.php</file>
         </testsuite>
     </testsuites>
 
@@ -50,13 +52,13 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
-        <!--        <exclude>-->
-        <!--            <directory suffix=".php">src/Repository</directory>-->
-        <!--            <directory suffix=".php">src/Model</directory>-->
-        <!--            <directory suffix=".php">src/DataFixtures</directory>-->
-        <!--            <directory suffix=".php">src/Entity</directory>-->
-        <!--            <directory suffix=".php">src/Controller</directory>-->
-        <!--        </exclude>-->
+        <exclude>
+            <directory suffix=".php">src/Dto</directory>
+            <directory suffix=".php">src/Entity</directory>
+            <directory suffix=".php">src/Repository</directory>
+            <directory suffix=".php">src/DataFixtures</directory>
+            <directory suffix=".php">src/Controller</directory>
+        </exclude>
     </coverage>
 
     <listeners>
