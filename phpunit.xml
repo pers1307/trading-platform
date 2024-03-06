@@ -50,8 +50,10 @@
             <file>tests/Functional/Controller/StatisticsControllerTest.php</file>
             <!--            <file>tests/Integration/TradeRepositoryTest.php</file>-->
             <!--            <file>tests/Integration/TradeServiceTest.php</file>-->
-            <!--            <file>tests/Unit/Twig/StockPriceExtensionTest.php</file>-->
-            <!--            <file>tests/Unit/TradeServiceTest.php</file>-->
+            <file>tests/Unit/Twig/StockPriceExtensionTest.php</file>
+            <file>tests/Unit/TradeServiceTest.php</file>
+            <file>tests/Unit/StatisticServiceTest.php</file>
+            <file>tests/Unit/GraphServiceTest.php</file>
         </testsuite>
     </testsuites>
 

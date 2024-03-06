@@ -10,6 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: StrategyRepository::class)]
 class Strategy
 {
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_PAUSE = 'pause';
+    public const STATUS_DECOMMISSION = 'decommission';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

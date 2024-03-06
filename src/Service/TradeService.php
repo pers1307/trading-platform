@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Dto\ExtensionTrade;
+use App\Dto\ExtensionTradesCollection;
 use App\Entity\Trade;
 use App\Exception\TradeHasNotClosePriceException;
 use App\Exception\TradeHasOpenStatusException;
@@ -18,6 +19,7 @@ class TradeService
         private bool $isDebug,
         private readonly EntityManagerInterface $entityManager,
         private readonly CacheInterface $cache,
+        private readonly StatisticService $statisticService,
     ) {
     }
 
@@ -67,36 +69,35 @@ class TradeService
 
     /**
      * @return ExtensionTrade[]
-     * @throws InvalidArgumentException
      */
-    public function getExtensionTrades(int $strategyId, int $accauntId): array
-    {
-        if ($this->isDebug) {
-            $tradeRepository = $this->entityManager->getRepository(Trade::class);
-            $trades = $tradeRepository->findAllCloseByStrategyIdAndAccauntId($strategyId, $accauntId);
+    public function getExtensionTrades(
+        int $strategyId,
+        int $accauntId
+    ): array {
+        $tradeRepository = $this->entityManager->getRepository(Trade::class);
+        $trades = $tradeRepository->findAllCloseByStrategyIdAndAccauntId($strategyId, $accauntId);
 
-            return $this->convertTradesToExtensionTrades($trades);
-        }
-
-        return $this->cache->get('extension_trades_' . $strategyId . '_' . $accauntId, function (CacheItemInterface $cacheItem) use ($strategyId, $accauntId) {
-            $cacheItem->expiresAfter(60 * 60 * 24);
-            $tradeRepository = $this->entityManager->getRepository(Trade::class);
-            $trades = $tradeRepository->findAllCloseByStrategyIdAndAccauntId($strategyId, $accauntId);
-
-            return $this->convertTradesToExtensionTrades($trades);
-        });
+        return $this->convertTradesToExtensionTrades($trades);
     }
 
-    public function formatGraphData(array $extensionTrades): string
-    {
-        return json_encode(
-            [
-                'labels' => array_map(static fn(ExtensionTrade $extensionTrade) => $extensionTrade->getTrade()->getOpenDateTime()->format('Y-m-d'), $extensionTrades),
-                'values' => array_map(
-                    static fn(ExtensionTrade $extensionTrade) => intval($extensionTrade->getCumulativeTotal()),
-                    $extensionTrades
-                ),
-            ]
-        );
+    /**
+     * @return ExtensionTradesCollection
+     * @throws InvalidArgumentException
+     */
+    public function getExtensionTradesCollection(
+        int $strategyId,
+        int $accauntId
+    ): ExtensionTradesCollection {
+        if ($this->isDebug) {
+            $extensionTrades = $this->getExtensionTrades($strategyId, $accauntId);
+            return $this->statisticService->calculate($extensionTrades);
+        }
+
+        return $this->cache->get('extension_trades_collection_' . $strategyId . '_' . $accauntId, function (CacheItemInterface $cacheItem) use ($strategyId, $accauntId) {
+            $cacheItem->expiresAfter(60 * 60 * 24);
+
+            $extensionTrades = $this->getExtensionTrades($strategyId, $accauntId);
+            return $this->statisticService->calculate($extensionTrades);
+        });
     }
 }

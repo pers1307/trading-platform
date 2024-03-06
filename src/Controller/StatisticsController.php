@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Accaunt;
 use App\Entity\Strategy;
 use App\Entity\Trade;
-use App\Service\StatisticService;
 use App\Service\TradeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
@@ -16,8 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class StatisticsController extends AbstractController
 {
     public function __construct(
-        private readonly TradeService $tradeService,
-        private readonly StatisticService $statisticService
+        private readonly TradeService $tradeService
     ) {
     }
 
@@ -50,28 +48,12 @@ class StatisticsController extends AbstractController
             throw $this->createNotFoundException('Такого счета не существует');
         }
 
-        $extensionTrades = $this->tradeService->getExtensionTrades($strategyId, $accauntId);
-        $graphDataEncode = $this->tradeService->formatGraphData($extensionTrades);
-
-        /**
-         * @todo форматирование под график тоже перенести
-         */
-        $strategyStatistics = $this->statisticService->calculate($extensionTrades);
-
-        /**
-         * @todo при рефакторинге сделать некие единые фикстуры для юнитов и интеграционных тестов
-         */
-
-        /**
-         * @todo оптимизировать запросы в модуле
-         */
+        $extensionTradesCollection = $this->tradeService->getExtensionTradesCollection($strategyId, $accauntId);
 
         return $this->render('statistics/strategy.trades.html.twig', [
             'strategy' => $strategy,
             'accaunt' => $accaunt,
-            'extensionTrades' => $extensionTrades,
-            'graphDataEncode' => $graphDataEncode,
-            'strategyStatistics' => $strategyStatistics,
+            'extensionTradesCollection' => $extensionTradesCollection,
         ]);
     }
 }

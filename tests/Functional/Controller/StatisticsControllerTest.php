@@ -35,20 +35,20 @@ class StatisticsControllerTest extends WebTestCase
 //        $this->assertSelectorExists('table');
 //        $this->assertSelectorExists('canvas');
 //    }
-//
-//    public function testNotFoundListByStrategyAndAccauntByStrategy(): void
-//    {
-//        $client = static::createClient();
-//        $client->request('GET', self::NOT_EXISTS_STRATEGY_STATISTICS_STRATEGY_ACCAUNT_URL);
-//
-//        $this->assertResponseStatusCodeSame(404);
-//    }
-//
-//    public function testNotFoundListByStrategyAndAccauntByAccaount(): void
-//    {
-//        $client = static::createClient();
-//        $client->request('GET', self::NOT_EXISTS_ACCAUNT_STATISTICS_STRATEGY_ACCAUNT_URL);
-//
-//        $this->assertResponseStatusCodeSame(404);
-//    }
+
+    public function testNotFoundListByStrategyAndAccauntByStrategy(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', self::NOT_EXISTS_STRATEGY_STATISTICS_STRATEGY_ACCAUNT_URL);
+
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testNotFoundListByStrategyAndAccauntByAccaount(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', self::NOT_EXISTS_ACCAUNT_STATISTICS_STRATEGY_ACCAUNT_URL);
+
+        $this->assertResponseStatusCodeSame(404);
+    }
 }

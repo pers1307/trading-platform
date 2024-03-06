@@ -2,7 +2,7 @@
 
 namespace App\Dto;
 
-class StrategyStatistics
+class ExtensionTradesCollection
 {
     private readonly int $countTrades;
 
@@ -15,7 +15,8 @@ class StrategyStatistics
         private readonly int $countProfitTrades,
         private readonly float $averageProfit,
         private readonly float $averageLoss,
-        private readonly float $expectedValue
+        private readonly float $expectedValue,
+        private readonly ?string $graphFormatData = null
     ) {
         $this->countTrades = $this->countLossTrades + $this->countProfitTrades;
     }
@@ -53,5 +54,10 @@ class StrategyStatistics
     public function getCountTrades(): int
     {
         return $this->countTrades;
+    }
+
+    public function getGraphFormatData(): ?string
+    {
+        return $this->graphFormatData;
     }
 }

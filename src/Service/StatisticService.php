@@ -3,14 +3,19 @@
 namespace App\Service;
 
 use App\Dto\ExtensionTrade;
-use App\Dto\StrategyStatistics;
+use App\Dto\ExtensionTradesCollection;
 
 class StatisticService
 {
+    public function __construct(
+        private readonly GraphService $graphService,
+    ) {
+    }
+
     /**
      * @param ExtensionTrade[] $extensionTrades
      */
-    public function calculate(array $extensionTrades): StrategyStatistics
+    public function calculate(array $extensionTrades): ExtensionTradesCollection
     {
         $countLossTrades = 0;
         $countProfitTrades = 0;
@@ -32,13 +37,20 @@ class StatisticService
         $averageLoss = $summaryLoss / $countTrades;
         $expectedValue = ($countProfitTrades / $countTrades) * $averageProfit + ($countLossTrades / $countTrades) * $averageLoss;
 
-        return new StrategyStatistics(
+        $graphFormatData = $this->graphService->format(
+            $extensionTrades,
+            static fn(int $key, ExtensionTrade $extensionTrade) => $extensionTrade->getTrade()->getOpenDateTime()->format('Y-m-d'),
+            static fn(int $key, ExtensionTrade $extensionTrade) => intval($extensionTrade->getCumulativeTotal()),
+        );
+
+        return new ExtensionTradesCollection(
             $extensionTrades,
             $countLossTrades,
             $countProfitTrades,
             $averageProfit,
             $averageLoss,
-            $expectedValue
+            $expectedValue,
+            $graphFormatData
         );
     }
 }

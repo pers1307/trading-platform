@@ -130,7 +130,7 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>{{ strategyStatistics.countTrades }}</h3>
+                                <h3>{{ extensionTradesCollection.countTrades }}</h3>
 
                                 <p>Совершенных сделок</p>
                             </div>
@@ -142,7 +142,7 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-warning">
                             <div class="inner">
-                                <h3>{{ strategyStatistics.expectedValue|number_format(2) }}</h3>
+                                <h3>{{ extensionTradesCollection.expectedValue|number_format(2) }}</h3>
 
                                 <p>Математическое ожидание</p>
                             </div>
@@ -155,8 +155,9 @@
                         <div class="small-box bg-danger">
                             <div class="inner">
                                 <h3>
-                                    {{ strategyStatistics.countProfitTrades }} / {{ strategyStatistics.countLossTrades }}
-{#                                    | {{ strategyStatistics.averageProfit|number_format(2) }} / {{ strategyStatistics.averageLoss|number_format(2) }}#}
+                                    {{ extensionTradesCollection.countProfitTrades }}
+                                    / {{ extensionTradesCollection.countLossTrades }}
+                                    {#                                    | {{ strategyStatistics.averageProfit|number_format(2) }} / {{ strategyStatistics.averageLoss|number_format(2) }} #}
                                 </h3>
                                 <p>Прибыльные / Убыточные сделки</p>
                             </div>
@@ -180,7 +181,7 @@
                                                 class="chart"
                                                 id="line-chart"
                                                 style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"
-                                                data-graph-data-encode="{{ graphDataEncode }}"
+                                                data-graph-data-encode="{{ extensionTradesCollection.graphFormatData }}"
                                                 data-accaunt-name="{{ 'Динамика стратегии' }}"
                                         ></canvas>
                                     </div>
@@ -217,7 +218,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for key,extensionTrade in extensionTrades %}
+                                    {% for key,extensionTrade in extensionTradesCollection.extensionTrades %}
                                         <tr>
                                             <td>{{ extensionTrade.trade.id }}</td>
                                             <td>{{ extensionTrade.trade.stock.secId }}</td>

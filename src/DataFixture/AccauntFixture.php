@@ -1,12 +1,12 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixture;
 
 use App\Entity\Accaunt;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class AccauntFixtures extends Fixture
+class AccauntFixture extends Fixture
 {
     public const ACCAUNT_ONE = 'ACCAUNT_ONE';
     public const ACCAUNT_TWO = 'ACCAUNT_TWO';
@@ -14,16 +14,26 @@ class AccauntFixtures extends Fixture
     public const ACCAUNT_ONE_TITLE = 'Счет №1';
     public const ACCAUNT_TWO_TITLE = 'Счет №2';
 
+    public static function getOneAccaunt(): Accaunt
+    {
+        return (new Accaunt())
+            ->setTitle(self::ACCAUNT_ONE_TITLE)
+            ->setBrockerTitle('239900****CG');
+    }
+
+    public static function getTwoAccaunt(): Accaunt
+    {
+        return (new Accaunt())
+            ->setTitle(self::ACCAUNT_TWO_TITLE)
+            ->setBrockerTitle('239900****CG');
+    }
+
     public function load(ObjectManager $manager): void
     {
-        $accauntOne = new Accaunt();
-        $accauntOne->setTitle(self::ACCAUNT_ONE_TITLE);
-        $accauntOne->setBrockerTitle('239900****CG');
+        $accauntOne = self::getOneAccaunt();
         $manager->persist($accauntOne);
 
-        $accauntTwo = new Accaunt();
-        $accauntTwo->setTitle(self::ACCAUNT_TWO_TITLE);
-        $accauntTwo->setBrockerTitle('240000****CG');
+        $accauntTwo = self::getTwoAccaunt();
         $manager->persist($accauntTwo);
 
         $manager->flush();

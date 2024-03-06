@@ -37,6 +37,8 @@ class TradeRepository extends ServiceEntityRepository
     public function findAllCloseByStrategyIdAndAccauntId(int $strategyId, int $accauntId): array
     {
         return $this->createQueryBuilder('t')
+            ->addSelect('stock')
+            ->innerJoin('t.stock', 'stock')
             ->where('IDENTITY(t.strategy) = :strategyId')
             ->andWhere('IDENTITY(t.accaunt) = :accauntId')
             ->andWhere('t.status = :status')
@@ -71,29 +73,4 @@ class TradeRepository extends ServiceEntityRepository
             ->createNativeQuery($command, $rsm)
             ->execute();
     }
-
-    //    /**
-    //     * @return VinylMix[] Returns an array of VinylMix objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('v')
-    //            ->andWhere('v.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('v.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?VinylMix
-    //    {
-    //        return $this->createQueryBuilder('v')
-    //            ->andWhere('v.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }
