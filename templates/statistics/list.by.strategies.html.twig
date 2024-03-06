@@ -8,7 +8,7 @@
                 <p>Дашборд</p>
             </a>
         </li>
-        <li class="nav-item menu-open">
+        <li class="nav-item">
             <a href="/" class="nav-link">
                 <i class="nav-icon fas fa-briefcase"></i>
                 <p>Позиции</p>
@@ -16,7 +16,7 @@
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
-                    <a href="{{ path('app_trade_list') }}" class="nav-link active">
+                    <a href="{{ path('app_trade_list') }}" class="nav-link">
                         <i class="fa fa-circle-notch nav-icon"></i>
                         <p>Все</p>
                     </a>
@@ -28,6 +28,12 @@
                     </a>
                 </li>
             </ul>
+        </li>
+        <li class="nav-item menu-open">
+            <a href="{{ path('app_statistics_strategies_list') }}" class="nav-link">
+                <i class="nav-icon fas fa-flask"></i>
+                <p>Статистика</p>
+            </a>
         </li>
         <li class="nav-item">
             <a href="{{ path('app_strategies_index') }}" class="nav-link">
@@ -90,14 +96,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Позиции</h1>
+                        <h1 class="m-0">Статистика по стратегиям</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
                                 <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
                             </li>
-                            <li class="breadcrumb-item active">Позиции</li>
+                            <li class="breadcrumb-item active">Статистика по стратегиям</li>
                         </ol>
                     </div>
                 </div>
@@ -117,66 +123,29 @@
                                         <thead>
                                         <tr>
                                             <th style="width: 10px">#</th>
-                                            <th>Счет</th>
                                             <th>Стратегия</th>
-                                            <th>Акция</th>
-                                            <th>Тип</th>
-                                            <th>Время открытия</th>
-                                            <th>Цена открытия</th>
-                                            <th>Stop Loss</th>
-                                            <th>Take Profit</th>
-                                            <th>Лот</th>
-                                            <th>Время закрытия</th>
-                                            <th>Цена закрытия</th>
-                                            <th>Статус</th>
-                                            <th>Описание</th>
-                                            <th>Результат</th>
-                                            <th>Итог</th>
+                                            <th>Счет</th>
                                             <th style="width: 50px">
-                                                <a href="{{ path('app_trade_add_form') }}" type="button" class="btn btn-success">
-                                                    <i class="fa fa-plus"></i>
-                                                </a>
                                             </th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% for finamTrade in finamTrades %}
+                                        {% for key,strategiesByAccaunt in strategiesByAccaunts %}
                                             <tr>
-                                                <td>{{ finamTrade.trade.id }}</td>
-                                                <td>{{ finamTrade.trade.accaunt.title }}</td>
-                                                <td>{{ finamTrade.trade.strategy.title }}</td>
-                                                <td>{{ finamTrade.trade.stock.secId }}</td>
-                                                <td>{{ finamTrade.trade.type }}</td>
-                                                <td>{{ finamTrade.trade.openDateTime|date('Y-m-d') }}</td>
-                                                <td>{{ finamTrade.trade.openPrice|stockPrice }}</td>
-                                                <td>{{ finamTrade.trade.stopLoss|stockPrice }}</td>
-                                                <td>{{ finamTrade.trade.takeProfit|stockPrice }}</td>
-                                                <td>{{ finamTrade.trade.lots }}</td>
-{#                                                <td>{{ finamTrade.trade.closeDateTime }}</td>#}
-                                                <td></td>
-                                                <td>{{ finamTrade.trade.closePrice|stockPrice }}</td>
-                                                <td>{{ finamTrade.trade.status }}</td>
-                                                <td>{{ finamTrade.trade.description }}</td>
-                                                <td>{{ finamTrade.result }}</td>
-                                                <td>{{ finamTrade.history }}</td>
+                                                <td>{{ key + 1 }}</td>
+                                                <td>{{ strategiesByAccaunt.strategyTitle }}</td>
+                                                <td>{{ strategiesByAccaunt.accauntTitle }}</td>
                                                 <td>
                                                     <div class="btn-group">
-{#                                                        <a href="{{ path('app_trade_edit_form', {id: trade.id}) }}" type="button" class="btn btn-info">#}
-{#                                                            <i class="fa fa-edit"></i>#}
-{#                                                        </a>#}
-{#                                                        <a href="{{ path('app_trade_remove', {id: trade.id}) }}" type="button" class="btn btn-danger">#}
-{#                                                            <i class="fa fa-window-close"></i>#}
-{#                                                        </a>#}
+                                                        <a href="{{ path('app_statistics_strategy_accaunt', {strategyId: strategiesByAccaunt.strategyId, accauntId: strategiesByAccaunt.accauntId}) }}" type="button" class="btn btn-success">
+                                                            <i class="fa fa-list"></i>
+                                                        </a>
                                                     </div>
                                                 </td>
                                             </tr>
                                         {% endfor %}
-
                                         </tbody>
                                     </table>
-                                    <br/>
-                                    profitTrades: {{ profitTrades }}<br/>
-                                    lossTrades: {{ lossTrades }}<br/>
                                 </div>
                             </div>
                         </div>

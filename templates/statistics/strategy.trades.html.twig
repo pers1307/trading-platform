@@ -8,7 +8,7 @@
                 <p>Дашборд</p>
             </a>
         </li>
-        <li class="nav-item menu-open">
+        <li class="nav-item">
             <a href="/" class="nav-link">
                 <i class="nav-icon fas fa-briefcase"></i>
                 <p>Позиции</p>
@@ -22,12 +22,18 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('app_trade_strategy_list') }}" class="nav-link active">
+                    <a href="{{ path('app_trade_strategy_list') }}" class="nav-link">
                         <i class="fa fa-circle-notch nav-icon"></i>
                         <p>По стратегиям</p>
                     </a>
                 </li>
             </ul>
+        </li>
+        <li class="nav-item menu-open">
+            <a href="{{ path('app_statistics_strategies_list') }}" class="nav-link">
+                <i class="nav-icon fas fa-flask"></i>
+                <p>Статистика</p>
+            </a>
         </li>
         <li class="nav-item">
             <a href="{{ path('app_strategies_index') }}" class="nav-link">
@@ -98,7 +104,7 @@
                                 <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
                             </li>
                             <li class="breadcrumb-item">
-                                <a href="{{ path('app_trade_strategy_list') }}">Позиции по стратегиям</a>
+                                <a href="{{ path('app_statistics_strategies_list') }}">Статистика по стратегиям</a>
                             </li>
                             <li class="breadcrumb-item active">Стратегия</li>
                         </ol>

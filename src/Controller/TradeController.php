@@ -25,68 +25,6 @@ class TradeController extends AbstractController
     ) {
     }
 
-    #[Route('/trades/statistics', name: 'app_trade_statistics')]
-    public function statistics(EntityManagerInterface $entityManager): Response
-    {
-        $tradeRepository = $entityManager->getRepository(Trade::class);
-        $trades = $tradeRepository->findBy(['strategy' => 1, 'status' => 'close'], ['openDateTime' => 'ASC']);
-
-        $finamTrades = [];
-        $history = 0;
-        foreach ($trades as $trade) {
-            $stock = $trade->getStock();
-
-            // всегда 1 лот
-            // всегда фиксированный риск
-
-            /**
-             *
-             */
-
-            if ('long' === $trade->getType()) {
-                $result = ($trade->getClosePrice() - $trade->getOpenPrice()) * $stock->getLotSize() * $trade->getLots();
-                //                $result = ($trade->getClosePrice() - $trade->getOpenPrice()) * $stock->getLotSize() * 1;
-            } else {
-                $result = ($trade->getOpenPrice() - $trade->getClosePrice()) * $stock->getLotSize() * $trade->getLots();
-                //                $result = ($trade->getOpenPrice() - $trade->getClosePrice()) * $stock->getLotSize() * 1;
-            }
-
-            $history = $history + $result;
-
-            $finamTrades[] = [
-                'trade' => $trade,
-                'result' => $result,
-                'history' => $history,
-            ];
-        }
-
-        $profitTrades = 0;
-        $lossTrades = 0;
-
-        foreach ($finamTrades as $finamTrade) {
-            if ($finamTrade['result'] > 0) {
-                ++$profitTrades;
-            } else {
-                ++$lossTrades;
-            }
-        }
-
-        //        dd($finamTrades);
-
-        //        $tradeRepository = $entityManager->getRepository(Trade::class);
-        //        $trades = $tradeRepository->findAll();
-
-        /**
-         * Считать ещё риск / прибыль!
-         */
-
-        return $this->render('trades/statistics.html.twig', [
-            'finamTrades' => $finamTrades,
-            'profitTrades' => $profitTrades,
-            'lossTrades' => $lossTrades,
-        ]);
-    }
-
     #[Route('/trades', name: 'app_trade_list')]
     public function list(EntityManagerInterface $entityManager): Response
     {
@@ -137,6 +75,10 @@ class TradeController extends AbstractController
 
         /**
          * @todo при рефакторинге сделать некие единые фикстуры для юнитов и интеграционных тестов
+         */
+
+        /**
+         * @todo оптимизировать запросы в модуле
          */
 
         return $this->render('trades/strategy.trades.html.twig', [
