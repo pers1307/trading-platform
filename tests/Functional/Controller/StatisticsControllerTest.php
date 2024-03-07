@@ -2,8 +2,8 @@
 
 namespace Functional\Controller;
 
-use App\DataFixtures\AccauntFixtures;
-use App\DataFixtures\StrategyFixtures;
+use App\DataFixture\AccauntFixture;
+use App\DataFixture\StrategyFixture;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class StatisticsControllerTest extends WebTestCase
@@ -22,19 +22,19 @@ class StatisticsControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Статистика по стратегиям');
         $this->assertSelectorExists('table');
     }
-//
-//    public function testCanLoadListByStrategyAndAccaunt(): void
-//    {
-//        $client = static::createClient();
-//        $client->request('GET', self::STATISTICS_STRATEGY_ACCAUNT_URL);
-//
-//        $title = StrategyFixtures::MY_STRATEGY_TITLE . '. ' . AccauntFixtures::ACCAUNT_ONE_TITLE;
-//
-//        $this->assertResponseIsSuccessful();
-//        $this->assertSelectorTextContains('h1', $title);
-//        $this->assertSelectorExists('table');
-//        $this->assertSelectorExists('canvas');
-//    }
+
+    public function testCanLoadListByStrategyAndAccaunt(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', self::STATISTICS_STRATEGY_ACCAUNT_URL);
+
+        $title = StrategyFixture::MY_STRATEGY_TITLE . '. ' . AccauntFixture::ACCAUNT_ONE_TITLE;
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', $title);
+        $this->assertSelectorExists('table');
+        $this->assertSelectorExists('canvas');
+    }
 
     public function testNotFoundListByStrategyAndAccauntByStrategy(): void
     {

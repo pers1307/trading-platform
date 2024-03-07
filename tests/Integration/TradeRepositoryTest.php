@@ -11,19 +11,19 @@ class TradeRepositoryTest extends KernelTestCase
     {
         self::bootKernel();
         $container = static::getContainer();
-        $dictionaryStockService = $container->get(TradeRepository::class);
-        $result = $dictionaryStockService->findAll();
+        $tradeRepository = $container->get(TradeRepository::class);
+        $result = $tradeRepository->findAll();
 
-        $this->assertCount(2, $result);
+        $this->assertCount(7, $result);
     }
 
     public function testGetStrategiesByAccaunts(): void
     {
         self::bootKernel();
         $container = static::getContainer();
-        $dictionaryStockService = $container->get(TradeRepository::class);
-        $result = $dictionaryStockService->getStrategiesByAccaunts();
+        $tradeRepository = $container->get(TradeRepository::class);
+        $result = $tradeRepository->getStrategiesByAccaunts();
 
-        $this->assertCount(1, $result);
+        $this->assertCount(2, $result);
     }
 }
