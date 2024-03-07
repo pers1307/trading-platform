@@ -5,6 +5,9 @@ namespace App\Service;
 use App\Dto\ExtensionTrade;
 use App\Dto\ExtensionTradesCollection;
 
+/**
+ * @todo: нет интеграционных тестов
+ */
 class StatisticService
 {
     public function __construct(
@@ -14,6 +17,8 @@ class StatisticService
 
     /**
      * @param ExtensionTrade[] $extensionTrades
+     * @todo логично, что статистические данные, которые должны отдаваться в сервисе, это не коллекция а нечто свое
+     * а коллекция должна родиться на уровень выше
      */
     public function calculate(array $extensionTrades): ExtensionTradesCollection
     {
@@ -37,6 +42,7 @@ class StatisticService
         $averageLoss = $summaryLoss / $countTrades;
         $expectedValue = ($countProfitTrades / $countTrades) * $averageProfit + ($countLossTrades / $countTrades) * $averageLoss;
 
+        // @todo: данные для графика это тоже некий сторонний объект дто должен быть, который будет правильно помещен в необходимую сущность
         $graphFormatData = $this->graphService->format(
             $extensionTrades,
             static fn(int $key, ExtensionTrade $extensionTrade) => $extensionTrade->getTrade()->getOpenDateTime()->format('Y-m-d'),

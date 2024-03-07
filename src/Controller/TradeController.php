@@ -6,8 +6,8 @@ use App\Entity\Accaunt;
 use App\Entity\AccauntHistory;
 use App\Entity\Strategy;
 use App\Entity\Trade;
+use App\Service\ExtensionTradeService;
 use App\Service\StatisticService;
-use App\Service\TradeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TradeController extends AbstractController
 {
     public function __construct(
-        private readonly TradeService $tradeService,
+        private readonly ExtensionTradeService $extensionTradeService,
         private readonly StatisticService $statisticService
     ) {
     }
@@ -53,6 +53,8 @@ class TradeController extends AbstractController
     #[Route('/trades/strategy/{strategyId<\d+>}/accaunt/{accauntId<\d+>}', name: 'app_trade_strategy_accaunt')]
     public function listByStrategyAndAccaunt(int $strategyId, int $accauntId, EntityManagerInterface $entityManager): Response
     {
+        throw $this->createNotFoundException('Раздел на доработке');
+
         $strategyRepository = $entityManager->getRepository(Strategy::class);
         $strategy = $strategyRepository->find($strategyId);
         if (is_null($strategy)) {
@@ -65,8 +67,8 @@ class TradeController extends AbstractController
             throw $this->createNotFoundException('Такого счета не существует');
         }
 
-        $extensionTrades = $this->tradeService->getExtensionTrades($strategyId, $accauntId);
-        $graphDataEncode = $this->tradeService->formatGraphData($extensionTrades);
+        $extensionTrades = $this->extensionTradeService->getExtensionTrades($strategyId, $accauntId);
+        $graphDataEncode = $this->extensionTradeService->formatGraphData($extensionTrades);
 
         /**
          * @todo форматирование под график тоже перенести

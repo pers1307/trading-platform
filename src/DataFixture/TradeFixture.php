@@ -38,9 +38,6 @@ class TradeFixture extends Fixture implements DependentFixtureInterface
     public static function getShortTrade(): Trade
     {
         $trade = new Trade();
-        //        $trade->setStock(StockFixture::getSber());
-        //        $trade->setAccaunt(AccauntFixture::getOneAccaunt());
-        //        $trade->setStrategy(StrategyFixture::getMyStrategy());
         $trade->setType(Trade::TYPE_SHORT);
         $trade->setOpenDateTime(new \DateTime('2024-03-01 10:05:19'));
         $trade->setOpenPrice(200.00);
@@ -55,35 +52,97 @@ class TradeFixture extends Fixture implements DependentFixtureInterface
         return $trade;
     }
 
+    /**
+     * 5 сделок
+     * long +
+     * long -
+     * short +
+     * short -
+     * short +
+     */
+    public static function getTrades(): array
+    {
+        return [
+            (new Trade())
+                ->setType(Trade::TYPE_LONG)
+                ->setOpenDateTime(new \DateTime('2024-03-01 10:00:00'))
+                ->setOpenPrice(200.00)
+                ->setCloseDateTime(new \DateTime('2024-03-01 19:00:00'))
+                ->setClosePrice(250.00)
+                ->setStopLoss(150)
+                ->setTakeProfit(250)
+                ->setLots(1)
+                ->setStatus(Trade::STATUS_CLOSE)
+                ->setDescription(''),
+            (new Trade())
+                ->setType(Trade::TYPE_LONG)
+                ->setOpenDateTime(new \DateTime('2024-03-02 10:00:00'))
+                ->setOpenPrice(200.00)
+                ->setCloseDateTime(new \DateTime('2024-03-02 19:00:00'))
+                ->setClosePrice(190.00)
+                ->setStopLoss(190)
+                ->setTakeProfit(250)
+                ->setLots(1)
+                ->setStatus(Trade::STATUS_CLOSE)
+                ->setDescription(''),
+            (new Trade())
+                ->setType(Trade::TYPE_SHORT)
+                ->setOpenDateTime(new \DateTime('2024-03-03 10:00:00'))
+                ->setOpenPrice(300.00)
+                ->setCloseDateTime(new \DateTime('2024-03-03 19:00:00'))
+                ->setClosePrice(250.00)
+                ->setStopLoss(320)
+                ->setTakeProfit(250)
+                ->setLots(1)
+                ->setStatus(Trade::STATUS_CLOSE)
+                ->setDescription(''),
+            (new Trade())
+                ->setType(Trade::TYPE_SHORT)
+                ->setOpenDateTime(new \DateTime('2024-03-04 10:00:00'))
+                ->setOpenPrice(250.00)
+                ->setCloseDateTime(new \DateTime('2024-03-04 19:00:00'))
+                ->setClosePrice(280.00)
+                ->setStopLoss(280)
+                ->setTakeProfit(220)
+                ->setLots(1)
+                ->setStatus(Trade::STATUS_CLOSE)
+                ->setDescription(''),
+            (new Trade())
+                ->setType(Trade::TYPE_SHORT)
+                ->setOpenDateTime(new \DateTime('2024-03-05 10:00:00'))
+                ->setOpenPrice(200.00)
+                ->setCloseDateTime(new \DateTime('2024-03-05 19:00:00'))
+                ->setClosePrice(150.00)
+                ->setStopLoss(220)
+                ->setTakeProfit(150)
+                ->setLots(1)
+                ->setStatus(Trade::STATUS_CLOSE)
+                ->setDescription(''),
+        ];
+    }
+
     public function load(ObjectManager $manager): void
     {
         $trade = self::getLongTrade();
         $trade->setStock($this->getReference(StockFixture::GAZP));
         $trade->setAccaunt($this->getReference(AccauntFixture::ACCAUNT_ONE));
         $trade->setStrategy($this->getReference(StrategyFixture::MY_STRATEGY));
-        //        $trade->setType('long');
-        //        $trade->setOpenDateTime(new \DateTime('2024-03-01 08:05:19'));
-        //        $trade->setOpenPrice(150.00);
-        //        $trade->setStopLoss(100);
-        //        $trade->setTakeProfit(200);
-        //        $trade->setLots(1);
-        //        $trade->setStatus('open');
-        //        $trade->setDescription('');
         $manager->persist($trade);
 
         $trade2 = self::getShortTrade();
         $trade2->setStock($this->getReference(StockFixture::SBER));
         $trade2->setAccaunt($this->getReference(AccauntFixture::ACCAUNT_ONE));
         $trade2->setStrategy($this->getReference(StrategyFixture::MY_STRATEGY));
-        //        $trade2->setType('short');
-        //        $trade2->setOpenDateTime(new \DateTime('2024-03-05 10:05:19'));
-        //        $trade2->setOpenPrice(300.00);
-        //        $trade2->setStopLoss(350);
-        //        $trade2->setTakeProfit(250);
-        //        $trade2->setLots(1);
-        //        $trade2->setStatus('open');
-        //        $trade2->setDescription('');
         $manager->persist($trade2);
+
+        foreach (self::getTrades() as $trade) {
+            $trade->setStock($this->getReference(StockFixture::GAZP));
+            $trade->setAccaunt($this->getReference(AccauntFixture::ACCAUNT_TWO));
+            $trade->setStrategy($this->getReference(StrategyFixture::MY_STRATEGY));
+
+            $manager->persist($trade);
+        }
+
         $manager->flush();
     }
 }

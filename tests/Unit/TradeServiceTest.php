@@ -15,33 +15,33 @@ use PHPUnit\Framework\TestCase;
 
 class TradeServiceTest extends TestCase
 {
-//    private GraphService $graphService;
-//
-//    public function setUp(): void
-//    {
-//        $this->graphService = new TradeService();
-//    }
-//
-//    public function tearDown(): void
-//    {
-//        unset($this->graphService);
-//    }
+    private TradeService $tradeService;
+
+    public function setUp(): void
+    {
+        $this->tradeService = new TradeService();
+    }
+
+    public function tearDown(): void
+    {
+        unset($this->tradeService);
+    }
 
     /**
-     * @covers       \App\Service\TradeService::calculateTradeResult
+     * @covers       \App\Service\TradeService::calculateResult
      * @dataProvider provider
      */
     public function testCalculateTradeResult(Trade $trade, float $expected, string $message)
     {
         $this->assertSame(
             $expected,
-            TradeService::calculateTradeResult($trade),
+            $this->tradeService->calculateResult($trade),
             $message
         );
     }
 
     /**
-     * @covers       \App\Service\TradeService::calculateTradeResult
+     * @covers       \App\Service\TradeService::calculateResult
      */
     public function testCalculateTradeResultTradeHasOpenStatusException()
     {
@@ -50,11 +50,11 @@ class TradeServiceTest extends TestCase
         $trade = $this->getLongTrade();
         $trade->setStatus(Trade::STATUS_OPEN);
 
-        TradeService::calculateTradeResult($trade);
+        $this->tradeService->calculateResult($trade);
     }
 
     /**
-     * @covers       \App\Service\TradeService::calculateTradeResult
+     * @covers       \App\Service\TradeService::calculateResult
      */
     public function testCalculateTradeResultTradeNotHasClosePriceException()
     {
@@ -63,11 +63,11 @@ class TradeServiceTest extends TestCase
         $trade = $this->getLongTrade();
         $trade->setClosePrice(null);
 
-        TradeService::calculateTradeResult($trade);
+        $this->tradeService->calculateResult($trade);
     }
 
     /**
-     * @covers       \App\Service\TradeService::calculateTradeResult
+     * @covers       \App\Service\TradeService::calculateResult
      */
     public function testCalculateTradeResultTradeHasUnknownTypeException()
     {
@@ -76,13 +76,8 @@ class TradeServiceTest extends TestCase
         $trade = $this->getLongTrade();
         $trade->setType('Hello');
 
-        TradeService::calculateTradeResult($trade);
+        $this->tradeService->calculateResult($trade);
     }
-
-    /**
-     * @todo Тесты на все остальное
-     * но, нужно и мокать зависимости
-     */
 
     private function getLongTrade(): Trade
     {

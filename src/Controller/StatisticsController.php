@@ -5,17 +5,20 @@ namespace App\Controller;
 use App\Entity\Accaunt;
 use App\Entity\Strategy;
 use App\Entity\Trade;
-use App\Service\TradeService;
+use App\Service\ExtensionTradeCollectionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @todo: нет поведенческих тестов
+ */
 class StatisticsController extends AbstractController
 {
     public function __construct(
-        private readonly TradeService $tradeService
+        private readonly ExtensionTradeCollectionService $extensionTradeCollectionService
     ) {
     }
 
@@ -48,7 +51,7 @@ class StatisticsController extends AbstractController
             throw $this->createNotFoundException('Такого счета не существует');
         }
 
-        $extensionTradesCollection = $this->tradeService->getExtensionTradesCollection($strategyId, $accauntId);
+        $extensionTradesCollection = $this->extensionTradeCollectionService->getCollection($strategyId, $accauntId);
 
         return $this->render('statistics/strategy.trades.html.twig', [
             'strategy' => $strategy,
