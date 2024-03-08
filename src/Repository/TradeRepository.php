@@ -50,6 +50,22 @@ class TradeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAllActive(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->addSelect('stock')
+            ->addSelect('strategy')
+            ->addSelect('accaunt')
+            ->innerJoin('t.stock', 'stock')
+            ->innerJoin('t.strategy', 'strategy')
+            ->innerJoin('t.accaunt', 'accaunt')
+            ->andWhere('t.status = :status')
+            ->orderBy('t.id', 'ASC')
+            ->setParameter('status', Trade::STATUS_OPEN)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getStrategiesByAccaunts(): array
     {
         $command = "

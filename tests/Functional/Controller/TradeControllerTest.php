@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class TradeControllerTest extends WebTestCase
 {
     public const TRADE_URL = '/trades';
-    public const TRADE_STRATEGIES_URL = '/trades/strategies';
+    public const TRADES_ACTIVE_GROUP_STRATEGIES = '/trades/active/group/strategies';
 
     public function testCanLoadIndex(): void
     {
@@ -21,13 +21,13 @@ class TradeControllerTest extends WebTestCase
         $this->assertSelectorExists('.new-trade');
     }
 
-    public function testCanLoadListByStrategies(): void
+    public function testCanLoadListActiveGroupByStrategies(): void
     {
         $client = static::createClient();
-        $client->request('GET', self::TRADE_STRATEGIES_URL);
+        $client->request('GET', self::TRADES_ACTIVE_GROUP_STRATEGIES);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Позиции по стратегиям');
+        $this->assertSelectorTextContains('h1', 'Активные позиции');
         $this->assertSelectorExists('table');
     }
 }

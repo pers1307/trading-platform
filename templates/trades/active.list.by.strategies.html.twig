@@ -22,9 +22,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('app_trade_strategy_list') }}" class="nav-link active">
+                    <a href="{{ path('app_trade_active_group_by_strategies_list') }}" class="nav-link active">
                         <i class="fa fa-circle-notch nav-icon"></i>
-                        <p>По стратегиям</p>
+                        <p>Активные</p>
                     </a>
                 </li>
             </ul>
@@ -96,14 +96,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Позиции по стратегиям</h1>
+                        <h1 class="m-0">Активные позиции</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
                                 <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
                             </li>
-                            <li class="breadcrumb-item active">Позиции по стратегиям</li>
+                            <li class="breadcrumb-item active">Активные позиции</li>
                         </ol>
                     </div>
                 </div>
@@ -112,33 +112,59 @@
 
         <section class="content">
             <div class="container-fluid">
+                {% for activeExtensionTradeByStrategy in activeExtensionTradesByStrategies %}
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Список</h3>
+                                    <h3 class="card-title">
+                                        {{ activeExtensionTradeByStrategy.strategy.title }}.
+                                        {{ activeExtensionTradeByStrategy.accaunt.title }}
+                                    </h3>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered">
                                         <thead>
                                         <tr>
                                             <th style="width: 10px">#</th>
-                                            <th>Стратегия</th>
-                                            <th>Счет</th>
+                                            <th>Акция</th>
+                                            <th>Тип</th>
+                                            <th>Время открытия</th>
+                                            <th>Цена открытия</th>
+                                            <th>Цена текущая</th>
+                                            <th>Stop Loss</th>
+                                            <th>Take Profit</th>
+                                            <th>Лот</th>
+                                            <th>Статус</th>
+                                            <th>Изменение</th>
                                             <th style="width: 50px">
+                                                <a href="{{ path('app_trade_add_form') }}" type="button" class="btn btn-success new-trade">
+                                                    <i class="fa fa-plus"></i>
+                                                </a>
                                             </th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% for key,strategiesByAccaunt in strategiesByAccaunts %}
+                                        {% for extensionTrade in activeExtensionTradeByStrategy.extensionTrades %}
                                             <tr>
-                                                <td>{{ key + 1 }}</td>
-                                                <td>{{ strategiesByAccaunt.strategyTitle }}</td>
-                                                <td>{{ strategiesByAccaunt.accauntTitle }}</td>
+                                                <td>{{ extensionTrade.trade.id }}</td>
+                                                <td>{{ extensionTrade.trade.stock.secId }}</td>
+                                                <td>{{ extensionTrade.trade.type }}</td>
+                                                <td>{{ extensionTrade.trade.openDateTime|date('Y-m-d H:m:s') }}</td>
+                                                <td>{{ extensionTrade.trade.openPrice|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
+                                                <td>{{ extensionTrade.trade.stock.price|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
+                                                <td>{{ extensionTrade.trade.stopLoss|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
+                                                <td>{{ extensionTrade.trade.takeProfit|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
+                                                <td>{{ extensionTrade.trade.lots }}</td>
+                                                <td>{{ extensionTrade.trade.status }}</td>
+                                                <td>{{ extensionTrade.tradeResult }}</td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        <a href="{{ path('app_trade_strategy_accaunt', {strategyId: strategiesByAccaunt.strategyId, accauntId: strategiesByAccaunt.accauntId}) }}" type="button" class="btn btn-success">
-                                                            <i class="fa fa-list"></i>
+                                                        <a href="{{ path('app_trade_edit_form', {id: extensionTrade.trade.id}) }}" type="button" class="btn btn-info">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                        <a href="{{ path('app_trade_remove', {id: extensionTrade.trade.id}) }}" type="button" class="btn btn-danger">
+                                                            <i class="fa fa-window-close"></i>
                                                         </a>
                                                     </div>
                                                 </td>
@@ -150,6 +176,7 @@
                             </div>
                         </div>
                     </div>
+                {% endfor %}
             </div>
         </section>
     </div>
@@ -175,5 +202,4 @@
     <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
     <script src="{{ asset('vendor/js/adminlte.js') }}"></script>
     <script src="{{ asset('vendor/js/demo.js') }}"></script>
-    <script src="{{ asset('vendor/js/accaunt_history.js') }}"></script>
 {% endblock %}

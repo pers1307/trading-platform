@@ -30,7 +30,12 @@ class ExtensionTradeService
         $extensionTrades = [];
         $cumulativeTotal = 0.0;
         foreach ($trades as $trade) {
-            $tradeResult = $this->tradeService->calculateResult($trade);
+            // todo: временно, зарефакторить
+            if (Trade::STATUS_CLOSE === $trade->getStatus()) {
+                $tradeResult = $this->tradeService->calculateResult($trade);
+            } else {
+                $tradeResult = $this->tradeService->calculatePaperResult($trade);
+            }
             // @todo: это перенести в сервис статистики. Это не информация, которую мы извлекаем из трейда
             $cumulativeTotal = round($cumulativeTotal + $tradeResult, 2);
             $extensionTrades[] = new ExtensionTrade($trade, $tradeResult, $cumulativeTotal);

@@ -4,12 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Accaunt;
 use App\Entity\AccauntHistory;
-use App\Entity\Strategy;
 use App\Entity\Trade;
-use App\Service\ExtensionTradeService;
-use App\Service\StatisticService;
+use App\Exception\TradeHasNotClosePriceException;
+use App\Exception\TradeHasOpenStatusException;
+use App\Exception\TradeHasUnknownTypeException;
+use App\Service\ActiveExtensionTradeService;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TradeController extends AbstractController
 {
     public function __construct(
-        private readonly ExtensionTradeService $extensionTradeService,
-        private readonly StatisticService $statisticService
+        private readonly ActiveExtensionTradeService $activeExtensionTradeService,
     ) {
     }
 
@@ -36,59 +35,18 @@ class TradeController extends AbstractController
         ]);
     }
 
-    #[Route('/trades/strategies', name: 'app_trade_strategy_list')]
-    public function listByStrategies(EntityManagerInterface $entityManager): Response
-    {
-        $tradeRepository = $entityManager->getRepository(Trade::class);
-        $strategiesByAccaunts = $tradeRepository->getStrategiesByAccaunts();
-
-        return $this->render('trades/list.by.strategies.html.twig', [
-            'strategiesByAccaunts' => $strategiesByAccaunts,
-        ]);
-    }
-
     /**
-     * @throws InvalidArgumentException
+     * @throws TradeHasOpenStatusException
+     * @throws TradeHasNotClosePriceException
+     * @throws TradeHasUnknownTypeException
      */
-    #[Route('/trades/strategy/{strategyId<\d+>}/accaunt/{accauntId<\d+>}', name: 'app_trade_strategy_accaunt')]
-    public function listByStrategyAndAccaunt(int $strategyId, int $accauntId, EntityManagerInterface $entityManager): Response
+    #[Route('/trades/active/group/strategies', name: 'app_trade_active_group_by_strategies_list')]
+    public function listActiveGroupByStrategies(): Response
     {
-        throw $this->createNotFoundException('Раздел на доработке');
+        $activeExtensionTradesByStrategies = $this->activeExtensionTradeService->getByStrategy();
 
-        $strategyRepository = $entityManager->getRepository(Strategy::class);
-        $strategy = $strategyRepository->find($strategyId);
-        if (is_null($strategy)) {
-            throw $this->createNotFoundException('Такой стратегии не существует');
-        }
-
-        $accauntRepository = $entityManager->getRepository(Accaunt::class);
-        $accaunt = $accauntRepository->find($accauntId);
-        if (is_null($accaunt)) {
-            throw $this->createNotFoundException('Такого счета не существует');
-        }
-
-        $extensionTrades = $this->extensionTradeService->getExtensionTrades($strategyId, $accauntId);
-        $graphDataEncode = $this->extensionTradeService->formatGraphData($extensionTrades);
-
-        /**
-         * @todo форматирование под график тоже перенести
-         */
-        $strategyStatistics = $this->statisticService->calculate($extensionTrades);
-
-        /**
-         * @todo при рефакторинге сделать некие единые фикстуры для юнитов и интеграционных тестов
-         */
-
-        /**
-         * @todo оптимизировать запросы в модуле
-         */
-
-        return $this->render('trades/strategy.trades.html.twig', [
-            'strategy' => $strategy,
-            'accaunt' => $accaunt,
-            'extensionTrades' => $extensionTrades,
-            'graphDataEncode' => $graphDataEncode,
-            'strategyStatistics' => $strategyStatistics,
+        return $this->render('trades/active.list.by.strategies.html.twig', [
+            'activeExtensionTradesByStrategies' => $activeExtensionTradesByStrategies,
         ]);
     }
 
