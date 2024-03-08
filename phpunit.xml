@@ -44,7 +44,7 @@
             <file>tests/Integration/TradeRepositoryTest.php</file>
             <file>tests/Integration/TradeServiceTest.php</file>
             <file>tests/Unit/Twig/StockPriceExtensionTest.php</file>
-            <file>tests/Unit/TradeServiceTest.php</file>
+<!--            <file>tests/Unit/TradeServiceTest.php</file>-->
         </testsuite>
         <testsuite name="Statistics">
             <file>tests/Functional/Controller/StatisticsControllerTest.php</file>

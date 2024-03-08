@@ -27,34 +27,13 @@ class ExtensionTrade
         return $this->trade;
     }
 
-    public function setTrade(Trade $trade): static
-    {
-        $this->trade = $trade;
-
-        return $this;
-    }
-
     public function getTradeResult(): float
     {
         return $this->tradeResult;
     }
 
-    public function setTradeResult(float $tradeResult): static
-    {
-        $this->tradeResult = $tradeResult;
-
-        return $this;
-    }
-
     public function getCumulativeTotal(): float
     {
         return $this->cumulativeTotal;
-    }
-
-    public function setCumulativeTotal(float $cumulativeTotal): static
-    {
-        $this->cumulativeTotal = $cumulativeTotal;
-
-        return $this;
     }
 }
