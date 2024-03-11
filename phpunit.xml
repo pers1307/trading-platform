@@ -44,7 +44,8 @@
             <file>tests/Integration/TradeRepositoryTest.php</file>
             <file>tests/Integration/TradeServiceTest.php</file>
             <file>tests/Unit/Twig/StockPriceExtensionTest.php</file>
-<!--            <file>tests/Unit/TradeServiceTest.php</file>-->
+            <file>tests/Unit/Twig/TradeExtensionTest.php</file>
+            <!--            <file>tests/Unit/TradeServiceTest.php</file>-->
         </testsuite>
         <testsuite name="Statistics">
             <file>tests/Functional/Controller/StatisticsControllerTest.php</file>
@@ -55,6 +56,7 @@
             <file>tests/Unit/StatisticServiceTest.php</file>
             <file>tests/Unit/ExtensionTradeServiceTest.php</file>
             <file>tests/Unit/GraphServiceTest.php</file>
+            <file>tests/Unit/Twig/TradeExtensionTest.php</file>
         </testsuite>
     </testsuites>
 

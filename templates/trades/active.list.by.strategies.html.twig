@@ -149,14 +149,14 @@
                                             <tr>
                                                 <td>{{ extensionTrade.trade.id }}</td>
                                                 <td>{{ extensionTrade.trade.stock.secId }}</td>
-                                                <td>{{ extensionTrade.trade.type }}</td>
+                                                <td>{{ extensionTrade.trade.type|tradeType }}</td>
                                                 <td>{{ extensionTrade.trade.openDateTime|date('Y-m-d H:m:s') }}</td>
                                                 <td>{{ extensionTrade.trade.openPrice|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
                                                 <td>{{ extensionTrade.trade.stock.price|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
                                                 <td>{{ extensionTrade.trade.stopLoss|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
                                                 <td>{{ extensionTrade.trade.takeProfit|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
                                                 <td>{{ extensionTrade.trade.lots }}</td>
-                                                <td>{{ extensionTrade.trade.status }}</td>
+                                                <td>{{ extensionTrade.trade.status|tradeStatus }}</td>
                                                 <td>{{ extensionTrade.tradeResult }}</td>
                                                 <td>
                                                     <div class="btn-group">
