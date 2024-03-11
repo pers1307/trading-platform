@@ -8,6 +8,14 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class AccauntServiceTest extends KernelTestCase
 {
+    /**
+     * Это больше юнит тест нежели интеграционный
+     * Интеграционный тест, вытаскивает данные из БД и проверяет её взаимодействие
+     * Это бесполезный тест! Тест нуже уже проверяет, что это работает!
+     * Моки нужны для изоляции и используются в Юнитах
+     * Либо здесь, если нужно заменить зависимость на тестовую, при взаимодействии с БД
+     * @return void
+     */
     public function testFindAll(): void
     {
         self::bootKernel();

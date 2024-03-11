@@ -12,7 +12,7 @@ class AccauntControllerTest extends WebTestCase
         $client->request('GET', '/accaunts');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Стратегии');
+        $this->assertSelectorTextContains('h1', 'Счета');
         $this->assertSelectorExists('table');
     }
 }

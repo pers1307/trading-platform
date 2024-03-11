@@ -18,6 +18,14 @@ class ExtensionTradeServiceTest extends TestCase
 
     public function setUp(): void
     {
+        /**
+         * Вот тут тестируется 2а объекта,
+         * а должен тестироваться один
+         * зависимости нужно мокать!
+         * Замутить здесь мок зависимости!
+         * Эта зависимость не изменяемая, не изменяется её состояние, значит её можно оставить
+         */
+
         $this->extensionTradeService = new ExtensionTradeService(new TradeService());
     }
 
