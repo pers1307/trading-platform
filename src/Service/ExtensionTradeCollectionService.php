@@ -2,15 +2,15 @@
 
 namespace App\Service;
 
+use App\Dto\ExtensionTrade;
 use App\Dto\ExtensionTradesCollection;
+use App\Dto\Graph;
 use App\Entity\Trade;
+use App\Exception\StockHasNotPriceException;
 use App\Exception\TradeHasNotClosePriceException;
-use App\Exception\TradeHasOpenStatusException;
+use App\Exception\TradeHasUnknownStatusException;
 use App\Exception\TradeHasUnknownTypeException;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Cache\CacheItemInterface;
-use Psr\Cache\InvalidArgumentException;
-use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * @todo: нет интеграционных тестов
@@ -18,41 +18,55 @@ use Symfony\Contracts\Cache\CacheInterface;
 class ExtensionTradeCollectionService
 {
     public function __construct(
-        private bool $isDebug,
         private readonly EntityManagerInterface $entityManager,
-        private readonly CacheInterface $cache,
-        private readonly StatisticService $statisticService,
         private readonly ExtensionTradeService $extensionTradeService,
+        private readonly StatisticService $statisticService,
+        private readonly GraphService $graphService,
+        private readonly CumulativeTotalService $cumulativeTotalService,
     ) {
     }
 
     /**
-     * @return ExtensionTradesCollection
-     * @throws InvalidArgumentException
-     * @throws TradeHasNotClosePriceException
-     * @throws TradeHasOpenStatusException
+     * @throws StockHasNotPriceException
      * @throws TradeHasUnknownTypeException
+     * @throws TradeHasNotClosePriceException
+     * @throws TradeHasUnknownStatusException
      */
     public function getCollection(
         int $strategyId,
         int $accauntId
     ): ExtensionTradesCollection {
-        if ($this->isDebug) {
-            $tradeRepository = $this->entityManager->getRepository(Trade::class);
-            $trades = $tradeRepository->findAllCloseByStrategyIdAndAccauntId($strategyId, $accauntId);
-            $extensionTrades = $this->extensionTradeService->convertTradesToExtensionTrades($trades);
+        $tradeRepository = $this->entityManager->getRepository(Trade::class);
+        $trades = $tradeRepository->findAllCloseByStrategyIdAndAccauntId($strategyId, $accauntId);
+        $extensionTrades = $this->extensionTradeService->convertTradesToExtensionTrades($trades);
+        $statistic = $this->statisticService->calculate($extensionTrades);
+        $cumulativeTotalArray = $this->cumulativeTotalService->calculate($extensionTrades);
+        $graph = $this->getGraph($extensionTrades, $cumulativeTotalArray);
 
-            return $this->statisticService->calculate($extensionTrades);
-        }
+        return new ExtensionTradesCollection(
+            $extensionTrades,
+            $statistic,
+            $graph,
+            $cumulativeTotalArray
+        );
+    }
 
-        return $this->cache->get('extension_trades_collection_' . $strategyId . '_' . $accauntId, function (CacheItemInterface $cacheItem) use ($strategyId, $accauntId) {
-            $cacheItem->expiresAfter(60 * 60 * 24);
+    /**
+     * @param ExtensionTrade[] $extensionTrades
+     * @param array $cumulativeTotalArray
+     */
+    private function getGraph(array $extensionTrades, array $cumulativeTotalArray): Graph
+    {
+        $formatArray = array_map(
+            static fn(ExtensionTrade $extensionTrade, $cumulativeTotal) => ['extensionTrade' => $extensionTrade, 'cumulativeTotal' => $cumulativeTotal],
+            $extensionTrades,
+            $cumulativeTotalArray
+        );
 
-            $tradeRepository = $this->entityManager->getRepository(Trade::class);
-            $trades = $tradeRepository->findAllCloseByStrategyIdAndAccauntId($strategyId, $accauntId);
-            $extensionTrades = $this->extensionTradeService->convertTradesToExtensionTrades($trades);
-
-            return $this->statisticService->calculate($extensionTrades);
-        });
+        return $this->graphService->format(
+            $formatArray,
+            static fn(int $key, array $formatItem) => $formatItem['extensionTrade']->getTrade()->getOpenDateTime()->format('Y-m-d'),
+            static fn(int $key, array $formatItem) => intval($formatItem['cumulativeTotal']),
+        );
     }
 }

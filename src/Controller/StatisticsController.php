@@ -7,7 +7,6 @@ use App\Entity\Strategy;
 use App\Entity\Trade;
 use App\Service\ExtensionTradeCollectionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,9 +32,6 @@ class StatisticsController extends AbstractController
         ]);
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     #[Route('/statistics/strategy/{strategyId<\d+>}/accaunt/{accauntId<\d+>}', name: 'app_statistics_strategy_accaunt')]
     public function listByStrategyAndAccaunt(int $strategyId, int $accauntId, EntityManagerInterface $entityManager): Response
     {

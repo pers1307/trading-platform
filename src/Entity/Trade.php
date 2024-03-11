@@ -117,8 +117,18 @@ class Trade
         return $this->type;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function setType(string $type): static
     {
+        if (
+            self::TYPE_LONG !== $type
+            && self::TYPE_SHORT !== $type
+        ) {
+            throw new \Exception("Не допустимый тип");
+        }
+        
         $this->type = $type;
 
         return $this;
@@ -213,8 +223,18 @@ class Trade
         return $this->status;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function setStatus(string $status): static
     {
+        if (
+            self::STATUS_OPEN !== $status
+            && self::STATUS_CLOSE !== $status
+        ) {
+            throw new \Exception("Не допустимый статус");
+        }
+
         $this->status = $status;
 
         return $this;

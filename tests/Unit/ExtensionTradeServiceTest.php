@@ -18,14 +18,6 @@ class ExtensionTradeServiceTest extends TestCase
 
     public function setUp(): void
     {
-        /**
-         * Вот тут тестируется 2а объекта,
-         * а должен тестироваться один
-         * зависимости нужно мокать!
-         * Замутить здесь мок зависимости!
-         * Эта зависимость не изменяемая, не изменяется её состояние, значит её можно оставить
-         */
-
         $this->extensionTradeService = new ExtensionTradeService(new TradeService());
     }
 
@@ -36,6 +28,7 @@ class ExtensionTradeServiceTest extends TestCase
 
     /**
      * @covers       \App\Service\ExtensionTradeService::convertTradesToExtensionTrades
+     * @covers       \App\Service\TradeService::calculateResult
      * @dataProvider provider
      */
     public function testConvertTradesToExtensionTrades(array $trades, array $expected, string $message)
@@ -47,9 +40,12 @@ class ExtensionTradeServiceTest extends TestCase
         );
     }
 
-    private function getLongTrade(): Trade
+    /**
+     * @throws \Exception
+     */
+    private function getLongTrade(string $status): Trade
     {
-        $trade = TradeFixture::getLongTrade();
+        $trade = TradeFixture::getLongTrade($status);
         $trade->setStock(StockFixture::getSber());
         $trade->setAccaunt(AccauntFixture::getOneAccaunt());
         $trade->setStrategy(StrategyFixture::getMyStrategy());
@@ -57,9 +53,12 @@ class ExtensionTradeServiceTest extends TestCase
         return $trade;
     }
 
-    private function getShortTrade(): Trade
+    /**
+     * @throws \Exception
+     */
+    private function getShortTrade(string $status): Trade
     {
-        $trade = TradeFixture::getShortTrade();
+        $trade = TradeFixture::getShortTrade($status);
         $trade->setStock(StockFixture::getSber());
         $trade->setAccaunt(AccauntFixture::getOneAccaunt());
         $trade->setStrategy(StrategyFixture::getMyStrategy());
@@ -67,21 +66,36 @@ class ExtensionTradeServiceTest extends TestCase
         return $trade;
     }
 
+    /**
+     * @throws \Exception
+     */
     private function provider(): array
     {
-        $longTrade = $this->getLongTrade();
-        $shortTrade = $this->getShortTrade();
+        $longCloseTrade = $this->getLongTrade(Trade::STATUS_CLOSE);
+        $shortCloseTrade = $this->getShortTrade(Trade::STATUS_CLOSE);
+        $longOpenTrade = $this->getLongTrade(Trade::STATUS_OPEN);
+        $shortOpenTrade = $this->getShortTrade(Trade::STATUS_OPEN);
 
         return [
             [
-                [$longTrade],
-                [new ExtensionTrade($longTrade, 500.0, 500.0)],
-                'Сделка на long c положительным результатом',
+                [$longCloseTrade],
+                [new ExtensionTrade($longCloseTrade, 500.0)],
+                'Закрытая сделка на long c положительным результатом',
             ],
             [
-                [$shortTrade],
-                [new ExtensionTrade($shortTrade, -200.0, -200.0)],
-                'Сделка на short c отрицательным результатом',
+                [$shortCloseTrade],
+                [new ExtensionTrade($shortCloseTrade, -200.0)],
+                'Закрытая cделка на short c отрицательным результатом',
+            ],
+            [
+                [$longOpenTrade],
+                [new ExtensionTrade($longOpenTrade, 845.0)],
+                'Открытая сделка на long c положительным результатом',
+            ],
+            [
+                [$shortOpenTrade],
+                [new ExtensionTrade($shortOpenTrade, -845.0)],
+                'Открытая cделка на short c отрицательным результатом',
             ],
         ];
     }

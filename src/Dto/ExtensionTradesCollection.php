@@ -4,60 +4,37 @@ namespace App\Dto;
 
 class ExtensionTradesCollection
 {
-    private readonly int $countTrades;
-
     /**
      * @param ExtensionTrade[] $extensionTrades
      */
     public function __construct(
         private readonly array $extensionTrades,
-        private readonly int $countLossTrades,
-        private readonly int $countProfitTrades,
-        private readonly float $averageProfit,
-        private readonly float $averageLoss,
-        private readonly float $expectedValue,
-        private readonly ?string $graphFormatData = null
+        private readonly Statistic $statistic,
+        private readonly Graph $graph,
+        private readonly array $cumulativeTotalArray,
     ) {
-        $this->countTrades = $this->countLossTrades + $this->countProfitTrades;
     }
 
+    /**
+     * @return ExtensionTrade[]
+     */
     public function getExtensionTrades(): array
     {
         return $this->extensionTrades;
     }
 
-    public function getCountLossTrades(): int
+    public function getStatistic(): Statistic
     {
-        return $this->countLossTrades;
+        return $this->statistic;
     }
 
-    public function getCountProfitTrades(): int
+    public function getGraph(): Graph
     {
-        return $this->countProfitTrades;
+        return $this->graph;
     }
 
-    public function getAverageProfit(): float
+    public function getCumulativeTotalArray(): array
     {
-        return $this->averageProfit;
-    }
-
-    public function getAverageLoss(): float
-    {
-        return $this->averageLoss;
-    }
-
-    public function getExpectedValue(): float
-    {
-        return $this->expectedValue;
-    }
-
-    public function getCountTrades(): int
-    {
-        return $this->countTrades;
-    }
-
-    public function getGraphFormatData(): ?string
-    {
-        return $this->graphFormatData;
+        return $this->cumulativeTotalArray;
     }
 }
