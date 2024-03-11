@@ -16,7 +16,7 @@ class StockFixture extends Fixture
         return (new Stock())
             ->setTitle('Сбербанк России ПАО ао')
             ->setSecId('SBER')
-            ->setPrice(284.77)
+            ->setPrice(284.50)
             ->setLotSize(10)
             ->setMinStep(0.01);
     }

@@ -6,8 +6,8 @@ use App\DataFixture\AccauntFixture;
 use App\DataFixture\StockFixture;
 use App\DataFixture\StrategyFixture;
 use App\DataFixture\TradeFixture;
+use App\Entity\Trade;
 use App\Service\ExtensionTradeService;
-use App\Service\GraphService;
 use App\Service\StatisticService;
 use App\Service\TradeService;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +19,7 @@ class StatisticServiceTest extends TestCase
 
     public function setUp(): void
     {
-        $this->statisticService = new StatisticService(new GraphService());
+        $this->statisticService = new StatisticService();
         $this->extensionTradeService = new ExtensionTradeService(new TradeService());
     }
 
@@ -39,6 +39,8 @@ class StatisticServiceTest extends TestCase
             $trades[] = $trade;
         }
 
+        $trades = array_filter($trades, static fn(Trade $trade) => Trade::STATUS_CLOSE === $trade->getStatus());
+
         return $this->extensionTradeService->convertTradesToExtensionTrades($trades);
     }
 
@@ -54,9 +56,5 @@ class StatisticServiceTest extends TestCase
         $this->assertEquals(300.0, $expected->getAverageProfit());
         $this->assertEquals(-80.0, $expected->getAverageLoss());
         $this->assertEquals(148, $expected->getExpectedValue());
-        $this->assertEquals(
-            '{"labels":["2024-03-01","2024-03-02","2024-03-03","2024-03-04","2024-03-05"],"values":[500,400,900,600,1100]}',
-            $expected->getGraphFormatData()
-        );
     }
 }

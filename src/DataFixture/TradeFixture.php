@@ -18,7 +18,10 @@ class TradeFixture extends Fixture implements DependentFixtureInterface
         ];
     }
 
-    public static function getLongTrade(): Trade
+    /**
+     * @throws \Exception
+     */
+    public static function getLongTrade(string $status): Trade
     {
         $trade = new Trade();
         $trade->setType(Trade::TYPE_LONG);
@@ -29,13 +32,16 @@ class TradeFixture extends Fixture implements DependentFixtureInterface
         $trade->setStopLoss(150);
         $trade->setTakeProfit(250);
         $trade->setLots(1);
-        $trade->setStatus(Trade::STATUS_CLOSE);
+        $trade->setStatus($status);
         $trade->setDescription('');
 
         return $trade;
     }
 
-    public static function getShortTrade(): Trade
+    /**
+     * @throws \Exception
+     */
+    public static function getShortTrade(string $status): Trade
     {
         $trade = new Trade();
         $trade->setType(Trade::TYPE_SHORT);
@@ -46,7 +52,7 @@ class TradeFixture extends Fixture implements DependentFixtureInterface
         $trade->setStopLoss(220);
         $trade->setTakeProfit(150);
         $trade->setLots(1);
-        $trade->setStatus(Trade::STATUS_CLOSE);
+        $trade->setStatus($status);
         $trade->setDescription('');
 
         return $trade;
@@ -59,6 +65,8 @@ class TradeFixture extends Fixture implements DependentFixtureInterface
      * short +
      * short -
      * short +
+     * short + open
+     * @throws \Exception
      */
     public static function getTrades(): array
     {
@@ -118,18 +126,27 @@ class TradeFixture extends Fixture implements DependentFixtureInterface
                 ->setLots(1)
                 ->setStatus(Trade::STATUS_CLOSE)
                 ->setDescription(''),
+            (new Trade())
+                ->setType(Trade::TYPE_SHORT)
+                ->setOpenDateTime(new \DateTime('2024-03-06 10:00:00'))
+                ->setOpenPrice(250.00)
+                ->setStopLoss(300)
+                ->setTakeProfit(200)
+                ->setLots(1)
+                ->setStatus(Trade::STATUS_OPEN)
+                ->setDescription(''),
         ];
     }
 
     public function load(ObjectManager $manager): void
     {
-        $trade = self::getLongTrade();
+        $trade = self::getLongTrade(Trade::STATUS_CLOSE);
         $trade->setStock($this->getReference(StockFixture::GAZP));
         $trade->setAccaunt($this->getReference(AccauntFixture::ACCAUNT_ONE));
         $trade->setStrategy($this->getReference(StrategyFixture::MY_STRATEGY));
         $manager->persist($trade);
 
-        $trade2 = self::getShortTrade();
+        $trade2 = self::getShortTrade(Trade::STATUS_CLOSE);
         $trade2->setStock($this->getReference(StockFixture::SBER));
         $trade2->setAccaunt($this->getReference(AccauntFixture::ACCAUNT_ONE));
         $trade2->setStrategy($this->getReference(StrategyFixture::MY_STRATEGY));
