@@ -58,7 +58,7 @@ class AccauntHistoryController extends AbstractController
 
         $accauntHistory = new AccauntHistory();
         $accauntHistory->setAccaunt($accaunt);
-        $accauntHistory->setValue(floatval($value));
+        $accauntHistory->setBalance(floatval($value));
 
         $entityManager->persist($accauntHistory);
         $entityManager->flush();

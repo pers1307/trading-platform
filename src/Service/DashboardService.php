@@ -51,7 +51,7 @@ class DashboardService
             [
                 'labels' => array_map(static fn(AccauntHistory $accauntHistory) => $accauntHistory->getCreated()->format('Y-m-d'), $accauntHistoryItems),
                 'values' => array_map(
-                    static fn(AccauntHistory $accauntHistory) => intval($accauntHistory->getValue()),
+                    static fn(AccauntHistory $accauntHistory) => intval($accauntHistory->getBalance()),
                     $accauntHistoryItems
                 ),
             ]

@@ -19,7 +19,7 @@ class AccauntHistory
     private Accaunt $accaunt;
 
     #[ORM\Column(type: 'float', precision: 6, scale: 2)]
-    private float $value;
+    private float $balance;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private DateTime $created;
@@ -46,14 +46,14 @@ class AccauntHistory
         return $this;
     }
 
-    public function getValue(): float
+    public function getBalance(): float
     {
-        return $this->value;
+        return $this->balance;
     }
 
-    public function setValue(float $value): static
+    public function setBalance(float $balance): static
     {
-        $this->value = $value;
+        $this->balance = $balance;
 
         return $this;
     }
