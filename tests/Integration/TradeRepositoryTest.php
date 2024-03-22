@@ -6,6 +6,9 @@ use App\DataFixture\TradeFixture;
 use App\Repository\TradeRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+/**
+ * todo: заменить на другой более поведенческий тест
+ */
 class TradeRepositoryTest extends KernelTestCase
 {
     public function testFindAll(): void

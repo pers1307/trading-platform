@@ -1,0 +1,154 @@
+{% extends 'base.admin.html.twig' %}
+
+{% block menu %}
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+            <a href="{{ path('app_dashboard_index') }}" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>Дашборд</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-briefcase"></i>
+                <p>Позиции</p>
+                <i class="right fas fa-angle-left"></i>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ path('app_trade_list') }}" class="nav-link">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>Все</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_trade_active_group_by_strategies_list') }}" class="nav-link">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>Активные</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path('app_statistics_strategies_list') }}" class="nav-link">
+                <i class="nav-icon fas fa-flask"></i>
+                <p>Статистика</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path('app_strategies_index') }}" class="nav-link">
+                <i class="nav-icon fas fa-chess"></i>
+                <p>Стратегии</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path('app_accaunts_index') }}" class="nav-link">
+                <i class="nav-icon fas fa-sticky-note"></i>
+                <p>Счета</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path('app_risk_profile_index') }}" class="nav-link active">
+                <i class="nav-icon fas fa-shield-alt"></i>
+                <p>Риск профиль</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path('app_calculate_index') }}" class="nav-link">
+                <i class="nav-icon fas fa-calculator"></i>
+                <p>Калькулятор</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="nav-icon fas fa-book"></i>
+                <p>
+                    Сравочники
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ path('app_dictionary_stock_index') }}" class="nav-link">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>Акции</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Риск профили</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
+                            </li>
+                            <li class="breadcrumb-item active">Риск профиль</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Список</h3>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>Счет</th>
+                                        <th>Стратегия</th>
+                                        <th>Баланс для расчета риска</th>
+                                        <th>Тип расчета</th>
+                                        <th>Процент</th>
+                                        <th style="width: 50px"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for index,riskProfile in riskProfiles %}
+                                        <tr>
+                                            <td>{{ index + 1 }}</td>
+                                            <td>{{ riskProfile.accaunt.title }}</td>
+                                            <td>{{ riskProfile.strategy.title }}</td>
+                                            <td>{{ riskProfile.balance|number_format(null, null, ' ') }}</td>
+                                            <td>{{ riskProfile.type|riskProfileType }}</td>
+                                            <td>{{ riskProfile.persent }} %</td>
+                                            <td>
+{#                                                <div class="btn-group">#}
+{#                                                    <a href="{{ path('app_accaunt_history_list', {id: accaunt.id}) }}" type="button" class="btn btn-info">#}
+{#                                                        <i class="fas fa-list"></i>#}
+{#                                                    </a>#}
+{#                                                    <a href="{{ path('app_accaunt_history_add_form', {id: accaunt.id}) }}" type="button" class="btn btn-success">#}
+{#                                                        <i class="fas fa-plus"></i>#}
+{#                                                    </a>#}
+{#                                                </div>#}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
