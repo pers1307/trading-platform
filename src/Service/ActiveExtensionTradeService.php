@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Dto\ActiveExtensionTradesByStrategy;
 use App\Entity\Trade;
 use App\Exception\TradeHasNotClosePriceException;
-use App\Exception\TradeHasOpenStatusException;
 use App\Exception\TradeHasUnknownTypeException;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -20,7 +19,6 @@ class ActiveExtensionTradeService
     /**
      * @return ActiveExtensionTradesByStrategy[]
      * @throws TradeHasNotClosePriceException
-     * @throws TradeHasOpenStatusException
      * @throws TradeHasUnknownTypeException
      */
     public function getByStrategy(): array
