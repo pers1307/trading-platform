@@ -20,7 +20,7 @@ class RiskProfile
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private Accaunt $accaunt;
 
-    #[ORM\ManyToOne(targetEntity: Strategy::class, inversedBy: 'riskProfile')]
+    #[ORM\ManyToOne(targetEntity: Strategy::class, inversedBy: 'riskProfiles')]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private Strategy $strategy;
 
