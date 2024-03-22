@@ -19,6 +19,9 @@ class TradeFixture extends Fixture implements DependentFixtureInterface
     }
 
     /**
+     * @todo: перевести на фабрики
+     * через фабричные методы собирать объекты,
+     * чтобы сделать тесты изолированными
      * @throws \Exception
      */
     public static function getLongTrade(string $status): Trade

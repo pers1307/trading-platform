@@ -51,6 +51,7 @@ class StatisticServiceTest extends TestCase
     {
         $expected = $this->statisticService->calculate($this->getInput());
 
+        // @todo Вот этого не должно быть, должна быть dto'шка
         $this->assertEquals(2, $expected->getCountLossTrades());
         $this->assertEquals(3, $expected->getCountProfitTrades());
         $this->assertEquals(300.0, $expected->getAverageProfit());

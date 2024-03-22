@@ -79,6 +79,8 @@ class TradeServiceTest extends TestCase
     }
 
     /**
+     * @todo: переименовать тесты по смыслу Delivery_with_a_past_date_is_invalid()
+     * по поведенческому смыслу
      * @covers       \App\Service\TradeService::calculateResult
      * @throws Exception
      */
@@ -96,6 +98,7 @@ class TradeServiceTest extends TestCase
     }
 
     /**
+     * @todo можно вынести эти методы в абстрактный класс и не заниматься их дублированием
      * @throws \Exception
      */
     private function getLongTrade(string $status): Trade
