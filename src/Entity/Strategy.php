@@ -37,6 +37,9 @@ class Strategy
     #[ORM\OneToMany(targetEntity: Trade::class, mappedBy: 'strategy')]
     private Collection $trades;
 
+    #[ORM\OneToMany(targetEntity: RiskProfile::class, mappedBy: 'strategy')]
+    private Collection $riskProfiles;
+
     public function __construct()
     {
         $this->title = '';
@@ -102,5 +105,13 @@ class Strategy
         $this->status = $status;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, RiskProfile>
+     */
+    public function getRiskProfiles(): Collection
+    {
+        return $this->riskProfiles;
     }
 }

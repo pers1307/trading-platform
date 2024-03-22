@@ -31,6 +31,9 @@ class Accaunt
     #[ORM\OneToMany(targetEntity: Trade::class, mappedBy: 'accaunt')]
     private Collection $trades;
 
+    #[ORM\OneToMany(targetEntity: RiskProfile::class, mappedBy: 'accaunt')]
+    private Collection $riskProfiles;
+
     public function __construct()
     {
         $this->title = '';
@@ -38,6 +41,7 @@ class Accaunt
         $this->created = new DateTime();
         $this->accauntHistories = new ArrayCollection();
         $this->trades = new ArrayCollection();
+        $this->riskProfiles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -88,5 +92,20 @@ class Accaunt
     public function getTrades(): Collection
     {
         return $this->trades;
+    }
+
+    /**
+     * @return Collection<int, RiskProfile>
+     */
+    public function getRiskProfiles(): Collection
+    {
+        return $this->riskProfiles;
+    }
+
+    public function setRiskProfiles(Collection $riskProfiles): static
+    {
+        $this->riskProfiles = $riskProfiles;
+
+        return $this;
     }
 }
