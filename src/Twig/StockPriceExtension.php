@@ -22,12 +22,16 @@ class StockPriceExtension extends AbstractExtension
 
         $decimals = $this->getDecimals($minStep);
         if ($minStep < 1) {
-            if ($this->normalize($number, $decimals) % $this->normalize($minStep, $decimals) !== 0) {
-                return 'Цена не соответствует шагу цены';
+            $normalizeNumber = $this->normalize($number, $decimals);
+            $normalizeMinStep = $this->normalize($minStep, $decimals);
+            $result = fmod($normalizeNumber, $normalizeMinStep);
+
+            if ($result != 0.0 && ceil($result) != $normalizeMinStep) {
+                return $number . ' (!)';
             }
         } else {
             if (fmod($number, $minStep) !== 0.0) {
-                return 'Цена не соответствует шагу цены';
+                return $number . ' (!)';
             }
         }
 
