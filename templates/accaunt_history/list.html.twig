@@ -160,7 +160,7 @@
                                             <tr>
                                                 <td>{{ accauntHistoryItem.id }}.</td>
                                                 <td>{{ accaunt.title }}</td>
-                                                <td>{{ accauntHistoryItem.value|number_format(null, null, ' ') }}</td>
+                                                <td>{{ accauntHistoryItem.balance|number_format(null, null, ' ') }}</td>
                                                 <td>{{ accauntHistoryItem.created|date('Y-m-d H:i:s') }}</td>
                                             </tr>
                                         {% endfor %}
@@ -178,7 +178,8 @@
                                     <h3 class="card-title">Список</h3>
                                 </div>
                                 <div class="card-body">
-                                    Здесь ещё нет значений. <a href="{{ path('app_accaunt_history_add_form', {id: accaunt.id}) }}">Добавить</a>
+                                    Здесь ещё нет значений.
+                                    <a href="{{ path('app_accaunt_history_add_form', {id: accaunt.id}) }}">Добавить</a>
                                 </div>
                             </div>
                         </div>

@@ -24,11 +24,11 @@ class AccauntHistoryFixture extends Fixture
     {
         return [
             (new AccauntHistory())
-                ->setValue(100),
+                ->setBalance(100),
             (new AccauntHistory())
-                ->setValue(200),
+                ->setBalance(200),
             (new AccauntHistory())
-                ->setValue(300),
+                ->setBalance(300),
         ];
     }
 
