@@ -36,34 +36,7 @@
             </li>
         </ul>
 
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link" data-toggle="dropdown" href="#">
-                    <i class="far fa-bell"></i>
-                    <span class="badge badge-warning navbar-badge">15</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                    <span class="dropdown-item dropdown-header">15 Notifications</span>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <i class="fas fa-envelope mr-2"></i> 4 new messages
-                        <span class="float-right text-muted text-sm">3 mins</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <i class="fas fa-users mr-2"></i> 8 friend requests
-                        <span class="float-right text-muted text-sm">12 hours</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <i class="fas fa-file mr-2"></i> 3 new reports
-                        <span class="float-right text-muted text-sm">2 days</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-                </div>
-            </li>
-        </ul>
+        {{ render(controller('App\\Widget\\NotificationWidget::show')) }}
     </nav>
 
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -89,82 +62,7 @@
 
             <nav class="mt-2">
                 {% block menu %}
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <li class="nav-item">
-                            <a href="{{ path('app_dashboard_index') }}" class="nav-link active">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>Дашборд</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/" class="nav-link">
-                                <i class="nav-icon fas fa-briefcase"></i>
-                                <p>Позиции</p>
-                                <i class="right fas fa-angle-left"></i>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ path('app_trade_list') }}" class="nav-link">
-                                        <i class="fa fa-circle-notch nav-icon"></i>
-                                        <p>Все</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ path('app_trade_active_group_by_strategies_list') }}" class="nav-link">
-                                        <i class="fa fa-circle-notch nav-icon"></i>
-                                        <p>Активные</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ path('app_statistics_strategies_list') }}" class="nav-link">
-                                <i class="nav-icon fas fa-flask"></i>
-                                <p>Статистика</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ path('app_strategies_index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-chess"></i>
-                                <p>Стратегии</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ path('app_strategies_index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-sticky-note"></i>
-                                <p>Счета</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ path('app_risk_profile_index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-shield-alt"></i>
-                                <p>Риск профиль</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ path('app_calculate_index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-calculator"></i>
-                                <p>Калькулятор</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/" class="nav-link">
-                                <i class="nav-icon fas fa-book"></i>
-                                <p>
-                                    Сравочники
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ path('app_dictionary_stock_index') }}" class="nav-link">
-                                        <i class="fa fa-circle-notch nav-icon"></i>
-                                        <p>Акции</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                    {{ render(controller('App\\Widget\\LeftSidebarWidget::show')) }}
                 {% endblock %}
             </nav>
         </div>
