@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\NotificationRepository;
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
@@ -24,11 +24,13 @@ class Notification
     private bool $viewed;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private DateTimeImmutable $created;
+    private DateTime $created;
 
     public function __construct()
     {
         $this->title = '';
+        $this->viewed = false;
+        $this->created = new DateTime();
     }
 
     public function getId(): ?int
@@ -72,7 +74,7 @@ class Notification
         return $this;
     }
 
-    public function getCreated(): DateTimeImmutable
+    public function getCreated(): DateTime
     {
         return $this->created;
     }
