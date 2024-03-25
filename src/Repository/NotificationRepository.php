@@ -20,28 +20,23 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
-    //    /**
-    //     * @return VinylMix[] Returns an array of VinylMix objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('v')
-    //            ->andWhere('v.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('v.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Notification[]
+     */
+    public function findLastFive(): array
+    {
+        return $this->createQueryBuilder('n')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?VinylMix
-    //    {
-    //        return $this->createQueryBuilder('v')
-    //            ->andWhere('v.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function updateAllSetViewed(): void
+    {
+        $this->createQueryBuilder('n')
+            ->update()
+            ->set('n.viewed', 1)
+            ->getQuery()
+            ->execute();
+    }
 }
