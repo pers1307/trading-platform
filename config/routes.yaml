@@ -1,5 +1,11 @@
+widget:
+  resource:
+    path: ../src/Widget/
+    namespace: App\Widget
+  type: attribute
+
 controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
+  resource:
+    path: ../src/Controller/
+    namespace: App\Controller
+  type: attribute
