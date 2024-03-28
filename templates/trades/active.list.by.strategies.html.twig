@@ -65,7 +65,12 @@
                                                 <td>{{ extensionTrade.trade.stock.price|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
                                                 <td>{{ extensionTrade.trade.stopLoss|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
                                                 <td>{{ extensionTrade.trade.takeProfit|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
-                                                <td>{{ extensionTrade.trade.lots }}</td>
+                                                <td>
+                                                    {{ extensionTrade.trade.lots }}
+                                                    {% if extensionTrade.trade.isExistsTradeRiskWarning %}
+                                                        ⚠️
+                                                    {% endif %}
+                                                </td>
                                                 <td>{{ extensionTrade.trade.status|tradeStatus }}</td>
                                                 <td>{{ extensionTrade.tradeResult|number_format(2, '.', ' ') }}</td>
                                                 <td>
