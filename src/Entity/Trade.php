@@ -32,6 +32,9 @@ class Trade
     #[ORM\JoinColumn(nullable: false, onDelete: "NO ACTION")]
     private Strategy $strategy;
 
+    #[ORM\OneToOne(targetEntity: TradeRiskWarning::class, mappedBy: 'trade')]
+    private ?TradeRiskWarning $tradeRiskWarning = null;
+
     #[ORM\Column(type: 'string', nullable: false, options: ['default' => 'long'], columnDefinition: "ENUM('long', 'short')")]
     private string $type;
 
@@ -128,7 +131,7 @@ class Trade
         ) {
             throw new \Exception("Не допустимый тип");
         }
-        
+
         $this->type = $type;
 
         return $this;
@@ -255,5 +258,22 @@ class Trade
     public function getCreated(): DateTime
     {
         return $this->created;
+    }
+
+    public function getTradeRiskWarning(): ?TradeRiskWarning
+    {
+        return $this->tradeRiskWarning;
+    }
+
+    public function setTradeRiskWarning(?TradeRiskWarning $tradeRiskWarning): static
+    {
+        $this->tradeRiskWarning = $tradeRiskWarning;
+
+        return $this;
+    }
+
+    public function isExistsTradeRiskWarning(): bool
+    {
+        return !is_null($this->tradeRiskWarning);
     }
 }

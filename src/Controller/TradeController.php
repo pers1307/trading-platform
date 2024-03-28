@@ -5,8 +5,9 @@ namespace App\Controller;
 use App\Entity\Accaunt;
 use App\Entity\AccauntHistory;
 use App\Entity\Trade;
+use App\Exception\StockHasNotPriceException;
 use App\Exception\TradeHasNotClosePriceException;
-use App\Exception\TradeHasOpenStatusException;
+use App\Exception\TradeHasUnknownStatusException;
 use App\Exception\TradeHasUnknownTypeException;
 use App\Service\ActiveExtensionTradeService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,9 +37,10 @@ class TradeController extends AbstractController
     }
 
     /**
-     * @throws TradeHasOpenStatusException
      * @throws TradeHasNotClosePriceException
      * @throws TradeHasUnknownTypeException
+     * @throws StockHasNotPriceException
+     * @throws TradeHasUnknownStatusException
      */
     #[Route('/trades/active/group/strategies', name: 'app_trade_active_group_by_strategies_list')]
     public function listActiveGroupByStrategies(): Response

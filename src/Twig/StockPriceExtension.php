@@ -27,11 +27,11 @@ class StockPriceExtension extends AbstractExtension
             $result = fmod($normalizeNumber, $normalizeMinStep);
 
             if ($result != 0.0 && ceil($result) != $normalizeMinStep) {
-                return $number . ' (!)';
+                return $number . ' ⚠️';
             }
         } else {
             if (fmod($number, $minStep) !== 0.0) {
-                return $number . ' (!)';
+                return $number . ' ⚠️';
             }
         }
 
