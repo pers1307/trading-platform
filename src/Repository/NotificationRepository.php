@@ -27,6 +27,7 @@ class NotificationRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('n')
             ->setMaxResults(5)
+            ->orderBy('n.created', 'DESC')
             ->getQuery()
             ->getResult();
     }

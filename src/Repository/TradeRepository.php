@@ -50,6 +50,9 @@ class TradeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return Trade[]
+     */
     public function findAllActive(): array
     {
         return $this->createQueryBuilder('t')

@@ -30,4 +30,16 @@ class RiskProfileRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByAccaunt(int $accauntId): array
+    {
+        return $this->createQueryBuilder('rp')
+            ->addSelect('strategy')
+            ->innerJoin('rp.strategy', 'strategy')
+            ->where('IDENTITY(rp.accaunt) = :accauntId')
+            ->orderBy('rp.id', 'ASC')
+            ->setParameter('accauntId', $accauntId)
+            ->getQuery()
+            ->getResult();
+    }
 }

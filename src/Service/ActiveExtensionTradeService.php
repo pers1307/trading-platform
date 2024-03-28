@@ -4,15 +4,19 @@ namespace App\Service;
 
 use App\Dto\ActiveExtensionTradesByStrategy;
 use App\Entity\Trade;
+use App\Exception\StockHasNotPriceException;
 use App\Exception\TradeHasNotClosePriceException;
+use App\Exception\TradeHasUnknownStatusException;
 use App\Exception\TradeHasUnknownTypeException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ActiveExtensionTradeService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ExtensionTradeService $extensionTradeService,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -20,6 +24,8 @@ class ActiveExtensionTradeService
      * @return ActiveExtensionTradesByStrategy[]
      * @throws TradeHasNotClosePriceException
      * @throws TradeHasUnknownTypeException
+     * @throws StockHasNotPriceException
+     * @throws TradeHasUnknownStatusException
      */
     public function getByStrategy(): array
     {
