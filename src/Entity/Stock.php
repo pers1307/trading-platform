@@ -27,6 +27,15 @@ class Stock
     #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: true)]
     private ?float $price;
 
+    #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: true)]
+    private ?float $open;
+
+    #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: true)]
+    private ?float $high;
+
+    #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: true)]
+    private ?float $low;
+
     #[ORM\Column(type: 'integer', nullable: false)]
     private int $lotSize;
 
@@ -126,6 +135,42 @@ class Stock
     public function setUpdated(DateTime $updated): static
     {
         $this->updated = $updated;
+
+        return $this;
+    }
+
+    public function getOpen(): ?float
+    {
+        return $this->open;
+    }
+
+    public function setOpen(?float $open): static
+    {
+        $this->open = $open;
+
+        return $this;
+    }
+
+    public function getHigh(): ?float
+    {
+        return $this->high;
+    }
+
+    public function setHigh(?float $high): static
+    {
+        $this->high = $high;
+
+        return $this;
+    }
+
+    public function getLow(): ?float
+    {
+        return $this->low;
+    }
+
+    public function setLow(?float $low): static
+    {
+        $this->low = $low;
 
         return $this;
     }
