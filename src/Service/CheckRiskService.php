@@ -12,6 +12,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * @todo покрыть интеграцилнными тестами
  * @todo рефакторинг
+ * Возвращает команду создания побочного эффекта, которую он хочет выполнить
+ * Разделение бизнес логики и побочных эффектов
  */
 class CheckRiskService
 {
@@ -21,6 +23,24 @@ class CheckRiskService
         private readonly CalculateService $calculateService,
         private readonly EventDispatcherInterface $eventDispatcher
     ) {
+    }
+
+    /**
+     * @param RiskProfile[] $indexRiskProfile
+     */
+    private function getRiskProfileByTrade(Trade $trade, array $indexRiskProfile): RiskProfile
+    {
+        $key = "{$trade->getAccaunt()->getId()}-{$trade->getStrategy()->getId()}";
+        return $indexRiskProfile[$key];
+    }
+
+    private function createTradeRiskWarning(Trade $trade): void
+    {
+        $tradeRiskWarning = new TradeRiskWarning();
+        $tradeRiskWarning->setTrade($trade);
+
+        $this->entityManager->persist($tradeRiskWarning);
+        $this->entityManager->flush();
     }
 
     /**
@@ -38,18 +58,13 @@ class CheckRiskService
                 continue;
             }
 
-            $key = "{$activeTrade->getAccaunt()->getId()}-{$activeTrade->getStrategy()->getId()}";
-            $riskProfile = $indexRiskProfile[$key];
+            $riskProfile = $this->getRiskProfileByTrade($activeTrade, $indexRiskProfile);
 
             if (RiskProfile::TYPE_DEPOSIT === $riskProfile->getType()) {
                 $lots = $this->calculateService->calculateLotsByDepositPersent($riskProfile, $activeTrade->getStock());
 
                 if ($lots < $activeTrade->getLots()) {
-                    $tradeRiskWarning = new TradeRiskWarning();
-                    $tradeRiskWarning->setTrade($activeTrade);
-
-                    $this->entityManager->persist($tradeRiskWarning);
-                    $this->entityManager->flush();
+                    $this->createTradeRiskWarning($activeTrade);
 
                     $type = ucfirst($activeTrade->getType());
                     $text = "{$activeTrade->getAccaunt()->getTitle()}. {$activeTrade->getStrategy()->getTitle()}. {$activeTrade->getStock()->getSecId()}. $type.\nРассчет: $lots лотов. Факт: {$activeTrade->getLots()}";
@@ -60,11 +75,7 @@ class CheckRiskService
                 $lots = $this->calculateService->calculateLotsByTradePersent($riskProfile, $activeTrade);
 
                 if ($lots < $activeTrade->getLots()) {
-                    $tradeRiskWarning = new TradeRiskWarning();
-                    $tradeRiskWarning->setTrade($activeTrade);
-
-                    $this->entityManager->persist($tradeRiskWarning);
-                    $this->entityManager->flush();
+                    $this->createTradeRiskWarning($activeTrade);
 
                     $type = ucfirst($activeTrade->getType());
                     $text = "{$activeTrade->getAccaunt()->getTitle()}. {$activeTrade->getStrategy()->getTitle()}. {$activeTrade->getStock()->getSecId()}. $type.\nРассчет: $lots лотов. Факт: {$activeTrade->getLots()}";
