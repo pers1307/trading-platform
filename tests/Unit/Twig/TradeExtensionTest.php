@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Twig;
+namespace App\Tests\Unit\Twig;
 
 use App\Entity\Trade;
 use App\Twig\TradeExtension;

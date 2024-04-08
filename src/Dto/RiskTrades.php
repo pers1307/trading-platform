@@ -2,14 +2,13 @@
 
 namespace App\Dto;
 
-use App\Entity\RiskProfile;
 use App\Entity\Trade;
 
-class ActiveTradesWithRisks
+class RiskTrades
 {
     public function __construct(
         private readonly array $trades,
-        private readonly array $indexRiskProfiles,
+        private readonly array $riskTradeNotifications,
     ) {
     }
 
@@ -22,10 +21,10 @@ class ActiveTradesWithRisks
     }
 
     /**
-     * @return RiskProfile[]
+     * @return RiskTradeNotification[]
      */
-    public function getIndexRiskProfiles(): array
+    public function getRiskTradeNotifications(): array
     {
-        return $this->indexRiskProfiles;
+        return $this->riskTradeNotifications;
     }
 }

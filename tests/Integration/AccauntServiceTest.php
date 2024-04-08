@@ -1,6 +1,6 @@
 <?php
 
-namespace Integration;
+namespace App\Tests\Integration;
 
 use App\Service\AccauntService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

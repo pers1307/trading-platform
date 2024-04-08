@@ -1,6 +1,6 @@
 <?php
 
-namespace Integration;
+namespace App\Tests\Integration;
 
 use App\Dto\ExtensionTradesCollection;
 use App\Service\ExtensionTradeCollectionService;

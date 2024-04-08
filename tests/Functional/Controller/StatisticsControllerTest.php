@@ -1,6 +1,6 @@
 <?php
 
-namespace Functional\Controller;
+namespace App\Tests\Functional\Controller;
 
 use App\DataFixture\AccauntFixture;
 use App\DataFixture\StrategyFixture;

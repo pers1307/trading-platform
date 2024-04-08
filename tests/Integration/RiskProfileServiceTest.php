@@ -1,6 +1,6 @@
 <?php
 
-namespace Integration;
+namespace App\Tests\Integration;
 
 use App\DataFixture\TradeFixture;
 use App\Repository\RiskProfileRepository;
