@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit;
+namespace App\Tests\Unit;
 
 use App\DataFixture\AccauntFixture;
 use App\DataFixture\RiskProfileFixture;

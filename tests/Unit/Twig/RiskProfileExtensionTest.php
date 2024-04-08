@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Twig;
+namespace App\Tests\Unit\Twig;
 
 use App\Entity\RiskProfile;
 use App\Twig\RiskProfileExtension;

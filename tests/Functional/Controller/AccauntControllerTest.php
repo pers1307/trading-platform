@@ -1,6 +1,6 @@
 <?php
 
-namespace Functional\Controller;
+namespace App\Tests\Functional\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Integration;
+namespace App\Tests\Integration;
 
 use App\Event\NotificationEvent;
 use App\EventListener\Handler\TelegrammSender;

@@ -6,7 +6,6 @@ use App\Entity\RiskProfile;
 use App\Entity\Stock;
 use App\Entity\Trade;
 
-// @todo Этот сервис не должен отвечать за обновление конкретного инструмента
 class CalculateService
 {
     public function __construct()
@@ -36,6 +35,17 @@ class CalculateService
         return round($depositPercent, 2, PHP_ROUND_HALF_EVEN);
     }
 
+    /**
+     * @todo зарефакторить эти методы
+     */
+    public function calculateLotsByDepositPersentForTrade(RiskProfile $riskProfile, Trade $trade): int
+    {
+        $lots = $riskProfile->getPersent() * $riskProfile->getBalance() / (100 * $trade->getOpenPrice() * $trade->getStock()->getLotSize());
+
+        return round($lots);
+    }
+
+    // Поможет при рассчете
     public function calculateLotsByDepositPersent(RiskProfile $riskProfile, Stock $stock): int
     {
         $lots = $riskProfile->getPersent() * $riskProfile->getBalance() / (100 * $stock->getPrice() * $stock->getLotSize());

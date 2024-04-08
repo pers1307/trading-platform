@@ -1,6 +1,6 @@
 <?php
 
-namespace Integration;
+namespace App\Tests\Integration;
 
 use App\Constant\FinancialType;
 use App\DataFixture\MoexApiFixture;
