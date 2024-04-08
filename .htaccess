@@ -1,6 +1,6 @@
 AuthType Basic
 AuthName "Restricted Content"
-AuthUserFile .htpasswd
+AuthUserFile /home/c89484/trading-platform.na4u.ru/www/.htpasswd
 Require valid-user
 
 DirectoryIndex public/index.php
