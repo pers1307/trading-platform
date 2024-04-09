@@ -60,7 +60,7 @@
                                                 <td>{{ trade.accaunt.title }}</td>
                                                 <td>{{ trade.strategy.title }}</td>
                                                 <td>{{ trade.stock.secId }}</td>
-                                                <td>{{ trade.type }}</td>
+                                                <td>{{ trade.type|tradeType }}</td>
                                                 <td>{{ trade.openDateTime|date('Y-m-d H:m:s') }}</td>
                                                 <td>{{ trade.openPrice|stockPrice(trade.stock.minStep) }}</td>
                                                 <td>{{ trade.stopLoss|stockPrice(trade.stock.minStep) }}</td>
@@ -68,7 +68,7 @@
                                                 <td>{{ trade.lots }}</td>
                                                 <td>{{ trade.closeDateTime|date('Y-m-d H:m:s') }}</td>
                                                 <td>{{ trade.closePrice|stockPrice(trade.stock.minStep) }}</td>
-                                                <td>{{ trade.status }}</td>
+                                                <td>{{ trade.status|tradeStatus }}</td>
                                                 <td>{{ trade.description }}</td>
                                                 <td>
                                                     <div class="btn-group">
