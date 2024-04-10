@@ -18,6 +18,21 @@ class StockService
     ) {
     }
 
+    public function find(int $id): ?Stock
+    {
+        $stockRepository = $this->entityManager->getRepository(Stock::class);
+        return $stockRepository->find($id);
+    }
+
+    /**
+     * @return Stock[]
+     */
+    public function findAll(): array
+    {
+        $stockRepository = $this->entityManager->getRepository(Stock::class);
+        return $stockRepository->findAll();
+    }
+
     /**
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
@@ -33,5 +48,22 @@ class StockService
         foreach ($moexStocks as $moexStock) {
             $stockRepository->upsertByMoexStock($moexStock);
         }
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @todo покрыть интеграцилнным тестом
+     */
+    public function updateByStockId(int $stockId): void
+    {
+        $stockRepository = $this->entityManager->getRepository(Stock::class);
+        $stock = $stockRepository->find($stockId);
+
+        $moexStock = $this->moexApiService->getMoexStockBySecId($stock->getSecId());
+        $stockRepository->upsertByMoexStock($moexStock);
     }
 }

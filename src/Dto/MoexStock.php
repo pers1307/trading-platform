@@ -6,6 +6,7 @@ class MoexStock
 {
     public function __construct(
         private readonly string $title,
+        private readonly string $boardId,
         private readonly string $secId,
         private readonly int $lotSize,
         private readonly float $minStep,
@@ -54,5 +55,10 @@ class MoexStock
     public function getLow(): float
     {
         return $this->low;
+    }
+
+    public function getBoardId(): string
+    {
+        return $this->boardId;
     }
 }

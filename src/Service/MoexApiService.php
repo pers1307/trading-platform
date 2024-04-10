@@ -14,7 +14,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class MoexApiService
 {
-    const URL = 'https://iss.moex.com/iss/engines/stock/markets/shares/boards/%s/securities.json';
+    const URL_ALL = 'https://iss.moex.com/iss/engines/stock/markets/shares/boards/%s/securities.json';
+    const URL_ONE = 'https://iss.moex.com/iss/engines/stock/markets/shares/securities/%s.json';
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
@@ -34,7 +35,7 @@ class MoexApiService
     {
         $result = [];
         foreach (FinancialType::getAll() as $type) {
-            $url = sprintf(self::URL, $type);
+            $url = sprintf(self::URL_ALL, $type);
             $response = $this->httpClient->request('GET', $url);
             $data = $response->toArray();
 
@@ -43,5 +44,29 @@ class MoexApiService
         }
 
         return $result;
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getMoexStockBySecId(string $secId): MoexStock
+    {
+        $url = sprintf(self::URL_ONE, $secId);
+        $response = $this->httpClient->request('GET', $url);
+        $data = $response->toArray();
+        $moexStocks = $this->dataToMoexStockConverter->convert($data);
+
+        $moexStock = array_values(
+            array_filter(
+                $moexStocks,
+                static fn(MoexStock $moexStock) => in_array($moexStock->getBoardId(), FinancialType::getAll())
+            )
+        );
+
+        return $moexStock[0];
     }
 }

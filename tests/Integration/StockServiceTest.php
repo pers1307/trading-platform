@@ -33,8 +33,8 @@ class StockServiceTest extends KernelTestCase
             ->with(
                 'GET',
                 $this->logicalOr(
-                    $this->equalTo(sprintf(MoexApiService::URL, FinancialType::TQBR)),
-                    $this->equalTo(sprintf(MoexApiService::URL, FinancialType::TQPI))
+                    $this->equalTo(sprintf(MoexApiService::URL_ALL, FinancialType::TQBR)),
+                    $this->equalTo(sprintf(MoexApiService::URL_ALL, FinancialType::TQPI))
                 )
             )
             ->willReturn($mockResponseMock);

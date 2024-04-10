@@ -40,7 +40,7 @@ class StockRepository extends ServiceEntityRepository
                     high = VALUES(high),
                     low = VALUES(low);
             ";
-
+        
         $this->entityManager
             ->createNativeQuery($command, new ResultSetMapping())
             ->setParameter('title', $moexStock->getTitle())

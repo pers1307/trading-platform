@@ -6,6 +6,9 @@ use App\Entity\RiskProfile;
 use App\Entity\Stock;
 use App\Entity\Trade;
 
+/**
+ * @todo зарефакторить этот сервис
+ */
 class CalculateService
 {
     public function __construct()

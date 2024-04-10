@@ -23,6 +23,21 @@ class RiskProfileService
 
     /**
      * @return RiskProfile[]
+     */
+    public function findByAccaunt(int $accauntId): array
+    {
+        $riskProfileRepository = $this->entityManager->getRepository(RiskProfile::class);
+        return $riskProfileRepository->findByAccaunt($accauntId);
+    }
+
+    public function findByAccauntAndStrategy(int $accauntId, int $strategyId): ?RiskProfile
+    {
+        $riskProfileRepository = $this->entityManager->getRepository(RiskProfile::class);
+        return $riskProfileRepository->findByAccauntAndStrategy($accauntId, $strategyId);
+    }
+
+    /**
+     * @return RiskProfile[]
      * @todo покрыть тестами (?)
      */
     public function getIndexAll(): array

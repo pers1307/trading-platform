@@ -12,7 +12,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Риск профили</h1>
+                        <h1 class="m-0">Калькулятор</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -69,7 +69,7 @@
                                                 <form method="post" action="{{ path('app_calculate_stock_save') }}">
                                                     <div class="form-group">
                                                         <label>Выбор стратегии</label>
-                                                        <select class="form-control select2" style="width: 100%;" name="strategyId">
+                                                        <select class="form-control select2" style="width: 100%;" name="stockId">
                                                             {% for index,stock in stocks %}
                                                                 {% if index == 0 %}
                                                                     <option value="{{ stock.id }}" selected="selected">{{ stock.secId }}</option>
@@ -100,9 +100,5 @@
     {{ parent() }}
 
     <script src="{{ asset('vendor/select2/js/select2.full.min.js') }}"></script>
-    <script>
-        $(function() {
-            $('.select2').select2();
-        });
-    </script>
+    <script src="{{ asset('js/calculate/stock.js') }}"></script>
 {% endblock %}

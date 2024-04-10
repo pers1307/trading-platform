@@ -1,18 +1,12 @@
 {% extends 'base.admin.html.twig' %}
 
-{% block css %}
-    <link rel="stylesheet" href="{{ asset('vendor/select2/css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
-    {{ parent() }}
-{% endblock %}
-
 {% block content %}
     <div class="content-wrapper">
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Риск профили</h1>
+                        <h1 class="m-0">Калькулятор</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -25,7 +19,10 @@
                             <li class="breadcrumb-item">
                                 <a href="{{ path('app_calculate_strategy') }}">Выбор стратегии</a>
                             </li>
-                            <li class="breadcrumb-item active">Выбор акции</li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_calculate_stock') }}">Выбор акции</a>
+                            </li>
+                            <li class="breadcrumb-item active">Выбор параметров</li>
                         </ol>
                     </div>
                 </div>
@@ -46,10 +43,10 @@
                                         <a class="nav-link disabled" id="custom-tabs-four-profile-tab" data-toggle="pill" href="" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false">Стратегия</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link active" id="custom-tabs-four-messages-tab" data-toggle="pill" href="#stock-tab" role="tab" aria-controls="custom-tabs-four-messages" aria-selected="false">Акция</a>
+                                        <a class="nav-link disabled" id="custom-tabs-four-messages-tab" data-toggle="pill" href="" role="tab" aria-controls="custom-tabs-four-messages" aria-selected="false">Акция</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link disabled" id="custom-tabs-four-settings-tab" data-toggle="pill" href="" role="tab" aria-controls="custom-tabs-four-settings" aria-selected="false">Параметры</a>
+                                        <a class="nav-link active" id="custom-tabs-four-settings-tab" data-toggle="pill" href="#params-tab" role="tab" aria-controls="custom-tabs-four-settings" aria-selected="false">Параметры</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link disabled" id="custom-tabs-four-settings-tab" data-toggle="pill" href="" role="tab" aria-controls="custom-tabs-four-settings" aria-selected="false">Результат</a>
@@ -60,27 +57,38 @@
                                 <div class="tab-content" id="custom-tabs-four-tabContent">
                                     <div
                                             class="tab-pane fade show active"
-                                            id="stock-tab"
+                                            id="params-tab"
                                             role="tabpanel"
                                             aria-labelledby="custom-tabs-four-home-tab"
                                     >
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <form method="post" action="{{ path('app_calculate_stock_save') }}">
+                                                <form method="post" action="{{ path('app_calculate_parameters_save') }}">
                                                     <div class="form-group">
-                                                        <label>Выбор стратегии</label>
-                                                        <select class="form-control select2" style="width: 100%;" name="strategyId">
-                                                            {% for index,stock in stocks %}
-                                                                {% if index == 0 %}
-                                                                    <option value="{{ stock.id }}" selected="selected">{{ stock.secId }}</option>
-                                                                {% else %}
-                                                                    <option value="{{ stock.id }}">{{ stock.secId }}</option>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </select>
+                                                        <label for="stockPrice">Риск профиль</label>
+                                                        {% if riskProfile.type|isDepositType %}
+                                                            <p>Позиция это {{ riskProfile.persent }}% от
+                                                                депозита {{ riskProfile.balance|number_format(2, '.', ' ') }}</p>
+                                                        {% else %}
+                                                            <p>Риск {{ riskProfile.persent }}% на сделку от
+                                                                депозита {{ riskProfile.balance|number_format(2, '.', ' ') }}</p>
+                                                        {% endif %}
                                                     </div>
-
-                                                    <a href="{{ path('app_calculate_strategy') }}" class="btn btn-secondary">Назад</a>
+                                                    <div class="form-group">
+                                                        <label for="stockPrice">Цена акции {{ stock.secId }}</label>
+                                                        <input type="text" class="form-control" id="stockPrice" name="stockPrice" placeholder="Цена" value="{{ stock.price }}">
+                                                    </div>
+                                                    {% if not riskProfile.type|isDepositType %}
+                                                        <div class="form-group">
+                                                            <label for="stopLossPrice">Цена стоп лосса</label>
+                                                            <input type="text" class="form-control" id="stopLossPrice" name="stopLossPrice" placeholder="Цена стоп лосса">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="takeProfitPrice">Цена тейк профита</label>
+                                                            <input type="text" class="form-control" id="takeProfitPrice" name="takeProfitPrice" placeholder="Цена тейк профита">
+                                                        </div>
+                                                    {% endif %}
+                                                    <a href="{{ path('app_calculate_stock') }}" class="btn btn-secondary">Назад</a>
                                                     <button type="submit" class="btn btn-primary">Далее</button>
                                                 </form>
                                             </div>
@@ -94,15 +102,4 @@
             </div>
         </section>
     </div>
-{% endblock %}
-
-{% block js %}
-    {{ parent() }}
-
-    <script src="{{ asset('vendor/select2/js/select2.full.min.js') }}"></script>
-    <script>
-        $(function() {
-            $('.select2').select2();
-        });
-    </script>
 {% endblock %}

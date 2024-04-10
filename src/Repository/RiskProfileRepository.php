@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\RiskProfile;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,5 +43,21 @@ class RiskProfileRepository extends ServiceEntityRepository
             ->setParameter('accauntId', $accauntId)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findByAccauntAndStrategy(int $accauntId, int $strategyId): ?RiskProfile
+    {
+        return $this->createQueryBuilder('rp')
+            ->where('IDENTITY(rp.accaunt) = :accauntId')
+            ->andWhere('IDENTITY(rp.strategy) = :strategyId')
+            ->orderBy('rp.id', 'ASC')
+            ->setParameters(
+                new ArrayCollection([
+                    new Parameter('accauntId', $accauntId),
+                    new Parameter('strategyId', $strategyId),
+                ])
+            )
+            ->getQuery()
+            ->getSingleResult();
     }
 }

@@ -12,6 +12,7 @@ class RiskProfileExtension extends AbstractExtension
     {
         return [
             new TwigFilter('riskProfileType', [$this, 'formatType'], ['is_safe' => ['html']]),
+            new TwigFilter('isDepositType', [$this, 'isDeposit']),
         ];
     }
 
@@ -24,5 +25,10 @@ class RiskProfileExtension extends AbstractExtension
         }
 
         return '<span class="badge bg-warning text-dark">Unknown</span>';
+    }
+
+    public function isDeposit(string $status): bool
+    {
+        return $status === RiskProfile::TYPE_DEPOSIT;
     }
 }
