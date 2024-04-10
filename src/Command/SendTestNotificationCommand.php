@@ -26,7 +26,7 @@ class SendTestNotificationCommand extends Command
         /**
          * @todo покрыть тестами, наверно только интеграционными
          */
-        $notificationEvent = new NotificationEvent('Привет!', 'Helloy, Juri!');
+        $notificationEvent = new NotificationEvent('Трассировочное сообщение!', 'Текст нотификации.');
         $this->eventDispatcher->dispatch($notificationEvent);
 
         return Command::SUCCESS;
