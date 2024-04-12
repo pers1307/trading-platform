@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Dto\ActiveTradesWithRisks;
-use App\Dto\RiskTradeNotification;
+use App\Dto\Notification;
 use App\Dto\RiskTrades;
 use App\Entity\RiskProfile;
 use App\Entity\Trade;
@@ -59,12 +59,12 @@ class RiskTradeService
         return 0;
     }
 
-    private function createRiskTradeNotification(Trade $trade, RiskProfile $riskProfile, int $recommendedLots): RiskTradeNotification
+    private function createRiskTradeNotification(Trade $trade, RiskProfile $riskProfile, int $recommendedLots): Notification
     {
         $type = ucfirst($trade->getType());
         $text = "{$trade->getAccaunt()->getTitle()}. {$trade->getStrategy()->getTitle()}. {$trade->getStock()->getSecId()}. $type.\nРассчет: $recommendedLots лотов. Факт: {$trade->getLots()}";
 
-        return new RiskTradeNotification(
+        return new Notification(
             'Нарушение риск-менеджмента!',
             $text
         );

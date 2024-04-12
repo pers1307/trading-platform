@@ -2,7 +2,7 @@
 
 namespace App\Dto;
 
-class RiskTradeNotification
+class Notification
 {
     public function __construct(
         private readonly string $title,

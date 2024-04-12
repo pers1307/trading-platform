@@ -21,7 +21,7 @@ class RiskTrades
     }
 
     /**
-     * @return RiskTradeNotification[]
+     * @return Notification[]
      */
     public function getRiskTradeNotifications(): array
     {

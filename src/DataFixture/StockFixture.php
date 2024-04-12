@@ -17,6 +17,9 @@ class StockFixture extends Fixture
             ->setTitle('Сбербанк России ПАО ао')
             ->setSecId('SBER')
             ->setPrice(284.50)
+            ->setOpen(280.0)
+            ->setHigh(285.0)
+            ->setLow(280.0)
             ->setLotSize(10)
             ->setMinStep(0.01);
     }
@@ -27,6 +30,9 @@ class StockFixture extends Fixture
             ->setTitle('"Газпром" (ПАО) ао')
             ->setSecId('GAZP')
             ->setPrice(158.12)
+            ->setOpen(155.0)
+            ->setHigh(160.0)
+            ->setLow(155.0)
             ->setLotSize(10)
             ->setMinStep(0.01);
     }

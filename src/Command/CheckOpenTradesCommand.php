@@ -2,12 +2,17 @@
 
 namespace App\Command;
 
+use App\Repository\TradeRepository;
+use App\Service\OpenTradeApplierService;
 use App\Service\OpenTradeService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @todo интеграционный тест
+ */
 #[AsCommand(
     name: 'app:check-open-trades',
     description: 'Проверить состояние открытых позиций'
@@ -15,14 +20,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CheckOpenTradesCommand extends Command
 {
     public function __construct(
-        private readonly OpenTradeService $openTradeService
+        private readonly TradeRepository $tradeRepository,
+        private readonly OpenTradeService $openTradeService,
+        private readonly OpenTradeApplierService $openTradeApplierService,
     ) {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->openTradeService->check();
+        $trades = $this->tradeRepository->findAllActive();
+
+        $openTradeNotifications = $this->openTradeService->check($trades);
+
+        $this->openTradeApplierService->apply($openTradeNotifications);
 
         return Command::SUCCESS;
     }

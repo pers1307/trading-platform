@@ -8,7 +8,7 @@ use App\DataFixture\StockFixture;
 use App\DataFixture\StrategyFixture;
 use App\DataFixture\TradeFixture;
 use App\Dto\ActiveTradesWithRisks;
-use App\Dto\RiskTradeNotification;
+use App\Dto\Notification;
 use App\Dto\RiskTrades;
 use App\Entity\Accaunt;
 use App\Entity\RiskProfile;
@@ -152,7 +152,7 @@ class RiskTradeServiceTest extends TestCase
                 new RiskTrades(
                     [clone $longCloseTrade->setLots(1000)],
                     [
-                        new RiskTradeNotification(
+                        new Notification(
                             "Нарушение риск-менеджмента!",
                             "Счет №1. Моя стратегия. SBER. Long.\nРассчет: 50 лотов. Факт: 1000"
                         ),
@@ -180,7 +180,7 @@ class RiskTradeServiceTest extends TestCase
                 new RiskTrades(
                     [clone $shortCloseTrade->setLots(1000)],
                     [
-                        new RiskTradeNotification(
+                        new Notification(
                             "Нарушение риск-менеджмента!",
                             "Счет №1. Моя стратегия. SBER. Short.\nРассчет: 75 лотов. Факт: 1000"
                         ),
@@ -208,7 +208,7 @@ class RiskTradeServiceTest extends TestCase
                 new RiskTrades(
                     [clone $longCloseTrade->setLots(1000)],
                     [
-                        new RiskTradeNotification(
+                        new Notification(
                             "Нарушение риск-менеджмента!",
                             "Счет №1. Моя стратегия. SBER. Long.\nРассчет: 200 лотов. Факт: 1000"
                         ),
@@ -236,7 +236,7 @@ class RiskTradeServiceTest extends TestCase
                 new RiskTrades(
                     [clone $shortCloseTrade->setLots(1000)],
                     [
-                        new RiskTradeNotification(
+                        new Notification(
                             "Нарушение риск-менеджмента!",
                             "Счет №1. Моя стратегия. SBER. Short.\nРассчет: 750 лотов. Факт: 1000"
                         ),
