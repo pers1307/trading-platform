@@ -102,5 +102,6 @@
 
 {% block js %}
     {{ parent() }}
+    <script src="{{ asset('vendor/js/chart.js/Chart.min.js') }}"></script>
     <script src="{{ asset('vendor/js/dasboard_index.js') }}"></script>
 {% endblock %}

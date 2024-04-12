@@ -95,15 +95,19 @@
                                                 <div class="form-group">
                                                     <label>Количество лотов</label>
                                                     {% if riskProfile.type|isDepositType %}
-                                                        <p>Количество лотов {{ lots }}, что составляет {{ persent }}% от депозита</p>
+                                                        <p>Количество лотов {{ lots }}, что составляет {{ persent }}% от
+                                                            депозита</p>
                                                     {% else %}
-                                                        <p>Количество лотов {{ lots }}, что составляет {{ persent }}% риска на позицию</p>
+                                                        <p>Количество лотов {{ lots }}, что составляет {{ persent }}%
+                                                            риска на позицию</p>
                                                     {% endif %}
                                                 </div>
                                                 <form method="post" action="{{ path('app_calculate_create_trade') }}">
                                                     <a href="{{ path('app_calculate_parameters') }}" class="btn btn-secondary">Назад</a>
-                                                    <a href="{{ path('app_calculate_accaunt_index') }}" class="btn btn-info">В начало</a>
-                                                    <button type="submit" class="btn btn-primary">Создать позицию</button>
+                                                    <a href="{{ path('app_calculate_accaunt_index') }}" class="btn btn-info">В
+                                                        начало</a>
+                                                    <button type="submit" class="btn btn-primary">Создать позицию
+                                                    </button>
                                                 </form>
                                             </div>
                                         </div>
