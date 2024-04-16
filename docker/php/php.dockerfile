@@ -6,7 +6,7 @@ RUN apt-get update \
     && apt-get -y install curl build-essential libssl-dev zlib1g-dev libpng-dev libjpeg-dev libfreetype6-dev libicu-dev \
     libmagickwand-dev libzip-dev zip
 
-RUN docker-php-ext-install gd pdo pdo_mysql zip intl
+RUN docker-php-ext-install gd pdo pdo_mysql zip intl bcmath
 
 #RUN pecl install xdebug-3.2.2  docker-php-ext-enable xdebug
 
