@@ -20,6 +20,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @todo при переходе назад запоминать выбранное ранее значение
+ * @todo добавить направление сделки
+ * @todo добавить некую state machine, для сохранения состояния
+ * @todo добавить валидацию параметров. Возможно перенести на post методы
  */
 class CalculateController extends AbstractController
 {
@@ -115,6 +118,12 @@ class CalculateController extends AbstractController
         try {
             $this->stockService->updateByStockId($stockId);
         } catch (\Throwable $exception) {
+            /**
+             * @todo реализовать логирование ошибки
+             */
+            /**
+             * @todo передовать текст, как алерт при неудачном обновлении инструмента
+             */
             $notificationEvent = new NotificationEvent(
                 "Ошибка обновления",
                 "Обновление цены акции не удалось",

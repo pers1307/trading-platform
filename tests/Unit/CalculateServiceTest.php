@@ -2,11 +2,9 @@
 
 namespace App\Tests\Unit;
 
-use App\DataFixture\AccauntFixture;
+use App\DataFixture\FixtureFabric;
 use App\DataFixture\RiskProfileFixture;
 use App\DataFixture\StockFixture;
-use App\DataFixture\StrategyFixture;
-use App\DataFixture\TradeFixture;
 use App\Entity\RiskProfile;
 use App\Entity\Stock;
 use App\Entity\Trade;
@@ -29,15 +27,15 @@ class CalculateServiceTest extends TestCase
     }
 
     /**
-     * @covers       \App\Service\CalculateService::calculateByDepositPersent
-     * @dataProvider providerCalculateByDepositPersent
+     * @covers       \App\Service\CalculateService::calculateLotsByDeposit
+     * @dataProvider providerCalculateLotsByDeposit
      * @throws Exception
      */
-    public function testCalculateByDepositPersent(RiskProfile $riskProfile, Stock $stock, int $lots, float $expected, string $message)
+    public function testCalculateLotsByDeposit(RiskProfile $riskProfile, Stock|Trade $source, int $expected, string $message)
     {
         $this->assertEquals(
             $expected,
-            $this->calculateService->calculateByDepositPersent($riskProfile, $stock, $lots),
+            $this->calculateService->calculateLotsByDeposit($riskProfile, $source),
             $message
         );
     }
@@ -45,61 +43,24 @@ class CalculateServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    private function providerCalculateByDepositPersent(): array
+    private function providerCalculateLotsByDeposit(): array
     {
         $riskProfile = RiskProfileFixture::getRiskProfile(RiskProfile::TYPE_DEPOSIT);
 
         $fazp = StockFixture::getGazp();
         $sber = StockFixture::getSber();
+        $longOpenTrade = FixtureFabric::getLongTrade(Trade::STATUS_OPEN, FixtureFabric::SBER);
+        $shortOpenTrade = FixtureFabric::getShortTrade(Trade::STATUS_OPEN, FixtureFabric::SBER);
 
-        return [
-            [
-                $riskProfile,
-                $fazp,
-                1,
-                0.16,
-                '1 лот GAZP от депозита 1 000 000 это 0.158 %',
-            ],
-            [
-                $riskProfile,
-                $sber,
-                1,
-                0.28,
-                '1 лот SBER от депозита 1 000 000 это 0.28 %',
-            ],
-        ];
-    }
-
-    /**
-     * @covers       \App\Service\CalculateService::calculateLotsByDepositPersent
-     * @dataProvider providerCalculateLotsByDepositPersent
-     * @throws Exception
-     */
-    public function testCalculateLotsByDepositPersent(RiskProfile $riskProfile, Stock $stock, int $expected, string $message)
-    {
-        $this->assertEquals(
-            $expected,
-            $this->calculateService->calculateLotsByDepositPersent($riskProfile, $stock),
-            $message
-        );
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function providerCalculateLotsByDepositPersent(): array
-    {
-        $riskProfile = RiskProfileFixture::getRiskProfile(RiskProfile::TYPE_DEPOSIT);
-
-        $fazp = StockFixture::getGazp();
-        $sber = StockFixture::getSber();
+        $shortOpenTrade->setStock($fazp);
+        $shortOpenTrade->setOpenPrice(250);
 
         return [
             [
                 $riskProfile,
                 $fazp,
                 63,
-                '10% от депозита 1 000 000 по акции GAZP это 64 лота',
+                '10% от депозита 1 000 000 по акции GAZP это 63 лота',
             ],
             [
                 $riskProfile,
@@ -107,45 +68,18 @@ class CalculateServiceTest extends TestCase
                 35,
                 '10% от депозита 1 000 000 по акции SBER это 35 лота',
             ],
-        ];
-    }
-
-    /**
-     * @covers       \App\Service\CalculateService::calculateByTradePersent
-     * @dataProvider providerCalculateByTradePersent
-     * @throws Exception
-     */
-    public function testCalculateByTradePersent(RiskProfile $riskProfile, Trade $trade, float $expected, string $message)
-    {
-        $this->assertEquals(
-            $expected,
-            $this->calculateService->calculateByTradePersent($riskProfile, $trade),
-            $message
-        );
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function providerCalculateByTradePersent(): array
-    {
-        $riskProfile = RiskProfileFixture::getRiskProfile(RiskProfile::TYPE_DEPOSIT);
-
-        $longOpenTrade = $this->getLongTrade(Trade::STATUS_OPEN);
-        $shortOpenTrade = $this->getShortTrade(Trade::STATUS_OPEN);
-
-        return [
+            //
             [
                 $riskProfile,
                 $longOpenTrade,
-                0.05,
-                '50 пунктов SBER при 1 лоте от депозита 1 000 000 это 0.05 %',
+                50,
+                'При цене SBER 200. При риске 10% от депозита 1 000 000 это 50 лотов',
             ],
             [
                 $riskProfile,
                 $shortOpenTrade,
-                0.02,
-                '20 пунктов SBER при 1 лоте от депозита 1 000 000 это 0.02 %',
+                40,
+                'При цене GAZP 200. При риске 10% от депозита 1 000 000 это 40 лотов',
             ],
         ];
     }
@@ -159,7 +93,7 @@ class CalculateServiceTest extends TestCase
     {
         $this->assertEquals(
             $expected,
-            $this->calculateService->calculateLotsByTradePersent($riskProfile, $trade),
+            $this->calculateService->calculateLotsByTrade($riskProfile, $trade),
             $message
         );
     }
@@ -171,8 +105,8 @@ class CalculateServiceTest extends TestCase
     {
         $riskProfile = RiskProfileFixture::getRiskProfile(RiskProfile::TYPE_DEPOSIT);
 
-        $longOpenTrade = $this->getLongTrade(Trade::STATUS_OPEN);
-        $shortOpenTrade = $this->getShortTrade(Trade::STATUS_OPEN);
+        $longOpenTrade = FixtureFabric::getLongTrade(Trade::STATUS_OPEN, FixtureFabric::SBER);
+        $shortOpenTrade = FixtureFabric::getShortTrade(Trade::STATUS_OPEN, FixtureFabric::SBER);
 
         return [
             [
@@ -191,29 +125,84 @@ class CalculateServiceTest extends TestCase
     }
 
     /**
-     * @throws \Exception
-     * @todo можно вынести эти методы в абстрактный класс и не заниматься их дублированием
+     * @covers       \App\Service\CalculateService::calculatePersentByDeposit
+     * @dataProvider providerCalculatePersentByDepositPersent
+     * @throws Exception
      */
-    private function getLongTrade(string $status): Trade
+    public function testCalculateByDepositPersent(RiskProfile $riskProfile, Stock $stock, int $lots, float $expected, string $message)
     {
-        $trade = TradeFixture::getLongTrade($status);
-        $trade->setStock(StockFixture::getSber());
-        $trade->setAccaunt(AccauntFixture::getOneAccaunt());
-        $trade->setStrategy(StrategyFixture::getMyStrategy());
-
-        return $trade;
+        $this->assertEquals(
+            $expected,
+            $this->calculateService->calculatePersentByDeposit($riskProfile, $stock, $lots),
+            $message
+        );
     }
 
     /**
      * @throws \Exception
      */
-    private function getShortTrade(string $status): Trade
+    private function providerCalculatePersentByDepositPersent(): array
     {
-        $trade = TradeFixture::getShortTrade($status);
-        $trade->setStock(StockFixture::getSber());
-        $trade->setAccaunt(AccauntFixture::getOneAccaunt());
-        $trade->setStrategy(StrategyFixture::getMyStrategy());
+        $riskProfile = RiskProfileFixture::getRiskProfile(RiskProfile::TYPE_DEPOSIT);
 
-        return $trade;
+        $fazp = StockFixture::getGazp();
+        $sber = StockFixture::getSber();
+
+        return [
+            [
+                $riskProfile,
+                $fazp,
+                1,
+                0.16,
+                '1 лот GAZP от депозита 1 000 000 это 0.158%',
+            ],
+            [
+                $riskProfile,
+                $sber,
+                1,
+                0.28,
+                '1 лот SBER от депозита 1 000 000 это 0.28%',
+            ],
+        ];
+    }
+
+    /**
+     * @covers       \App\Service\CalculateService::calculatePersentByTrade
+     * @dataProvider providerCalculatePersentByTrade
+     * @throws Exception
+     */
+    public function testCalculateByTradePersent(RiskProfile $riskProfile, Trade $trade, float $expected, string $message)
+    {
+        $this->assertEquals(
+            $expected,
+            $this->calculateService->calculatePersentByTrade($riskProfile, $trade),
+            $message
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function providerCalculatePersentByTrade(): array
+    {
+        $riskProfile = RiskProfileFixture::getRiskProfile(RiskProfile::TYPE_DEPOSIT);
+
+        $longOpenTrade = FixtureFabric::getLongTrade(Trade::STATUS_OPEN, FixtureFabric::SBER);
+        $shortOpenTrade = FixtureFabric::getShortTrade(Trade::STATUS_OPEN, FixtureFabric::SBER);
+
+        return [
+            [
+                $riskProfile,
+                $longOpenTrade,
+                0.05,
+                '50 пунктов SBER при 1 лоте от депозита 1 000 000 это 0.05%',
+            ],
+            [
+                $riskProfile,
+                $shortOpenTrade,
+                0.02,
+                '20 пунктов SBER при 1 лоте от депозита 1 000 000 это 0.02%',
+            ],
+        ];
     }
 }

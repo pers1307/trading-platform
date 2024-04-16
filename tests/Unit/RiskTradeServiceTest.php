@@ -2,17 +2,11 @@
 
 namespace App\Tests\Unit;
 
-use App\DataFixture\AccauntFixture;
-use App\DataFixture\RiskProfileFixture;
-use App\DataFixture\StockFixture;
-use App\DataFixture\StrategyFixture;
-use App\DataFixture\TradeFixture;
+use App\DataFixture\FixtureFabric;
 use App\Dto\ActiveTradesWithRisks;
 use App\Dto\Notification;
 use App\Dto\RiskTrades;
-use App\Entity\Accaunt;
 use App\Entity\RiskProfile;
-use App\Entity\Strategy;
 use App\Entity\Trade;
 use App\Entity\TradeRiskWarning;
 use App\Service\CalculateService;
@@ -48,14 +42,14 @@ class RiskTradeServiceTest extends TestCase
 
     /**
      * @covers       \App\Service\RiskTradeService::check
+     * @throws \Exception
      */
     public function testCheckExistsRiskWarning()
     {
-        $longCloseTrade = $this
-            ->getLongTrade(Trade::STATUS_CLOSE)
+        $longCloseTrade = FixtureFabric::getLongTrade(Trade::STATUS_CLOSE, FixtureFabric::SBER)
             ->setLots(1000)
             ->setTradeRiskWarning(new TradeRiskWarning());
-        $depositeRiskProfile = $this->getRiskProfile(RiskProfile::TYPE_DEPOSIT);
+        $depositeRiskProfile = FixtureFabric::getRiskProfile(RiskProfile::TYPE_DEPOSIT);
 
         $activeTradesWithRisks = new ActiveTradesWithRisks(
             [$longCloseTrade],
@@ -75,71 +69,12 @@ class RiskTradeServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    private function getLongTrade(string $status): Trade
-    {
-        $trade = TradeFixture::getLongTrade($status);
-        $trade->setStock(StockFixture::getSber());
-        $trade->setAccaunt($this->getAccaunt());
-        $trade->setStrategy($this->getStrategy());
-
-        return $trade;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function getShortTrade(string $status): Trade
-    {
-        $trade = TradeFixture::getShortTrade($status);
-        $trade->setStock(StockFixture::getSber());
-        $trade->setAccaunt($this->getAccaunt());
-        $trade->setStrategy($this->getStrategy());
-
-        return $trade;
-    }
-
-    private function getRiskProfile(string $type): RiskProfile
-    {
-        $riskProfile = RiskProfileFixture::getRiskProfile($type);
-        $riskProfile->setAccaunt($this->getAccaunt());
-        $riskProfile->setStrategy($this->getStrategy());
-
-        return $riskProfile;
-    }
-
-    private function getAccaunt(): Accaunt
-    {
-        $accaunt = AccauntFixture::getOneAccaunt();
-
-        $reflection = new \ReflectionClass($accaunt);
-        $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
-        $property->setValue($accaunt, 1);
-
-        return $accaunt;
-    }
-
-    private function getStrategy(): Strategy
-    {
-        $strategy = StrategyFixture::getMyStrategy();
-
-        $reflection = new \ReflectionClass($strategy);
-        $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
-        $property->setValue($strategy, 1);
-
-        return $strategy;
-    }
-
-    /**
-     * @throws \Exception
-     */
     private function provider(): array
     {
-        $longCloseTrade = $this->getLongTrade(Trade::STATUS_CLOSE);
-        $shortCloseTrade = $this->getShortTrade(Trade::STATUS_CLOSE);
-        $depositeRiskProfile = $this->getRiskProfile(RiskProfile::TYPE_DEPOSIT);
-        $tradeRiskProfile = $this->getRiskProfile(RiskProfile::TYPE_TRADE);
+        $longCloseTrade = FixtureFabric::getLongTrade(Trade::STATUS_CLOSE, FixtureFabric::SBER);
+        $shortCloseTrade = FixtureFabric::getShortTrade(Trade::STATUS_CLOSE, FixtureFabric::SBER);
+        $depositeRiskProfile = FixtureFabric::getRiskProfile(RiskProfile::TYPE_DEPOSIT);
+        $tradeRiskProfile = FixtureFabric::getRiskProfile(RiskProfile::TYPE_TRADE);
 
         return [
             [
@@ -153,8 +88,8 @@ class RiskTradeServiceTest extends TestCase
                     [clone $longCloseTrade->setLots(1000)],
                     [
                         new Notification(
-                            "Нарушение риск-менеджмента!",
-                            "Счет №1. Моя стратегия. SBER. Long.\nРассчет: 50 лотов. Факт: 1000"
+                            "**Нарушение риск-менеджмента!**",
+                            "Счет №1. Моя стратегия. SBER. Long.\nПри риске 10% от депозита 1 000 000.\nРассчет: 50 лотов. Факт: 1000"
                         ),
                     ]
                 ),
@@ -181,8 +116,8 @@ class RiskTradeServiceTest extends TestCase
                     [clone $shortCloseTrade->setLots(1000)],
                     [
                         new Notification(
-                            "Нарушение риск-менеджмента!",
-                            "Счет №1. Моя стратегия. SBER. Short.\nРассчет: 75 лотов. Факт: 1000"
+                            "**Нарушение риск-менеджмента!**",
+                            "Счет №1. Моя стратегия. SBER. Short.\nПри риске 15% от депозита 1 000 000.\nРассчет: 75 лотов. Факт: 1000"
                         ),
                     ]
                 ),
@@ -209,8 +144,8 @@ class RiskTradeServiceTest extends TestCase
                     [clone $longCloseTrade->setLots(1000)],
                     [
                         new Notification(
-                            "Нарушение риск-менеджмента!",
-                            "Счет №1. Моя стратегия. SBER. Long.\nРассчет: 200 лотов. Факт: 1000"
+                            "**Нарушение риск-менеджмента!**",
+                            "Счет №1. Моя стратегия. SBER. Long.\nПри риске 10% на сделку от депозита 1 000 000.\nРассчет: 200 лотов. Факт: 1000"
                         ),
                     ]
                 ),
@@ -237,8 +172,8 @@ class RiskTradeServiceTest extends TestCase
                     [clone $shortCloseTrade->setLots(1000)],
                     [
                         new Notification(
-                            "Нарушение риск-менеджмента!",
-                            "Счет №1. Моя стратегия. SBER. Short.\nРассчет: 750 лотов. Факт: 1000"
+                            "**Нарушение риск-менеджмента!**",
+                            "Счет №1. Моя стратегия. SBER. Short.\nПри риске 15% на сделку от депозита 1 000 000.\nРассчет: 750 лотов. Факт: 1000"
                         ),
                     ]
                 ),

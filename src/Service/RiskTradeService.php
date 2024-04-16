@@ -51,9 +51,9 @@ class RiskTradeService
     private function calculateLots(Trade $trade, RiskProfile $riskProfile): int
     {
         if (RiskProfile::TYPE_DEPOSIT === $riskProfile->getType()) {
-            return $this->calculateService->calculateLotsByDepositPersentForTrade($riskProfile, $trade);
+            return $this->calculateService->calculateLotsByDeposit($riskProfile, $trade);
         } elseif (RiskProfile::TYPE_TRADE === $riskProfile->getType()) {
-            return $this->calculateService->calculateLotsByTradePersent($riskProfile, $trade);
+            return $this->calculateService->calculateLotsByTrade($riskProfile, $trade);
         }
 
         return 0;
@@ -62,21 +62,27 @@ class RiskTradeService
     private function createRiskTradeNotification(Trade $trade, RiskProfile $riskProfile, int $recommendedLots): Notification
     {
         $type = ucfirst($trade->getType());
-        $text = "{$trade->getAccaunt()->getTitle()}. {$trade->getStrategy()->getTitle()}. {$trade->getStock()->getSecId()}. $type.\nРассчет: $recommendedLots лотов. Факт: {$trade->getLots()}";
+        $balance = number_format($riskProfile->getBalance(), 0, '.', ' ');
+        if (RiskProfile::TYPE_DEPOSIT === $riskProfile->getType()) {
+            $text = "{$trade->getAccaunt()->getTitle()}. {$trade->getStrategy()->getTitle()}. {$trade->getStock()->getSecId()}. $type."
+                . "\n"
+                . "При риске {$riskProfile->getPersent()}% от депозита {$balance}."
+                . "\n"
+                . "Рассчет: $recommendedLots лотов. Факт: {$trade->getLots()}";
+        } elseif (RiskProfile::TYPE_TRADE === $riskProfile->getType()) {
+            $text = "{$trade->getAccaunt()->getTitle()}. {$trade->getStrategy()->getTitle()}. {$trade->getStock()->getSecId()}. $type."
+                . "\n"
+                . "При риске {$riskProfile->getPersent()}% на сделку от депозита {$balance}."
+                . "\n"
+                . "Рассчет: $recommendedLots лотов. Факт: {$trade->getLots()}";
+        } else {
+            $text = "{$trade->getAccaunt()->getTitle()}. {$trade->getStrategy()->getTitle()}. {$trade->getStock()->getSecId()}. $type.\n"
+                . "Рассчет: $recommendedLots лотов. Факт: {$trade->getLots()}";
+        }
 
         return new Notification(
-            'Нарушение риск-менеджмента!',
+            '**Нарушение риск-менеджмента!**',
             $text
         );
-
-        // @todo: разные нотификации в зависимости от риск профиля
-
-        //        if (RiskProfile::TYPE_DEPOSIT === $riskProfile->getType()) {
-        //            return $this->calculateService->calculateLotsByDepositPersent($riskProfile, $trade->getStock());
-        //        } elseif (RiskProfile::TYPE_TRADE === $riskProfile->getType()) {
-        //            return $this->calculateService->calculateLotsByTradePersent($riskProfile, $trade);
-        //        }
-        //
-        //        return 0;
     }
 }
