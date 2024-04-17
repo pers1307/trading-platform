@@ -1,5 +1,11 @@
 {% extends 'base.admin.html.twig' %}
 
+{% block css %}
+    <link rel="stylesheet" href="{{ asset('vendor/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    {{ parent() }}
+{% endblock %}
+
 {% block content %}
     <div class="content-wrapper">
         <div class="content-header">
@@ -75,6 +81,13 @@
                                                         {% endif %}
                                                     </div>
                                                     <div class="form-group">
+                                                        <label for="type">Направление</label>
+                                                        <select class="form-control select2" style="width: 100%;" name="type">
+                                                            <option value="long" selected="selected">Long</option>
+                                                            <option value="short">Short</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label for="stockPrice">Цена акции {{ stock.secId }}</label>
                                                         <input type="text" class="form-control" id="stockPrice" name="stockPrice" placeholder="Цена" value="{{ stock.price }}">
                                                     </div>
@@ -102,4 +115,10 @@
             </div>
         </section>
     </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('vendor/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('js/calculate/params.js') }}"></script>
 {% endblock %}

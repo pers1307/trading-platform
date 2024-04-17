@@ -4,14 +4,14 @@ namespace App\Controller;
 
 use App\Entity\RiskProfile;
 use App\Entity\Trade;
-use App\Event\NotificationEvent;
 use App\Service\AccauntService;
 use App\Service\CalculateService;
+use App\Service\CalculateStateFormService;
 use App\Service\RiskProfileService;
 use App\Service\StockService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,8 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @todo при переходе назад запоминать выбранное ранее значение
- * @todo добавить направление сделки
- * @todo добавить некую state machine, для сохранения состояния
  * @todo добавить валидацию параметров. Возможно перенести на post методы
  */
 class CalculateController extends AbstractController
@@ -30,17 +28,17 @@ class CalculateController extends AbstractController
         private readonly AccauntService $accauntService,
         private readonly StockService $stockService,
         private readonly RiskProfileService $riskProfileService,
-        private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly CalculateService $calculateService
+        private readonly CalculateService $calculateService,
+        private readonly LoggerInterface $dictionaryLogger,
+        private readonly CalculateStateFormService $calculateStateFormService,
     ) {
     }
 
     #[Route('/calculate/accaunt', name: 'app_calculate_accaunt_index')]
-    public function chooseAccaunt(Request $request): Response
+    public function chooseAccaunt(): Response
     {
+        $this->calculateStateFormService->clear();
         $accaunts = $this->accauntService->findAll();
-        $session = $request->getSession();
-        $session->clear();
 
         return $this->render('calculate/choose-accaunt.html.twig', [
             'accaunts' => $accaunts,
@@ -54,18 +52,15 @@ class CalculateController extends AbstractController
         if (empty($accauntId)) {
             throw new NotFoundHttpException();
         }
-
-        $session = $request->getSession();
-        $session->set('accauntId', $accauntId);
+        $this->calculateStateFormService->setAccauntId($accauntId);
 
         return $this->redirectToRoute('app_calculate_strategy');
     }
 
     #[Route('/calculate/strategy', name: 'app_calculate_strategy')]
-    public function chooseStrategy(Request $request): Response
+    public function chooseStrategy(): Response
     {
-        $session = $request->getSession();
-        $accauntId = $session->get('accauntId');
+        $accauntId = $this->calculateStateFormService->getAccauntId();
         if (empty($accauntId)) {
             throw new NotFoundHttpException();
         }
@@ -88,8 +83,7 @@ class CalculateController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $session = $request->getSession();
-        $session->set('strategyId', $strategyId);
+        $this->calculateStateFormService->setStrategyId($strategyId);
 
         return $this->redirectToRoute('app_calculate_stock');
     }
@@ -111,36 +105,23 @@ class CalculateController extends AbstractController
         if (is_null($stockId)) {
             throw new NotFoundHttpException();
         }
-
-        $session = $request->getSession();
-        $session->set('stockId', $stockId);
+        $this->calculateStateFormService->setStockId($stockId);
 
         try {
             $this->stockService->updateByStockId($stockId);
         } catch (\Throwable $exception) {
-            /**
-             * @todo реализовать логирование ошибки
-             */
-            /**
-             * @todo передовать текст, как алерт при неудачном обновлении инструмента
-             */
-            $notificationEvent = new NotificationEvent(
-                "Ошибка обновления",
-                "Обновление цены акции не удалось",
-            );
-            $this->eventDispatcher->dispatch($notificationEvent);
+            $this->dictionaryLogger->error($exception);
         }
 
         return $this->redirectToRoute('app_calculate_parameters');
     }
 
     #[Route('/calculate/parameters', name: 'app_calculate_parameters')]
-    public function chooseParameters(Request $request): Response
+    public function chooseParameters(): Response
     {
-        $session = $request->getSession();
-        $stockId = $session->get('stockId');
-        $accauntId = $session->get('accauntId');
-        $strategyId = $session->get('strategyId');
+        $stockId = $this->calculateStateFormService->getStockId();
+        $accauntId = $this->calculateStateFormService->getAccauntId();
+        $strategyId = $this->calculateStateFormService->getStrategyId();
 
         if (empty($stockId) || empty($accauntId) || empty($strategyId)) {
             throw new NotFoundHttpException();
@@ -165,30 +146,38 @@ class CalculateController extends AbstractController
     #[Route('/calculate/parameters/save', name: 'app_calculate_parameters_save')]
     public function saveParameters(Request $request): RedirectResponse
     {
+        // Получение данных
+        // Валидация данных
+        // Применение данных
+
         $stockPrice = $request->get('stockPrice');
+        $type = $request->get('type');
         $stopLossPrice = $request->get('stopLossPrice');
         $takeProfitPrice = $request->get('takeProfitPrice');
 
-        $session = $request->getSession();
-        $session->set('stockPrice', $stockPrice);
-        $session->set('stopLossPrice', $stopLossPrice);
-        $session->set('takeProfitPrice', $takeProfitPrice);
+        $this->calculateStateFormService->setStockPrice($stockPrice);
+        $this->calculateStateFormService->setStopLossPrice($stopLossPrice);
+        $this->calculateStateFormService->setTakeProfitPrice($takeProfitPrice);
+        $this->calculateStateFormService->setType($type);
 
         return $this->redirectToRoute('app_calculate_result');
     }
 
+    /**
+     * @todo вынести в отдельный сервис + тесты
+     */
     #[Route('/calculate/result', name: 'app_calculate_result')]
-    public function chooseResult(Request $request): Response
+    public function chooseResult(): Response
     {
-        $session = $request->getSession();
-        $stockId = $session->get('stockId');
-        $accauntId = $session->get('accauntId');
-        $strategyId = $session->get('strategyId');
-        $stockPrice = $session->get('stockPrice');
-        $stopLossPrice = $session->get('stopLossPrice');
-        $takeProfitPrice = $session->get('takeProfitPrice');
+        $stockId = $this->calculateStateFormService->getStockId();
+        $accauntId = $this->calculateStateFormService->getAccauntId();
+        $strategyId = $this->calculateStateFormService->getStrategyId();
+        $stockPrice = $this->calculateStateFormService->getStockPrice();
+        $stopLossPrice = $this->calculateStateFormService->getStopLossPrice();
+        $takeProfitPrice = $this->calculateStateFormService->getTakeProfitPrice();
+        $type = $this->calculateStateFormService->getType();
 
-        if (empty($stockId) || empty($accauntId) || empty($strategyId) || empty($stockPrice)) {
+        if (empty($stockId) || empty($accauntId) || empty($strategyId) || empty($stockPrice) || empty($type)) {
             throw new NotFoundHttpException();
         }
 
@@ -206,8 +195,8 @@ class CalculateController extends AbstractController
         $profitLoss = 0;
         $trade = null;
         if ($riskProfile->getType() === RiskProfile::TYPE_DEPOSIT) {
-            $lots = $this->calculateService->calculateLotsByDepositPersent($riskProfile, $stock);
-            $persent = $this->calculateService->calculateByDepositPersent($riskProfile, $stock, $lots);
+            $lots = $this->calculateService->calculateLotsByDeposit($riskProfile, $stock);
+            $persent = $this->calculateService->calculatePersentByDeposit($riskProfile, $stock, $lots);
         } else {
             $trade = (new Trade())
                 ->setStock($stock)
@@ -215,16 +204,16 @@ class CalculateController extends AbstractController
                 ->setStopLoss($stopLossPrice)
                 ->setTakeProfit($takeProfitPrice);
 
-            $lots = $this->calculateService->calculateLotsByTradePersent($riskProfile, $trade);
+            $lots = $this->calculateService->calculateLotsByTrade($riskProfile, $trade);
             $trade->setLots($lots);
 
-            $persent = $this->calculateService->calculateByTradePersent($riskProfile, $trade);
+            $persent = $this->calculateService->calculatePersentByTrade($riskProfile, $trade);
 
             if (!empty($trade->getTakeProfit())) {
                 $profitLoss = abs($trade->getTakeProfit() - $trade->getOpenPrice()) / abs($trade->getOpenPrice() - $trade->getStopLoss());
             }
         }
-        $session->set('lots', $lots);
+        $this->calculateStateFormService->setLots($lots);
 
         return $this->render('calculate/result.html.twig', [
             'riskProfile' => $riskProfile,
@@ -236,19 +225,24 @@ class CalculateController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws \Exception
+     * @todo вынести в отдельный сервис
+     * @todo покрыть тестом
+     */
     #[Route('/calculate/create/trade', name: 'app_calculate_create_trade')]
-    public function createTrade(Request $request, EntityManagerInterface $entityManager): RedirectResponse
+    public function createTrade(EntityManagerInterface $entityManager): RedirectResponse
     {
-        $session = $request->getSession();
-        $lots = $session->get('lots');
-        $stockId = $session->get('stockId');
-        $accauntId = $session->get('accauntId');
-        $strategyId = $session->get('strategyId');
-        $stockPrice = $session->get('stockPrice');
-        $stopLossPrice = $session->get('stopLossPrice');
-        $takeProfitPrice = $session->get('takeProfitPrice');
+        $stockId = $this->calculateStateFormService->getStockId();
+        $accauntId = $this->calculateStateFormService->getAccauntId();
+        $strategyId = $this->calculateStateFormService->getStrategyId();
+        $stockPrice = $this->calculateStateFormService->getStockPrice();
+        $stopLossPrice = $this->calculateStateFormService->getStopLossPrice();
+        $takeProfitPrice = $this->calculateStateFormService->getTakeProfitPrice();
+        $type = $this->calculateStateFormService->getType();
+        $lots = $this->calculateStateFormService->getLots();
 
-        if (empty($stockId) || empty($accauntId) || empty($strategyId) || empty($stockPrice) || empty($lots)) {
+        if (empty($stockId) || empty($accauntId) || empty($strategyId) || empty($stockPrice) || empty($lots) || empty($type)) {
             throw new NotFoundHttpException();
         }
 
@@ -270,14 +264,14 @@ class CalculateController extends AbstractController
             ->setOpenPrice($stock->getPrice())
             ->setStopLoss($stopLossPrice)
             ->setTakeProfit($takeProfitPrice)
-            ->setType(Trade::TYPE_LONG) // Пока работает только на покупку
+            ->setType($type)
             ->setLots($lots)
             ->setStatus(Trade::STATUS_OPEN);
 
         $entityManager->persist($trade);
         $entityManager->flush();
 
-        $session->clear();
+        $this->calculateStateFormService->clear();
 
         return $this->redirectToRoute('app_trade_active_group_by_strategies_list');
     }
