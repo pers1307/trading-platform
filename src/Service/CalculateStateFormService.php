@@ -66,39 +66,39 @@ class CalculateStateFormService
         return $this;
     }
 
-    public function getStockPrice(): float
+    public function getStockPrice(): ?float
     {
         $session = $this->requestStack->getSession();
         return $session->get('stockPrice');
     }
 
-    public function setStockPrice(float $stockPrice): static
+    public function setStockPrice(?float $stockPrice): static
     {
         $session = $this->requestStack->getSession();
         $session->set('stockPrice', $stockPrice);
         return $this;
     }
 
-    public function getStopLossPrice(): float
+    public function getStopLossPrice(): ?float
     {
         $session = $this->requestStack->getSession();
         return $session->get('stopLossPrice');
     }
 
-    public function setStopLossPrice(float $stopLossPrice): static
+    public function setStopLossPrice(?float $stopLossPrice): static
     {
         $session = $this->requestStack->getSession();
         $session->set('stopLossPrice', $stopLossPrice);
         return $this;
     }
 
-    public function getTakeProfitPrice(): float
+    public function getTakeProfitPrice(): ?float
     {
         $session = $this->requestStack->getSession();
         return $session->get('takeProfitPrice');
     }
 
-    public function setTakeProfitPrice(float $takeProfitPrice): static
+    public function setTakeProfitPrice(?float $takeProfitPrice): static
     {
         $session = $this->requestStack->getSession();
         $session->set('takeProfitPrice', $takeProfitPrice);
