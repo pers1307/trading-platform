@@ -29,8 +29,8 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3>150</h3>
-                                <p>Дней уже торгуем</p>
+                                <h3>150 д. 8 ч. 32 м.</h3>
+                                <p>Уже торгуем</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-forward"></i>
@@ -40,9 +40,9 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>{{ extensionTradesCollection.statistic.countTrades }}</h3>
+                                <h3>180 часов</h3>
 
-                                <p>Совершенных сделок</p>
+                                <p>Средняя длительность положительной сделки</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-plus"></i>
@@ -50,10 +50,74 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-6">
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3>180 часов</h3>
+
+                                <p>Средняя длительность отрицательной сделки</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-minus"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-orange">
+                            <div class="inner">
+                                <h3>{{ extensionTradesCollection.statistic.countTrades }}</h3>
+                                <p>Совершенных сделок</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3>{{ extensionTradesCollection.statistic.countProfitTrades }}</h3>
+                                <p>Количество прибыльных сделок</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3>
+                                    {{ extensionTradesCollection.statistic.countLossTrades }}
+                                    {#                                    | {{ strategyStatistics.averageProfit|number_format(2) }} / {{ strategyStatistics.averageLoss|number_format(2) }} #}
+                                </h3>
+                                <p>Количество убыточных сделок</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-minus"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-lightblue">
+                            <div class="inner">
+                                <h3>
+                                    50 / 50 %
+                                </h3>
+                                <p>Соотношение P/L сделок</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-compass"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-6">
                         <div class="small-box bg-warning">
                             <div class="inner">
-                                <h3>{{ extensionTradesCollection.statistic.expectedValue|number_format(2) }}</h3>
-
+                                <h3>{{ extensionTradesCollection.statistic.expectedValue|number_format(2, '.', ' ') }}</h3>
                                 <p>Математическое ожидание</p>
                             </div>
                             <div class="icon">
@@ -62,17 +126,41 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-6">
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3>
+                                    {{ extensionTradesCollection.statistic.averageProfit|number_format(2, '.', ' ') }}
+                                </h3>
+                                <p>Среднее значение прибыли</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
                         <div class="small-box bg-danger">
                             <div class="inner">
                                 <h3>
-                                    {{ extensionTradesCollection.statistic.countProfitTrades }}
-                                    / {{ extensionTradesCollection.statistic.countLossTrades }}
-                                    {#                                    | {{ strategyStatistics.averageProfit|number_format(2) }} / {{ strategyStatistics.averageLoss|number_format(2) }} #}
+                                    {{ extensionTradesCollection.statistic.averageLoss|number_format(2, '.', ' ') }}
                                 </h3>
-                                <p>Прибыльные / Убыточные сделки</p>
+                                <p>Среднее значение убытка</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-pie-graph"></i>
+                                <i class="ion ion-minus"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-lightblue">
+                            <div class="inner">
+                                <h3>
+                                    2.5
+                                </h3>
+                                <p>P/L</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-flash"></i>
                             </div>
                         </div>
                     </div>
