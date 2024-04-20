@@ -9,9 +9,9 @@ class ExtensionTradesCollection
      */
     public function __construct(
         private readonly array $extensionTrades,
-        private readonly Statistic $statistic,
-        private readonly Graph $graph,
-        private readonly array $cumulativeTotalArray,
+        private readonly ?Statistic $statistic,
+        private readonly ?Graph $graph,
+        private readonly ?array $cumulativeTotalArray,
     ) {
     }
 
@@ -23,17 +23,17 @@ class ExtensionTradesCollection
         return $this->extensionTrades;
     }
 
-    public function getStatistic(): Statistic
+    public function getStatistic(): ?Statistic
     {
         return $this->statistic;
     }
 
-    public function getGraph(): Graph
+    public function getGraph(): ?Graph
     {
         return $this->graph;
     }
 
-    public function getCumulativeTotalArray(): array
+    public function getCumulativeTotalArray(): ?array
     {
         return $this->cumulativeTotalArray;
     }

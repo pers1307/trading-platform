@@ -39,6 +39,16 @@ class ExtensionTradeCollectionService
         $tradeRepository = $this->entityManager->getRepository(Trade::class);
         $trades = $tradeRepository->findAllCloseByStrategyIdAndAccauntId($strategyId, $accauntId);
         $extensionTrades = $this->extensionTradeService->convertTradesToExtensionTrades($trades);
+
+        if (empty($extensionTrades)) {
+            return new ExtensionTradesCollection(
+                $extensionTrades,
+                null,
+                null,
+                null
+            );
+        }
+
         $statistic = $this->statisticService->calculate($extensionTrades);
         $cumulativeTotalArray = $this->cumulativeTotalService->calculate($extensionTrades);
         $graph = $this->getGraph($extensionTrades, $cumulativeTotalArray);
