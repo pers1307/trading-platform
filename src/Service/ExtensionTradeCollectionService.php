@@ -49,6 +49,11 @@ class ExtensionTradeCollectionService
             );
         }
 
+        /**
+         * @todo: вернуть дто в котором есть нулевой элемент.
+         * Для того, чтобы правильно считать статистику по торговле
+         */
+
         $statistic = $this->statisticService->calculate($extensionTrades);
         $cumulativeTotalArray = $this->cumulativeTotalService->calculate($extensionTrades);
         $graph = $this->getGraph($extensionTrades, $cumulativeTotalArray);

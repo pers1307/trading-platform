@@ -6,8 +6,12 @@ use App\Dto\Statistic;
 
 class StatisticService
 {
-    public function calculate(array $extensionTrades): Statistic
+    public function calculate(array $extensionTrades): ?Statistic
     {
+        if (empty($extensionTrades)) {
+            return null;
+        }
+
         $countLossTrades = 0;
         $countProfitTrades = 0;
         $summaryProfit = 0;

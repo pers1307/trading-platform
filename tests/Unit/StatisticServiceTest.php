@@ -58,4 +58,13 @@ class StatisticServiceTest extends TestCase
         $this->assertEquals(-80.0, $expected->getAverageLoss());
         $this->assertEquals(148, $expected->getExpectedValue());
     }
+
+    /**
+     * @covers       \App\Service\StatisticService::calculate
+     */
+    public function testCalculateEmptyTrades()
+    {
+        $expected = $this->statisticService->calculate([]);
+        $this->assertNull($expected);
+    }
 }
