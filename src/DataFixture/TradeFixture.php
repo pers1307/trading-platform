@@ -19,10 +19,10 @@ class TradeFixture extends Fixture implements DependentFixtureInterface
     }
 
     /**
+     * @throws \Exception
      * @todo: перевести на фабрики
      * через фабричные методы собирать объекты,
      * чтобы сделать тесты изолированными
-     * @throws \Exception
      */
     public static function getLongTrade(string $status): Trade
     {
@@ -162,6 +162,12 @@ class TradeFixture extends Fixture implements DependentFixtureInterface
 
             $manager->persist($trade);
         }
+
+        $trade = self::getLongTrade(Trade::STATUS_OPEN);
+        $trade->setStock($this->getReference(StockFixture::GAZP));
+        $trade->setAccaunt($this->getReference(AccauntFixture::ACCAUNT_ONE));
+        $trade->setStrategy($this->getReference(StrategyFixture::EMPTY_STRATEGY));
+        $manager->persist($trade);
 
         $manager->flush();
     }

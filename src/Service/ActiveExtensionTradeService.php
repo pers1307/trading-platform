@@ -9,14 +9,12 @@ use App\Exception\TradeHasNotClosePriceException;
 use App\Exception\TradeHasUnknownStatusException;
 use App\Exception\TradeHasUnknownTypeException;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ActiveExtensionTradeService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly ExtensionTradeService $extensionTradeService,
-        private readonly EventDispatcherInterface $eventDispatcher
+        private readonly ExtensionTradeService $extensionTradeService
     ) {
     }
 
@@ -30,7 +28,7 @@ class ActiveExtensionTradeService
     public function getByStrategy(): array
     {
         $tradeRepository = $this->entityManager->getRepository(Trade::class);
-        $strategiesByAccaunts = $tradeRepository->getStrategiesByAccaunts();
+        $strategiesByAccaunts = $tradeRepository->getStrategiesByAccaunts(Trade::STATUS_OPEN);
         $activeTrades = $tradeRepository->findAllActive();
         $activeExtensionTrades = $this->extensionTradeService->convertTradesToExtensionTrades($activeTrades);
 

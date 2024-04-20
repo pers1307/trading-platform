@@ -3,7 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Trade;
+use App\Exception\UnknownStatusException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -69,13 +72,24 @@ class TradeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getStrategiesByAccaunts(): array
+    /**
+     * @throws UnknownStatusException
+     */
+    public function getStrategiesByAccaunts(string $tradeStatus): array
     {
+        if (
+            Trade::STATUS_OPEN !== $tradeStatus
+            && Trade::STATUS_CLOSE !== $tradeStatus
+        ) {
+            throw new UnknownStatusException();
+        }
+
         $command = "
                 SELECT strategy.title AS strategyTitle, accaunt.title AS accauntTitle, strategy.id AS strategyId, accaunt.id AS accauntId
                 FROM (
                     SELECT strategy_id, accaunt_id
                     FROM trade
+                    WHERE status = :tradeStatus
                     GROUP BY strategy_id, accaunt_id    
                 ) AS strategiesByAccaunts
                 JOIN strategy ON strategiesByAccaunts.strategy_id = strategy.id
@@ -90,6 +104,11 @@ class TradeRepository extends ServiceEntityRepository
 
         return $this->getEntityManager()
             ->createNativeQuery($command, $rsm)
+            ->setParameters(
+                new ArrayCollection([
+                    new Parameter('tradeStatus', $tradeStatus),
+                ])
+            )
             ->execute();
     }
 }

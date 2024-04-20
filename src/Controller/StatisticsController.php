@@ -25,7 +25,7 @@ class StatisticsController extends AbstractController
     public function listByStrategies(EntityManagerInterface $entityManager): Response
     {
         $tradeRepository = $entityManager->getRepository(Trade::class);
-        $strategiesByAccaunts = $tradeRepository->getStrategiesByAccaunts();
+        $strategiesByAccaunts = $tradeRepository->getStrategiesByAccaunts(Trade::STATUS_CLOSE);
 
         return $this->render('statistics/list.by.strategies.html.twig', [
             'strategiesByAccaunts' => $strategiesByAccaunts,

@@ -3,6 +3,8 @@
 namespace App\Tests\Integration;
 
 use App\DataFixture\TradeFixture;
+use App\Entity\Trade;
+use App\Exception\UnknownStatusException;
 use App\Repository\TradeRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -18,18 +20,39 @@ class TradeRepositoryTest extends KernelTestCase
         $tradeRepository = $container->get(TradeRepository::class);
         $result = $tradeRepository->findAll();
 
-        $countTradres = count(TradeFixture::getTrades()) + 2;
+        $countTradres = count(TradeFixture::getTrades()) + 3;
 
         $this->assertCount($countTradres, $result);
     }
 
-    public function testGetStrategiesByAccaunts(): void
+    public function testGetCloseTradeStrategiesByAccaunts(): void
     {
         self::bootKernel();
         $container = static::getContainer();
         $tradeRepository = $container->get(TradeRepository::class);
-        $result = $tradeRepository->getStrategiesByAccaunts();
+        $result = $tradeRepository->getStrategiesByAccaunts(Trade::STATUS_CLOSE);
 
         $this->assertCount(2, $result);
+    }
+
+    public function testGetOpenTradeStrategiesByAccaunts(): void
+    {
+        self::bootKernel();
+        $container = static::getContainer();
+        $tradeRepository = $container->get(TradeRepository::class);
+        $result = $tradeRepository->getStrategiesByAccaunts(Trade::STATUS_OPEN);
+
+        $this->assertCount(2, $result);
+    }
+
+    public function testGetUnknownTradeStatusStrategiesByAccaunts(): void
+    {
+        self::bootKernel();
+        $container = static::getContainer();
+        $tradeRepository = $container->get(TradeRepository::class);
+
+        $this->expectException(UnknownStatusException::class);
+
+        $tradeRepository->getStrategiesByAccaunts('Hello');
     }
 }
