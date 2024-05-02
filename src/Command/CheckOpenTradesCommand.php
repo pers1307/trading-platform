@@ -4,7 +4,6 @@ namespace App\Command;
 
 use App\Repository\TradeRepository;
 use App\Service\OpenTradeApplierService;
-use App\Service\OpenTradeNotificationService;
 use App\Service\OpenTradeService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,8 +23,9 @@ class CheckOpenTradesCommand extends Command
         private readonly TradeRepository $tradeRepository,
         private readonly OpenTradeService $openTradeService,
         private readonly OpenTradeApplierService $openTradeApplierService,
-        private readonly OpenTradeNotificationService $openTradeNotificationService,
-    ) {
+        //        private readonly OpenTradeNotificationService $openTradeNotificationService,
+    )
+    {
         parent::__construct();
     }
 
@@ -35,7 +35,7 @@ class CheckOpenTradesCommand extends Command
 
         $openTradeNotifications = $this->openTradeService->check($trades);
 
-        $openTradeNotifications = $this->openTradeNotificationService->merge($openTradeNotifications);
+        //        $openTradeNotifications = $this->openTradeNotificationService->merge($openTradeNotifications);
         $this->openTradeApplierService->apply($openTradeNotifications);
 
         return Command::SUCCESS;

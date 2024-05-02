@@ -17,6 +17,6 @@ class TradeRiskWarningRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Trade::class);
+        parent::__construct($registry, TradeRiskWarning::class);
     }
 }

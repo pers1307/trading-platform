@@ -18,25 +18,29 @@ class OpenTradeService
     public function check(array $trades): OpenTradeNotifications
     {
         $notifications = [];
+        $closeWarningTrades = [];
         foreach ($trades as $trade) {
             if (
                 !$this->isStockPriceValid($trade->getStock())
                 || $trade->getStatus() === Trade::STATUS_CLOSE
+                || $trade->isExistsTradeCloseWarning()
             ) {
                 continue;
             }
 
             if ($this->isLoss($trade)) {
                 $notifications[] = $this->createNotification($trade, self::STOP_LOSS);
+                $closeWarningTrades[] = $trade;
                 continue;
             }
 
             if ($this->isProfit($trade)) {
                 $notifications[] = $this->createNotification($trade, self::TAKE_PROFIT);
+                $closeWarningTrades[] = $trade;
             }
         }
 
-        return new OpenTradeNotifications($notifications);
+        return new OpenTradeNotifications($notifications, $closeWarningTrades);
     }
 
     private function isStockPriceValid(Stock $stock): bool

@@ -9,6 +9,7 @@ use App\DataFixture\TradeFixture;
 use App\Dto\Notification;
 use App\Dto\OpenTradeNotifications;
 use App\Entity\Trade;
+use App\Entity\TradeCloseWarning;
 use App\Service\OpenTradeService;
 use PHPUnit\Framework\TestCase;
 
@@ -84,7 +85,7 @@ class OpenTradeServiceTest extends TestCase
                                 ->setLow(210.0)
                         ),
                 ],
-                new OpenTradeNotifications([]),
+                new OpenTradeNotifications([], []),
                 'Сделка на Long. Цена не достигла значений take-profit или stop-loss',
             ],
             [
@@ -94,12 +95,12 @@ class OpenTradeServiceTest extends TestCase
                         ->setTakeProfit(null)
                         ->setStopLoss(null),
                 ],
-                new OpenTradeNotifications([]),
+                new OpenTradeNotifications([], []),
                 'Сделка на Long. Отсутствие take-profit и stop-loss',
             ],
             [
                 [
-                    (clone $longCloseTrade)
+                    $longCloseTradeTakeProfit = (clone $longCloseTrade)
                         ->setStock(
                             StockFixture::getSber()
                                 ->setPrice(255)
@@ -113,12 +114,12 @@ class OpenTradeServiceTest extends TestCase
                         "Позиция закрылась по take-profit",
                         "Счет №1. Моя стратегия. SBER. Long"
                     ),
-                ]),
+                ], [$longCloseTradeTakeProfit]),
                 'Сделка на Long. Цена выше значений take-profit',
             ],
             [
                 [
-                    (clone $longCloseTrade)
+                    $longCloseTradeTakeProfitHigh = (clone $longCloseTrade)
                         ->setStock(
                             StockFixture::getSber()
                                 ->setPrice(230)
@@ -130,12 +131,12 @@ class OpenTradeServiceTest extends TestCase
                         "Позиция закрылась по take-profit",
                         "Счет №1. Моя стратегия. SBER. Long"
                     ),
-                ]),
+                ], [$longCloseTradeTakeProfitHigh]),
                 'Сделка на Long. Цена ниже значений take-profit, но high дня его пересек',
             ],
             [
                 [
-                    (clone $longCloseTrade)
+                    $longCloseTradeStopLoss = (clone $longCloseTrade)
                         ->setStock(
                             StockFixture::getSber()
                                 ->setPrice(120)
@@ -147,12 +148,12 @@ class OpenTradeServiceTest extends TestCase
                         "Позиция закрылась по stop-loss",
                         "Счет №1. Моя стратегия. SBER. Long"
                     ),
-                ]),
+                ], [$longCloseTradeStopLoss]),
                 'Сделка на Long. Цена ниже значений stop-loss',
             ],
             [
                 [
-                    (clone $longCloseTrade)
+                    $longCloseTradeLow = (clone $longCloseTrade)
                         ->setStock(
                             StockFixture::getSber()
                                 ->setPrice(180)
@@ -164,7 +165,7 @@ class OpenTradeServiceTest extends TestCase
                         "Позиция закрылась по stop-loss",
                         "Счет №1. Моя стратегия. SBER. Long"
                     ),
-                ]),
+                ], [$longCloseTradeLow]),
                 'Сделка на Long. Цена выше значений stop-loss, но low дня его пересек',
             ],
             //
@@ -176,7 +177,7 @@ class OpenTradeServiceTest extends TestCase
                                 ->setPrice(210),
                         ),
                 ],
-                new OpenTradeNotifications([]),
+                new OpenTradeNotifications([], []),
                 'Сделка на Short. Цена не достигла значений take-profit или stop-loss',
             ],
             [
@@ -186,12 +187,12 @@ class OpenTradeServiceTest extends TestCase
                         ->setStopLoss(null)
                         ->setTakeProfit(null),
                 ],
-                new OpenTradeNotifications([]),
+                new OpenTradeNotifications([], []),
                 'Сделка на Short. Отсутствие take-profit и stop-loss',
             ],
             [
                 [
-                    (clone $shortCloseTrade)
+                    $shortCloseTradeTakeProfit = (clone $shortCloseTrade)
                         ->setStock(
                             StockFixture::getGazp()
                                 ->setPrice(140)
@@ -203,12 +204,12 @@ class OpenTradeServiceTest extends TestCase
                         "Позиция закрылась по take-profit",
                         "Счет №1. Моя стратегия. GAZP. Short"
                     ),
-                ]),
+                ], [$shortCloseTradeTakeProfit]),
                 'Сделка на Short. Цена ниже значений take-profit',
             ],
             [
                 [
-                    (clone $shortCloseTrade)
+                    $shortCloseTradeTakeProfitLow = (clone $shortCloseTrade)
                         ->setStock(
                             StockFixture::getGazp()
                                 ->setPrice(160)
@@ -220,12 +221,12 @@ class OpenTradeServiceTest extends TestCase
                         "Позиция закрылась по take-profit",
                         "Счет №1. Моя стратегия. GAZP. Short"
                     ),
-                ]),
+                ], [$shortCloseTradeTakeProfitLow]),
                 'Сделка на Short. Цена выше значений take-profit, но low дня его пересек',
             ],
             [
                 [
-                    (clone $shortCloseTrade)
+                    $shortCloseTradeStopLoss = (clone $shortCloseTrade)
                         ->setStock(
                             StockFixture::getGazp()
                                 ->setPrice(230)
@@ -237,12 +238,12 @@ class OpenTradeServiceTest extends TestCase
                         "Позиция закрылась по stop-loss",
                         "Счет №1. Моя стратегия. GAZP. Short"
                     ),
-                ]),
+                ], [$shortCloseTradeStopLoss]),
                 'Сделка на Short. Цена выше значений stop-loss',
             ],
             [
                 [
-                    (clone $shortCloseTrade)
+                    $shortCloseTradeStopLossHigh = (clone $shortCloseTrade)
                         ->setStock(
                             StockFixture::getGazp()
                                 ->setPrice(200)
@@ -254,13 +255,13 @@ class OpenTradeServiceTest extends TestCase
                         "Позиция закрылась по stop-loss",
                         "Счет №1. Моя стратегия. GAZP. Short"
                     ),
-                ]),
+                ], [$shortCloseTradeStopLossHigh]),
                 'Сделка на Short. Цена ниже значений stop-loss, но high дня его пересек',
             ],
             //
             [
                 [],
-                new OpenTradeNotifications([]),
+                new OpenTradeNotifications([], []),
                 'При отсутствии активных сделок не должно быть нотификаций',
             ],
             [
@@ -274,7 +275,7 @@ class OpenTradeServiceTest extends TestCase
                                 ->setOpen(0)
                         ),
                 ],
-                new OpenTradeNotifications([]),
+                new OpenTradeNotifications([], []),
                 'Сделка на Long. Не корректное обновление. Цена имеет значение 0',
             ],
             [
@@ -288,7 +289,7 @@ class OpenTradeServiceTest extends TestCase
                                 ->setOpen(null)
                         ),
                 ],
-                new OpenTradeNotifications([]),
+                new OpenTradeNotifications([], []),
                 'Сделка на Long. Не корректное обновление. Цена имеет значение null',
             ],
             [
@@ -302,7 +303,7 @@ class OpenTradeServiceTest extends TestCase
                                 ->setOpen(0)
                         ),
                 ],
-                new OpenTradeNotifications([]),
+                new OpenTradeNotifications([], []),
                 'Сделка на Short. Не корректное обновление. Цена имеет значение 0',
             ],
             [
@@ -316,7 +317,7 @@ class OpenTradeServiceTest extends TestCase
                                 ->setOpen(null)
                         ),
                 ],
-                new OpenTradeNotifications([]),
+                new OpenTradeNotifications([], []),
                 'Сделка на Short. Не корректное обновление. Цена имеет значение null',
             ],
             //
@@ -330,8 +331,21 @@ class OpenTradeServiceTest extends TestCase
                                 ->setLow(120),
                         ),
                 ],
-                new OpenTradeNotifications([]),
+                new OpenTradeNotifications([], []),
                 'Сделка на Long. Нотификация не приходит, потому что сделка уже закрыта',
+            ],
+            [
+                [
+                    (clone $shortCloseTrade)
+                        ->setStock(
+                            StockFixture::getGazp()
+                                ->setPrice(230)
+                                ->setHigh(230),
+                        )
+                    ->setTradeCloseWarning(new TradeCloseWarning()),
+                ],
+                new OpenTradeNotifications([], []),
+                'Сделка на Short. Цена выше значений stop-loss. Но, нотификации нет потому что она уже происходила',
             ],
         ];
     }
