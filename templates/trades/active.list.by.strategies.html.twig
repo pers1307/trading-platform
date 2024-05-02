@@ -58,7 +58,12 @@
                                         {% for extensionTrade in activeExtensionTradeByStrategy.extensionTrades %}
                                             <tr>
                                                 <td>{{ extensionTrade.trade.id }}</td>
-                                                <td>{{ extensionTrade.trade.stock.secId }}</td>
+                                                <td>
+                                                    {{ extensionTrade.trade.stock.secId }}
+                                                    {% if extensionTrade.trade.isExistsTradeCloseWarning %}
+                                                        ⛔
+                                                    {% endif %}
+                                                </td>
                                                 <td>{{ extensionTrade.trade.type|tradeType }}</td>
                                                 <td>{{ extensionTrade.trade.openDateTime|date('Y-m-d H:m:s') }}</td>
                                                 <td>{{ extensionTrade.trade.openPrice|stockPrice(extensionTrade.trade.stock.minStep) }}</td>
@@ -68,7 +73,7 @@
                                                 <td>
                                                     {{ extensionTrade.trade.lots }}
                                                     {% if extensionTrade.trade.isExistsTradeRiskWarning %}
-                                                        ⚠️
+                                                        ⁉️
                                                     {% endif %}
                                                 </td>
                                                 <td>{{ extensionTrade.trade.status|tradeStatus }}</td>
