@@ -40,9 +40,9 @@ class DashboardService
     private function getFormatGraphDataByAccaunt(Accaunt $accaunt): string
     {
         $accauntHistoryRepository = $this->entityManager->getRepository(AccauntHistory::class);
-        $accauntHistoryItems = $accauntHistoryRepository->findBy(['accaunt' => $accaunt->getId()], ['created' => 'ASC']);
+        $accauntHistoryItems = $accauntHistoryRepository->findBy(['accaunt' => $accaunt->getId()], ['created' => 'DESC'], 20);
 
-        return $this->formatGraphData($accauntHistoryItems);
+        return $this->formatGraphData(array_reverse($accauntHistoryItems));
     }
 
     private function formatGraphData(array $accauntHistoryItems): string
