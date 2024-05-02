@@ -88,7 +88,7 @@ class RiskTradeServiceTest extends TestCase
                     [clone $longCloseTrade->setLots(1000)],
                     [
                         new Notification(
-                            "**Нарушение риск-менеджмента!**",
+                            "Нарушение риск-менеджмента!",
                             "Счет №1. Моя стратегия. SBER. Long.\nПри риске 10% от депозита 1 000 000.\nРассчет: 50 лотов. Факт: 1000"
                         ),
                     ]
@@ -116,7 +116,7 @@ class RiskTradeServiceTest extends TestCase
                     [clone $shortCloseTrade->setLots(1000)],
                     [
                         new Notification(
-                            "**Нарушение риск-менеджмента!**",
+                            "Нарушение риск-менеджмента!",
                             "Счет №1. Моя стратегия. SBER. Short.\nПри риске 15% от депозита 1 000 000.\nРассчет: 75 лотов. Факт: 1000"
                         ),
                     ]
@@ -144,7 +144,7 @@ class RiskTradeServiceTest extends TestCase
                     [clone $longCloseTrade->setLots(1000)],
                     [
                         new Notification(
-                            "**Нарушение риск-менеджмента!**",
+                            "Нарушение риск-менеджмента!",
                             "Счет №1. Моя стратегия. SBER. Long.\nПри риске 10% на сделку от депозита 1 000 000.\nРассчет: 200 лотов. Факт: 1000"
                         ),
                     ]
@@ -172,7 +172,7 @@ class RiskTradeServiceTest extends TestCase
                     [clone $shortCloseTrade->setLots(1000)],
                     [
                         new Notification(
-                            "**Нарушение риск-менеджмента!**",
+                            "Нарушение риск-менеджмента!",
                             "Счет №1. Моя стратегия. SBER. Short.\nПри риске 15% на сделку от депозита 1 000 000.\nРассчет: 750 лотов. Факт: 1000"
                         ),
                     ]

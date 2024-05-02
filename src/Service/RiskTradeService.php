@@ -81,7 +81,7 @@ class RiskTradeService
         }
 
         return new Notification(
-            '**Нарушение риск-менеджмента!**',
+            'Нарушение риск-менеджмента!',
             $text
         );
     }
