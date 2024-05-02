@@ -9,23 +9,21 @@ class OpenTradeNotificationService
 {
     public function merge(OpenTradeNotifications $openTradeNotifications): OpenTradeNotifications
     {
-        if (empty($openTradeNotifications->getNotifications())) {
+        if (
+            empty($openTradeNotifications->getNotifications())
+            || count($openTradeNotifications->getNotifications()) === 1
+        ) {
             return $openTradeNotifications;
         }
-
-        $title = '';
+        
         $text = '';
         foreach ($openTradeNotifications->getNotifications() as $key => $notification) {
-            if ($key === 0) {
-                $title = $notification->getTitle();
-            }
-
             if ($key != 0) {
-                $text .= '\n\n';
+                $text .= "\n\n";
             }
-            $text .= $notification->getText();
+            $text .= "{$notification->getTitle()}\n{$notification->getText()}";
         }
 
-        return new OpenTradeNotifications([new Notification($title, $text)]);
+        return new OpenTradeNotifications([new Notification("", $text)], $openTradeNotifications->getCloseWarningTrades());
     }
 }

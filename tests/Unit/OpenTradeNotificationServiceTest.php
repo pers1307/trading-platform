@@ -41,27 +41,27 @@ class OpenTradeNotificationServiceTest extends TestCase
     {
         return [
             [
-                new OpenTradeNotifications([]),
-                new OpenTradeNotifications([]),
+                new OpenTradeNotifications([], []),
+                new OpenTradeNotifications([], []),
                 'Нет нотификации',
             ],
             [
                 new OpenTradeNotifications([
                     new Notification('Hello', 'Hello yellow!'),
-                ]),
+                ], []),
                 new OpenTradeNotifications([
                     new Notification('Hello', 'Hello yellow!'),
-                ]),
+                ], []),
                 'Одна нотификация. Мержа не происходит',
             ],
             [
                 new OpenTradeNotifications([
                     new Notification('Hello', 'Hello yellow!'),
                     new Notification('Hello!', 'Hello green!'),
-                ]),
+                ], []),
                 new OpenTradeNotifications([
-                    new Notification('Hello', 'Hello yellow!\n\nHello green!'),
-                ]),
+                    new Notification('', "Hello\nHello yellow!\n\nHello!\nHello green!"),
+                ], []),
                 'Две нотификации объединяются в одну',
             ],
         ];

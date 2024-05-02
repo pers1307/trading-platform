@@ -35,6 +35,9 @@ class Trade
     #[ORM\OneToOne(targetEntity: TradeRiskWarning::class, mappedBy: 'trade')]
     private ?TradeRiskWarning $tradeRiskWarning = null;
 
+    #[ORM\OneToOne(targetEntity: TradeCloseWarning::class, mappedBy: 'trade')]
+    private ?TradeCloseWarning $tradeCloseWarning = null;
+
     #[ORM\Column(type: 'string', nullable: false, options: ['default' => 'long'], columnDefinition: "ENUM('long', 'short')")]
     private string $type;
 
@@ -275,5 +278,22 @@ class Trade
     public function isExistsTradeRiskWarning(): bool
     {
         return !is_null($this->tradeRiskWarning);
+    }
+
+    public function getTradeCloseWarning(): ?TradeCloseWarning
+    {
+        return $this->tradeCloseWarning;
+    }
+
+    public function setTradeCloseWarning(?TradeCloseWarning $tradeCloseWarning): static
+    {
+        $this->tradeCloseWarning = $tradeCloseWarning;
+
+        return $this;
+    }
+
+    public function isExistsTradeCloseWarning(): bool
+    {
+        return !is_null($this->tradeCloseWarning);
     }
 }
