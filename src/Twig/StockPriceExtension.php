@@ -30,15 +30,15 @@ class StockPriceExtension extends AbstractExtension
             $result = bcmod($normalizeNumber, $normalizeMinStep);
 
             if ($result != 0.0) {
-                return $number . ' ⚠️';
+                return number_format($number, $decimals, '.', ' ') . ' ⚠️';
             }
         } else {
             if (bcmod($number, $minStep) != 0.0) {
-                return $number . ' ⚠️';
+                return number_format($number, $decimals, '.', ' ') . ' ⚠️';
             }
         }
 
-        return number_format($number, $decimals, '.', '');
+        return number_format($number, $decimals, '.', ' ');
     }
 
     private function normalize(float $number, int $decimals): float

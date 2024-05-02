@@ -8,9 +8,9 @@ class ExtensionTrade
 {
     private Trade $trade;
 
-    private float $tradeResult;
+    private ?float $tradeResult;
 
-    public function __construct(Trade $trade, float $tradeResult)
+    public function __construct(Trade $trade, ?float $tradeResult)
     {
         $this->trade = $trade;
         $this->tradeResult = $tradeResult;
@@ -21,7 +21,7 @@ class ExtensionTrade
         return $this->trade;
     }
 
-    public function getTradeResult(): float
+    public function getTradeResult(): ?float
     {
         return $this->tradeResult;
     }

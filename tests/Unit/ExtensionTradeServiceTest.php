@@ -75,6 +75,16 @@ class ExtensionTradeServiceTest extends TestCase
         $shortCloseTrade = $this->getShortTrade(Trade::STATUS_CLOSE);
         $longOpenTrade = $this->getLongTrade(Trade::STATUS_OPEN);
         $shortOpenTrade = $this->getShortTrade(Trade::STATUS_OPEN);
+        $longOpenTradeWithStockPriceNull = (clone $longOpenTrade)
+            ->setStock(
+                StockFixture::getSber()
+                    ->setPrice(null)
+            );
+        $longOpenTradeWithStockPriceZero = (clone $longOpenTrade)
+            ->setStock(
+                StockFixture::getSber()
+                    ->setPrice(0)
+            );
 
         return [
             [
@@ -96,6 +106,16 @@ class ExtensionTradeServiceTest extends TestCase
                 [$shortOpenTrade],
                 [new ExtensionTrade($shortOpenTrade, -845.0)],
                 'Открытая cделка на short c отрицательным результатом',
+            ],
+            [
+                [$longOpenTradeWithStockPriceNull],
+                [new ExtensionTrade($longOpenTradeWithStockPriceNull, null)],
+                'Открытая сделка на long с значением цены null',
+            ],
+            [
+                [$longOpenTradeWithStockPriceZero],
+                [new ExtensionTrade($longOpenTradeWithStockPriceZero, null)],
+                'Открытая сделка на long с значением цены 0',
             ],
         ];
     }

@@ -72,7 +72,7 @@
                                                     {% endif %}
                                                 </td>
                                                 <td>{{ extensionTrade.trade.status|tradeStatus }}</td>
-                                                <td>{{ extensionTrade.tradeResult|number_format(2, '.', ' ') }}</td>
+                                                <td>{{ extensionTrade.tradeResult|tradeResult }}</td>
                                                 <td>
                                                     <div class="btn-group">
                                                         <a href="{{ path('app_trade_edit_form', {id: extensionTrade.trade.id}) }}" type="button" class="btn btn-info">

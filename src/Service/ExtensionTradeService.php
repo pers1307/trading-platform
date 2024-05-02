@@ -20,14 +20,18 @@ class ExtensionTradeService
      * @param Trade[] $trades
      * @throws TradeHasNotClosePriceException
      * @throws TradeHasUnknownTypeException
-     * @throws StockHasNotPriceException
      * @throws TradeHasUnknownStatusException
      */
     public function convertTradesToExtensionTrades(array $trades): array
     {
         $extensionTrades = [];
         foreach ($trades as $trade) {
-            $tradeResult = $this->tradeService->calculateResult($trade);
+            try {
+                $tradeResult = $this->tradeService->calculateResult($trade);
+            } catch (StockHasNotPriceException $stockHasNotPriceException) {
+                $tradeResult = null;
+            }
+
             $extensionTrades[] = new ExtensionTrade($trade, $tradeResult);
         }
 
