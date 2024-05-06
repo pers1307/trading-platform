@@ -7,6 +7,7 @@
   "prefer-stable": true,
   "require": {
     "php": ">=8.3",
+    "ext-bcmath": "*",
     "ext-ctype": "*",
     "ext-iconv": "*",
     "doctrine/doctrine-bundle": "^2.11",
@@ -23,13 +24,13 @@
     "symfony/http-foundation": "6.4.*",
     "symfony/monolog-bundle": "^3.0",
     "symfony/runtime": "6.4.*",
+    "symfony/security-bundle": "6.4.*",
     "symfony/twig-bundle": "6.4.*",
     "symfony/yaml": "6.4.*",
     "telegram-bot/api": "^2.5",
     "twig/extra-bundle": "^2.12|^3.0",
     "twig/intl-extra": "^3.8",
-    "twig/twig": "^2.12|^3.0",
-    "ext-bcmath": "*"
+    "twig/twig": "^2.12|^3.0"
   },
   "config": {
     "allow-plugins": {

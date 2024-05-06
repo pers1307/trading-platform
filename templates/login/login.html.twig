@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <link rel="icon" type="image/svg" href="{{ asset('favicons/favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicons/favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicons/favicon-32x32.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Торговая платформа | Ввод данных</title>
 
@@ -21,12 +24,30 @@
             <img src="{{ asset('images/user_avatar.jpg') }}" alt="User Image">
         </div>
 
-        <form class="lockscreen-credentials">
+        <form class="lockscreen-credentials" method="post" action="{{ path('app_login') }}">
             <div class="input-group">
-                <input type="password" class="form-control" placeholder="пароль">
+                {#                <input type="text" id="username" name="_username" value="{{ last_username }}"> #}
+                <input type="text" id="username" name="_username" value="pers1307" style="display: none">
+                <input type="password" id="password" name="_password" class="form-control" placeholder="пароль" required autofocus>
+                {% if error %}
+                    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                {#
+                Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                See https://symfony.com/doc/current/security/remember_me.html
+
+                <div class="checkbox mb-3">
+                    <label>
+                        <input type="checkbox" name="_remember_me"> Remember me
+                    </label>
+                </div>
+                #}
 
                 <div class="input-group-append">
-                    <button type="button" class="btn">
+                    <button type="submit" class="btn">
                         <i class="fas fa-arrow-right text-muted"></i>
                     </button>
                 </div>
@@ -46,3 +67,5 @@
 <script src="{{ asset('vendor/js/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>
+
+
