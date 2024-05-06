@@ -13,7 +13,7 @@ class SecurityController extends AbstractController
         private readonly AuthenticationUtils $authenticationUtils
     ) {
     }
-    
+
     #[Route(path: '/login', name: 'app_login')]
     public function login(): Response
     {
