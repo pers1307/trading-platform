@@ -30,31 +30,6 @@
         <testsuite name="Functional">
             <directory>tests/Functional/</directory>
         </testsuite>
-        <testsuite name="DictionaryStock">
-            <file>tests/Functional/Controller/DictionaryStockControllerTest.php</file>
-            <file>tests/Integration/DictionaryStockServiceTest.php</file>
-            <file>tests/Unit/Twig/StockPriceExtensionTest.php</file>
-        </testsuite>
-        <testsuite name="Accaunt">
-            <file>tests/Functional/Controller/AccauntControllerTest.php</file>
-            <file>tests/Integration/AccauntServiceTest.php</file>
-        </testsuite>
-        <testsuite name="Trade">
-            <file>tests/Functional/Controller/TradeControllerTest.php</file>
-            <file>tests/Integration/TradeRepositoryTest.php</file>
-            <file>tests/Integration/ExtensionTradeCollectionServiceTest.php</file>
-            <file>tests/Unit/Twig/StockPriceExtensionTest.php</file>
-            <file>tests/Unit/Twig/TradeExtensionTest.php</file>
-        </testsuite>
-        <testsuite name="Statistics">
-            <file>tests/Functional/Controller/StatisticsControllerTest.php</file>
-            <file>tests/Unit/Twig/StockPriceExtensionTest.php</file>
-            <file>tests/Unit/TradeServiceTest.php</file>
-            <file>tests/Unit/StatisticServiceTest.php</file>
-            <file>tests/Unit/ExtensionTradeServiceTest.php</file>
-            <file>tests/Unit/GraphServiceTest.php</file>
-            <file>tests/Unit/Twig/TradeExtensionTest.php</file>
-        </testsuite>
     </testsuites>
 
     <coverage processUncoveredFiles="true">
