@@ -1,0 +1,56 @@
+{% extends 'base.admin.html.twig' %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Подтверждение удаления</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_trade_list') }}">Позиции</a>
+                            </li>
+                            <li class="breadcrumb-item active">Подтверждение удаления</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-danger">
+                            <div class="card-header">
+                                <h3 class="card-title">Удаление позиции: {{ trade.id }}</h3>
+                            </div>
+                            <form action="{{ path('app_trade_remove', {id: trade.id}) }}" method="post">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <p>Аккаунт: {{ trade.accaunt.title }}</p>
+                                        <p>Стратегия: {{ trade.strategy.title }}</p>
+                                        <p>Инструмент: {{ trade.stock.secId }}</p>
+                                        <p>Направление: {{ trade.type|tradeType }}</p>
+                                        <p>Лоты: {{ trade.lots }}</p>
+                                        <p>Статус: {{ trade.status|tradeStatus }}</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{{ referer }}" class="btn btn-secondary">Назад</a>
+                                    <button type="submit" class="btn btn-danger">Удалить</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
