@@ -23,6 +23,25 @@ class TradeRepository extends ServiceEntityRepository
         parent::__construct($registry, Trade::class);
     }
 
+    public function findCompletely(int $id): ?Trade
+    {
+        return $this->createQueryBuilder('t')
+            ->addSelect('stock')
+            ->addSelect('strategy')
+            ->addSelect('accaunt')
+            ->addSelect('tradeRiskWarning')
+            ->addSelect('tradeCloseWarning')
+            ->innerJoin('t.stock', 'stock')
+            ->innerJoin('t.strategy', 'strategy')
+            ->innerJoin('t.accaunt', 'accaunt')
+            ->leftJoin('t.tradeRiskWarning', 'tradeRiskWarning')
+            ->leftJoin('t.tradeCloseWarning', 'tradeCloseWarning')
+            ->where('t.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function findAll(): array
     {
         return $this->createQueryBuilder('t')

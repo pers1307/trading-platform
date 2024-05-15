@@ -32,10 +32,10 @@ class Trade
     #[ORM\JoinColumn(nullable: false, onDelete: "NO ACTION")]
     private Strategy $strategy;
 
-    #[ORM\OneToOne(targetEntity: TradeRiskWarning::class, mappedBy: 'trade')]
+    #[ORM\OneToOne(targetEntity: TradeRiskWarning::class, mappedBy: 'trade', cascade: ["remove"])]
     private ?TradeRiskWarning $tradeRiskWarning = null;
 
-    #[ORM\OneToOne(targetEntity: TradeCloseWarning::class, mappedBy: 'trade')]
+    #[ORM\OneToOne(targetEntity: TradeCloseWarning::class, mappedBy: 'trade', cascade: ["remove"])]
     private ?TradeCloseWarning $tradeCloseWarning = null;
 
     #[ORM\Column(type: 'string', nullable: false, options: ['default' => 'long'], columnDefinition: "ENUM('long', 'short')")]

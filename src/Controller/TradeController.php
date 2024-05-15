@@ -22,13 +22,14 @@ class TradeController extends AbstractController
 {
     public function __construct(
         private readonly ActiveExtensionTradeService $activeExtensionTradeService,
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
     #[Route('/trades', name: 'app_trade_list')]
-    public function list(EntityManagerInterface $entityManager): Response
+    public function list(): Response
     {
-        $tradeRepository = $entityManager->getRepository(Trade::class);
+        $tradeRepository = $this->entityManager->getRepository(Trade::class);
         $trades = $tradeRepository->findAll();
 
         return $this->render('trades/list.html.twig', [
@@ -53,7 +54,7 @@ class TradeController extends AbstractController
     }
 
     #[Route('/trades/add', name: 'app_trade_add_form', methods: ['GET'])]
-    public function add(EntityManagerInterface $entityManager): Response
+    public function add(): Response
     {
         // Форма по добавлению сделки
         return new Response();
@@ -93,7 +94,7 @@ class TradeController extends AbstractController
     }
 
     #[Route('/trades/{id<\d+>}/edit', name: 'app_trade_edit_form', methods: ['GET'])]
-    public function edit(int $id, EntityManagerInterface $entityManager): Response
+    public function edit(int $id): Response
     {
         // Форма по добавлению сделки
         return new Response();
@@ -132,26 +133,34 @@ class TradeController extends AbstractController
         return new RedirectResponse($listUrlByAccauntId);
     }
 
-    #[Route('/trades/{id<\d+>}/remove', name: 'app_trade_remove', methods: ['POST'])]
-    public function remove(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/trades/{id<\d+>}/confirm/remove', name: 'app_trade_confirm_remove')]
+    public function confirmRemove(int $id, Request $request): Response
     {
-        // сохранение этого в БД
-        $accauntRepository = $entityManager->getRepository(Accaunt::class);
-        $accaunt = $accauntRepository->find($id);
-        if (is_null($accaunt)) {
-            throw new NotFoundHttpException();
+        $tradeRepository = $this->entityManager->getRepository(Trade::class);
+        $trade = $tradeRepository->findCompletely($id);
+        $referer = $request->headers->get('referer');
+        $request->getSession()->set('refererBeforeRemove', $referer);
+
+        return $this->render('trades/confirm.remove.html.twig', [
+            'trade' => $trade,
+            'referer' => $referer,
+        ]);
+    }
+
+    #[Route('/trades/{id<\d+>}/remove', name: 'app_trade_remove', methods: ['POST'])]
+    public function remove(int $id, Request $request): Response
+    {
+        $tradeRepository = $this->entityManager->getRepository(Trade::class);
+        $trade = $tradeRepository->find($id);
+
+        $this->entityManager->remove($trade);
+        $this->entityManager->flush();
+
+        $redirectUrl = $this->generateUrl('app_trade_list');
+        if ($request->getSession()->has('refererBeforeRemove')) {
+            $redirectUrl = $request->getSession()->get('refererBeforeRemove');
         }
 
-        $value = $request->get('value');
-
-        $accauntHistory = new AccauntHistory();
-        $accauntHistory->setAccaunt($accaunt);
-        $accauntHistory->setBalance(floatval($value));
-
-        $entityManager->persist($accauntHistory);
-        $entityManager->flush();
-
-        $listUrlByAccauntId = $this->generateUrl('app_accaunt_history_list', ['id' => $accaunt->getId()]);
-        return new RedirectResponse($listUrlByAccauntId);
+        return new RedirectResponse($redirectUrl);
     }
 }
