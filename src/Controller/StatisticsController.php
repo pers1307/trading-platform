@@ -9,6 +9,7 @@ use App\Exception\StockHasNotPriceException;
 use App\Exception\TradeHasNotClosePriceException;
 use App\Exception\TradeHasUnknownStatusException;
 use App\Exception\TradeHasUnknownTypeException;
+use App\Exception\UnknownStatusException;
 use App\Service\ExtensionTradeCollectionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,6 +26,9 @@ class StatisticsController extends AbstractController
     ) {
     }
 
+    /**
+     * @throws UnknownStatusException
+     */
     #[Route('/statistics/strategies', name: 'app_statistics_strategies_list')]
     public function listByStrategies(EntityManagerInterface $entityManager): Response
     {

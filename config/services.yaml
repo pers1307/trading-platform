@@ -9,6 +9,7 @@ services:
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
     bind:
       'bool $isDebug': '%kernel.debug%'
+      'string $now': 'now'
       'string $telegrammBotToken': '%env(string:TELEGRAMM_BOT_TOKEN)%'
       'int $telegrammBotDialog': '%env(int:TELEGRAMM_BOT_DIALOG)%'
 

@@ -28,7 +28,7 @@ class ExtensionTradeService
         foreach ($trades as $trade) {
             try {
                 $tradeResult = $this->tradeService->calculateResult($trade);
-            } catch (StockHasNotPriceException $stockHasNotPriceException) {
+            } catch (StockHasNotPriceException) {
                 $tradeResult = null;
             }
 
