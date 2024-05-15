@@ -19,7 +19,7 @@ class StatisticServiceTest extends TestCase
 
     public function setUp(): void
     {
-        $this->statisticService = new StatisticService();
+        $this->statisticService = new StatisticService("2023-05-16 14:05:23");
         $this->extensionTradeService = new ExtensionTradeService(new TradeService());
     }
 
@@ -51,12 +51,12 @@ class StatisticServiceTest extends TestCase
     {
         $expected = $this->statisticService->calculate($this->getInput());
 
-        // @todo Вот этого не должно быть, должна быть dto'шка
-        $this->assertEquals(2, $expected->getCountLossTrades());
-        $this->assertEquals(3, $expected->getCountProfitTrades());
-        $this->assertEquals(300.0, $expected->getAverageProfit());
-        $this->assertEquals(-80.0, $expected->getAverageLoss());
-        $this->assertEquals(148, $expected->getExpectedValue());
+        $this->assertEquals(2, $expected->getCountStatistic()->getCountLossTrades());
+        $this->assertEquals(3, $expected->getCountStatistic()->getCountProfitTrades());
+
+        $this->assertEquals(300.0, $expected->getExpectedStatistic()->getAverageProfit());
+        $this->assertEquals(-80.0, $expected->getExpectedStatistic()->getAverageLoss());
+        $this->assertEquals(148, $expected->getExpectedStatistic()->getExpectedValue());
     }
 
     /**

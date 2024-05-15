@@ -22,14 +22,14 @@
                 </div>
             </div>
         </div>
-
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3>150 д. 8 ч. 32 м.</h3>
+                                <h3>{{ extensionTradesCollection.statistic.timeStatistic.totalTimeIntervalInSecond|toDays }}
+                                    дней</h3>
                                 <p>Уже торгуем</p>
                             </div>
                             <div class="icon">
@@ -40,8 +40,12 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>180 часов</h3>
-
+                                <h3>
+                                    {{ extensionTradesCollection.statistic.timeStatistic.averageProfitTradeInterval|toHours }}
+                                    часа
+                                    / {{ extensionTradesCollection.statistic.timeStatistic.averageProfitTradeInterval|toDays }}
+                                    дней
+                                </h3>
                                 <p>Средняя длительность положительной сделки</p>
                             </div>
                             <div class="icon">
@@ -52,12 +56,32 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-danger">
                             <div class="inner">
-                                <h3>180 часов</h3>
-
+                                <h3>
+                                    {{ extensionTradesCollection.statistic.timeStatistic.averageLossTradeInterval|toHours }}
+                                    часа
+                                    / {{ extensionTradesCollection.statistic.timeStatistic.averageLossTradeInterval|toDays }}
+                                    дней
+                                </h3>
                                 <p>Средняя длительность отрицательной сделки</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-minus"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-lightblue">
+                            <div class="inner">
+                                <h3>
+                                    {{ extensionTradesCollection.statistic.timeStatistic.averageTradeInterval|toHours }}
+                                    часа
+                                    / {{ extensionTradesCollection.statistic.timeStatistic.averageTradeInterval|toDays }}
+                                    дней
+                                </h3>
+                                <p>Средняя длительность сделки</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-calendar"></i>
                             </div>
                         </div>
                     </div>
@@ -66,7 +90,7 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-orange">
                             <div class="inner">
-                                <h3>{{ extensionTradesCollection.statistic.countTrades }}</h3>
+                                <h3>{{ extensionTradesCollection.statistic.countStatistic.countTrades }}</h3>
                                 <p>Совершенных сделок</p>
                             </div>
                             <div class="icon">
@@ -77,7 +101,7 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>{{ extensionTradesCollection.statistic.countProfitTrades }}</h3>
+                                <h3>{{ extensionTradesCollection.statistic.countStatistic.countProfitTrades }}</h3>
                                 <p>Количество прибыльных сделок</p>
                             </div>
                             <div class="icon">
@@ -89,8 +113,7 @@
                         <div class="small-box bg-danger">
                             <div class="inner">
                                 <h3>
-                                    {{ extensionTradesCollection.statistic.countLossTrades }}
-                                    {#                                    | {{ strategyStatistics.averageProfit|number_format(2) }} / {{ strategyStatistics.averageLoss|number_format(2) }} #}
+                                    {{ extensionTradesCollection.statistic.countStatistic.countLossTrades }}
                                 </h3>
                                 <p>Количество убыточных сделок</p>
                             </div>
@@ -103,7 +126,9 @@
                         <div class="small-box bg-lightblue">
                             <div class="inner">
                                 <h3>
-                                    50 / 50 %
+                                    {{ extensionTradesCollection.statistic.countStatistic.persentProfitTrades }} %
+                                    /
+                                    {{ extensionTradesCollection.statistic.countStatistic.persentLossTrades }} %
                                 </h3>
                                 <p>Соотношение P/L сделок</p>
                             </div>
@@ -117,7 +142,7 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-warning">
                             <div class="inner">
-                                <h3>{{ extensionTradesCollection.statistic.expectedValue|number_format(2, '.', ' ') }}</h3>
+                                <h3>{{ extensionTradesCollection.statistic.expectedStatistic.expectedValue|number_format(2, '.', ' ') }}</h3>
                                 <p>Математическое ожидание</p>
                             </div>
                             <div class="icon">
@@ -129,7 +154,7 @@
                         <div class="small-box bg-success">
                             <div class="inner">
                                 <h3>
-                                    {{ extensionTradesCollection.statistic.averageProfit|number_format(2, '.', ' ') }}
+                                    {{ extensionTradesCollection.statistic.expectedStatistic.averageProfit|number_format(2, '.', ' ') }}
                                 </h3>
                                 <p>Среднее значение прибыли</p>
                             </div>
@@ -142,7 +167,7 @@
                         <div class="small-box bg-danger">
                             <div class="inner">
                                 <h3>
-                                    {{ extensionTradesCollection.statistic.averageLoss|number_format(2, '.', ' ') }}
+                                    {{ extensionTradesCollection.statistic.expectedStatistic.averageLoss|number_format(2, '.', ' ') }}
                                 </h3>
                                 <p>Среднее значение убытка</p>
                             </div>
@@ -236,9 +261,9 @@
                                                     {#                                                    <a href="{{ path('app_trade_edit_form', {id: trade.id}) }}" type="button" class="btn btn-info"> #}
                                                     {#                                                        <i class="fa fa-edit"></i> #}
                                                     {#                                                    </a> #}
-                                                    {#                                                    <a href="{{ path('app_trade_remove', {id: trade.id}) }}" type="button" class="btn btn-danger"> #}
-                                                    {#                                                        <i class="fa fa-window-close"></i> #}
-                                                    {#                                                    </a> #}
+                                                    <a href="{{ path('app_trade_confirm_remove', {id: extensionTrade.trade.id}) }}" type="button" class="btn btn-danger">
+                                                        <i class="fa fa-window-close"></i>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>

@@ -2,6 +2,8 @@
 
 namespace App\Dto;
 
+use App\Dto\Statistic\Statistic;
+
 class ExtensionTradesCollection
 {
     /**
