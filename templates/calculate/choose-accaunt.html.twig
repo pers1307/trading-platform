@@ -50,17 +50,17 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="card-body">
-                                <div class="tab-content" id="custom-tabs-four-tabContent">
-                                    <div
-                                            class="tab-pane fade show active"
-                                            id="accaunt-tab"
-                                            role="tabpanel"
-                                            aria-labelledby="custom-tabs-four-home-tab"
-                                    >
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <form method="post" action="{{ path('app_calculate_accaunt_save') }}">
+                            <form method="post" action="{{ path('app_calculate_accaunt_save') }}">
+                                <div class="card-body">
+                                    <div class="tab-content" id="custom-tabs-four-tabContent">
+                                        <div
+                                                class="tab-pane fade show active"
+                                                id="accaunt-tab"
+                                                role="tabpanel"
+                                                aria-labelledby="custom-tabs-four-home-tab"
+                                        >
+                                            <div class="row">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label>Выбор счета</label>
                                                         <select class="form-control select2" style="width: 100%;" name="accauntId">
@@ -73,14 +73,15 @@
                                                             {% endfor %}
                                                         </select>
                                                     </div>
-
-                                                    <button type="submit" class="btn btn-primary">Далее</button>
-                                                </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Далее</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
