@@ -2,13 +2,11 @@
 
 namespace App\Tests\Functional\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
-class AccauntControllerTest extends WebTestCase
+class AccauntControllerTest extends BaseControllerTest
 {
     public function testCanLoadIndex(): void
     {
-        $client = static::createClient();
+        $client = $this->getClientWithAuthUser();
         $client->request('GET', '/accaunts');
 
         $this->assertResponseIsSuccessful();

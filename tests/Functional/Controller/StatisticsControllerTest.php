@@ -4,9 +4,8 @@ namespace App\Tests\Functional\Controller;
 
 use App\DataFixture\AccauntFixture;
 use App\DataFixture\StrategyFixture;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class StatisticsControllerTest extends WebTestCase
+class StatisticsControllerTest extends BaseControllerTest
 {
     public const STATISTICS_STRATEGIES_URL = '/statistics/strategies';
     public const STATISTICS_STRATEGY_ACCAUNT_URL = '/statistics/strategy/1/accaunt/1';
@@ -15,7 +14,7 @@ class StatisticsControllerTest extends WebTestCase
 
     public function testCanLoadListByStrategies(): void
     {
-        $client = static::createClient();
+        $client = $this->getClientWithAuthUser();
         $client->request('GET', self::STATISTICS_STRATEGIES_URL);
 
         $this->assertResponseIsSuccessful();
@@ -25,7 +24,7 @@ class StatisticsControllerTest extends WebTestCase
 
     public function testCanLoadListByStrategyAndAccaunt(): void
     {
-        $client = static::createClient();
+        $client = $this->getClientWithAuthUser();
         $client->request('GET', self::STATISTICS_STRATEGY_ACCAUNT_URL);
 
         $title = StrategyFixture::MY_STRATEGY_TITLE . '. ' . AccauntFixture::ACCAUNT_ONE_TITLE;
@@ -38,7 +37,7 @@ class StatisticsControllerTest extends WebTestCase
 
     public function testNotFoundListByStrategyAndAccauntByStrategy(): void
     {
-        $client = static::createClient();
+        $client = $this->getClientWithAuthUser();
         $client->request('GET', self::NOT_EXISTS_STRATEGY_STATISTICS_STRATEGY_ACCAUNT_URL);
 
         $this->assertResponseStatusCodeSame(404);
@@ -46,7 +45,7 @@ class StatisticsControllerTest extends WebTestCase
 
     public function testNotFoundListByStrategyAndAccauntByAccaount(): void
     {
-        $client = static::createClient();
+        $client = $this->getClientWithAuthUser();
         $client->request('GET', self::NOT_EXISTS_ACCAUNT_STATISTICS_STRATEGY_ACCAUNT_URL);
 
         $this->assertResponseStatusCodeSame(404);
