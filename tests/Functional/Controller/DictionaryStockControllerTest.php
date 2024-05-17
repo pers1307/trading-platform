@@ -2,13 +2,11 @@
 
 namespace App\Tests\Functional\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
-class DictionaryStockControllerTest extends WebTestCase
+class DictionaryStockControllerTest extends BaseControllerTest
 {
     public function testCanLoadIndex(): void
     {
-        $client = static::createClient();
+        $client = $this->getClientWithAuthUser();
         $client->request('GET', '/dictionary/stocks');
 
         $this->assertResponseIsSuccessful();

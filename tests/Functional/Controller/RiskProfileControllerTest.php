@@ -2,13 +2,11 @@
 
 namespace App\Tests\Functional\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
-class RiskProfileControllerTest extends WebTestCase
+class RiskProfileControllerTest extends BaseControllerTest
 {
     public function testCanLoadIndex(): void
     {
-        $client = static::createClient();
+        $client = $this->getClientWithAuthUser();
         $client->request('GET', '/risk-profiles');
 
         $this->assertResponseIsSuccessful();

@@ -2,16 +2,14 @@
 
 namespace App\Tests\Functional\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
-class AccauntHistoryControllerTest extends WebTestCase
+class AccauntHistoryControllerTest extends BaseControllerTest
 {
     public const ACCAUNT_HISTORY_URL = '/accaunt/1/history';
     public const ACCAUNT_HISTORY_ADD_URL = '/accaunt/1/history/add';
 
     public function testCanLoadList(): void
     {
-        $client = static::createClient();
+        $client = $this->getClientWithAuthUser();
         $client->request('GET', self::ACCAUNT_HISTORY_URL);
 
         $this->assertResponseIsSuccessful();
@@ -21,7 +19,7 @@ class AccauntHistoryControllerTest extends WebTestCase
 
     public function testCanLoadAdd(): void
     {
-        $client = static::createClient();
+        $client = $this->getClientWithAuthUser();
         $client->request('GET', self::ACCAUNT_HISTORY_ADD_URL);
 
         $this->assertResponseIsSuccessful();
