@@ -1,0 +1,97 @@
+{% extends 'base.admin.html.twig' %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ asset('vendor/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Создание позиции</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_trade_list') }}">Позиции</a>
+                            </li>
+                            <li class="breadcrumb-item active">Выбор счета</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-primary card-outline card-outline-tabs">
+                            <div class="card-header p-0 border-bottom-0">
+                                <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#accaunt-tab" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Счет</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link disabled" id="custom-tabs-four-profile-tab" data-toggle="pill" href="" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Стратегия</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link disabled" id="custom-tabs-four-messages-tab" data-toggle="pill" href="" role="tab" aria-controls="custom-tabs-four-messages" aria-selected="false">Акция</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link disabled" id="custom-tabs-four-settings-tab" data-toggle="pill" href="" role="tab" aria-controls="custom-tabs-four-settings" aria-selected="false">Параметры</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <form method="post" action="{{ path('app_trade_add_accaunt_form_save') }}">
+                                <div class="card-body">
+                                    <div class="tab-content" id="custom-tabs-four-tabContent">
+                                        <div
+                                                class="tab-pane fade show active"
+                                                id="accaunt-tab"
+                                                role="tabpanel"
+                                                aria-labelledby="custom-tabs-four-home-tab"
+                                        >
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label>Выбор счета</label>
+                                                        <select class="form-control select2" style="width: 100%;" name="accauntId">
+                                                            {% for index,accaunt in accaunts %}
+                                                                {% if index == 0 %}
+                                                                    <option value="{{ accaunt.id }}" selected="selected">{{ accaunt.title }}</option>
+                                                                {% else %}
+                                                                    <option value="{{ accaunt.id }}">{{ accaunt.title }}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Далее</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('vendor/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('js/calculate/accaunt.js') }}"></script>
+{% endblock %}

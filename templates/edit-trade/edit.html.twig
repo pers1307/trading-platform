@@ -1,0 +1,152 @@
+{% extends 'base.admin.html.twig' %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ asset('vendor/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Редактирование позиции</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_trade_list') }}">Позиции</a>
+                            </li>
+                            <li class="breadcrumb-item active">Редактирование позиции</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Редактирование позиции: {{ trade.id }}</h3>
+                            </div>
+                            <form method="post" action="{{ path('app_trade_edit_form_save') }}">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="type">Направление</label>
+                                                <select class="form-control select2" style="width: 100%;" name="type">
+                                                    {% if trade.type == 'long' %}
+                                                        <option value="long" selected="selected">Long</option>
+                                                        <option value="short">Short</option>
+                                                    {% else %}
+                                                        <option value="long">Long</option>
+                                                        <option value="short" selected="selected">Short</option>
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="openDateTime">Время открытия</label>
+                                                <input type="text" class="form-control" id="openDateTime" name="openDateTime" placeholder="Время открытия" value="{{ trade.openDateTime.format('Y-m-d H:i:s') }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="openPrice">Цена открытия</label>
+                                                <input type="text" class="form-control" id="openPrice" name="openPrice" placeholder="Цена" value="{{ trade.openPrice }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="closeDateTime">Время закрытия</label>
+                                                {% if trade.closeDateTime is null %}
+                                                    <input type="text" class="form-control" id="closeDateTime" name="closeDateTime" placeholder="Время закрытия" value="">
+                                                {% else %}
+                                                    <input type="text" class="form-control" id="closeDateTime" name="closeDateTime" placeholder="Время закрытия" value="{{ trade.closeDateTime.format('Y-m-d H:i:s') }}">
+                                                {% endif %}
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="closePrice">Цена закрытия</label>
+                                                <input type="text" class="form-control" id="closePrice" name="closePrice" placeholder="Цена" value="{{ trade.closePrice }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="lots">Лот</label>
+                                                <input type="text" class="form-control" id="lots" name="lots" placeholder="Лоты" value="{{ trade.lots }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="type">Статус</label>
+                                                <select class="form-control select2" style="width: 100%;" name="status">
+                                                    {% if trade.status == 'open' %}
+                                                        <option value="open" selected="selected">Open</option>
+                                                        <option value="close">Close</option>
+                                                    {% else %}
+                                                        <option value="open">Open</option>
+                                                        <option value="close" selected="selected">Close</option>
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="createdDateTime">Дата создания</label>
+                                                <input disabled type="text" class="form-control" id="createdDateTime" name="createdDateTime" placeholder="Дата создания" value="{{ trade.created.format('Y-m-d H:i:s') }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Акция</label>
+                                                <select class="form-control select2" style="width: 100%;" name="accauntId">
+                                                    {% for stock in stocks %}
+                                                        {% if stock.id == trade.stock.id %}
+                                                            <option value="{{ stock.id }}" selected="selected">{{ stock.secId }}</option>
+                                                        {% else %}
+                                                            <option value="{{ stock.id }}">{{ stock.secId }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Счет</label>
+                                                <select class="form-control select2" style="width: 100%;" name="accauntId">
+                                                    {% for accaunt in accaunts %}
+                                                        {% if accaunt.id == trade.accaunt.id %}
+                                                            <option value="{{ accaunt.id }}" selected="selected">{{ accaunt.title }}</option>
+                                                        {% else %}
+                                                            <option value="{{ accaunt.id }}">{{ accaunt.title }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Стратегия</label>
+                                                <select class="form-control select2" style="width: 100%;" name="accauntId">
+                                                    {% for strategy in strategies %}
+                                                        {% if strategy.id == trade.strategy.id %}
+                                                            <option value="{{ strategy.id }}" selected="selected">{{ strategy.title }}</option>
+                                                        {% else %}
+                                                            <option value="{{ strategy.id }}">{{ strategy.title }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{{ referer }}" class="btn btn-secondary">Назад</a>
+                                    <button type="submit" class="btn btn-primary">Создать</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('vendor/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('js/calculate/params.js') }}"></script>
+{% endblock %}
