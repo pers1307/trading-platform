@@ -19,6 +19,7 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 class SyncDictionariesCommand extends Command
 {
     public function __construct(
+        private readonly bool $isDebug,
         private readonly StockService $stockService,
         private readonly LoggerInterface $dictionaryLogger,
     ) {
@@ -37,7 +38,9 @@ class SyncDictionariesCommand extends Command
         } catch (\Throwable $exception) {
             $this->dictionaryLogger->error($exception);
 
-            return Command::FAILURE;
+            if ($this->isDebug) {
+                return Command::FAILURE;
+            }
         }
 
         return Command::SUCCESS;
