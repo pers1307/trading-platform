@@ -1,0 +1,77 @@
+{% extends 'base.admin.html.twig' %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Сделки</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
+                            </li>
+                            <li class="breadcrumb-item active">Сделки</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Список</h3>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 10px">#</th>
+                                            <th>Счет</th>
+                                            <th>Акция</th>
+                                            <th>Тип</th>
+                                            <th>Цена</th>
+                                            <th>Лот</th>
+                                            <th>Время</th>
+                                            <th style="width: 50px"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>123</td>
+                                                <td>GF123456</td>
+                                                <td>SBER</td>
+                                                <td>{{ 'long'|tradeType }}</td>
+                                                <td>127.1</td>
+                                                <td>1</td>
+                                                <td>{{ '2024-07-01 15:20:00' }}</td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="/" type="button" class="btn btn-primary">
+                                                            <i class="fa fa-download"></i>
+                                                        </a>
+                                                        <a href="/" type="button" class="btn btn-success">
+                                                            <i class="fa fa-plus"></i>
+                                                        </a>
+                                                        <a href="/" type="button" class="btn btn-danger">
+                                                            <i class="fa fa fa-window-close"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
