@@ -38,33 +38,40 @@
                                             <th>Тип</th>
                                             <th>Цена</th>
                                             <th>Лот</th>
-                                            <th>Время</th>
+                                            <th>Время совершения сделки</th>
+                                            <th>Время импорта сделки</th>
                                             <th style="width: 50px"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
+                                        {% for deal in deals %}
                                             <tr>
-                                                <td>123</td>
-                                                <td>GF123456</td>
-                                                <td>SBER</td>
-                                                <td>{{ 'long'|tradeType }}</td>
-                                                <td>127.1</td>
-                                                <td>1</td>
-                                                <td>{{ '2024-07-01 15:20:00' }}</td>
+                                                <td>{{ deal.id }}</td>
+                                                <td>{{ deal.accaunt.title }}</td>
+                                                <td>{{ deal.stockSecId }}</td>
+                                                <td>{{ deal.type|tradeType }}</td>
+                                                <td>{{ deal.price }}</td>
+                                                <td>{{ deal.lots }}</td>
+                                                <td>{{ deal.dateTime|date('Y-m-d H:m:s') }}</td>
+                                                <td>{{ deal.created|date('Y-m-d H:m:s') }}</td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        <a href="/" type="button" class="btn btn-primary">
+                                                        <a href="{{ path('app_deal_create_trade', {id: deal.id}) }}" type="button" class="btn btn-primary">
                                                             <i class="fa fa-download"></i>
                                                         </a>
-                                                        <a href="/" type="button" class="btn btn-success">
-                                                            <i class="fa fa-plus"></i>
+                                                        <a href="{{ path('app_deal_close_trade', {id: deal.id}) }}" type="button" class="btn btn-success">
+                                                            <i class="fa fa-window-close"></i>
                                                         </a>
-                                                        <a href="/" type="button" class="btn btn-danger">
-                                                            <i class="fa fa fa-window-close"></i>
-                                                        </a>
+{#                                                        <a href="/" type="button" class="btn btn-info">#}
+{#                                                            <i class="fa fa-plus"></i>#}
+{#                                                        </a>#}
+{#                                                        <a href="/" type="button" class="btn btn-danger">#}
+{#                                                            <i class="fa fa-trash-alt"></i>#}
+{#                                                        </a>#}
                                                     </div>
                                                 </td>
                                             </tr>
+                                        {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
