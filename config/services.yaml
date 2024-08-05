@@ -12,6 +12,12 @@ services:
       'string $now': 'now'
       'string $telegrammBotToken': '%env(string:TELEGRAMM_BOT_TOKEN)%'
       'int $telegrammBotDialog': '%env(int:TELEGRAMM_BOT_DIALOG)%'
+      'string $iisFinamToken': '%env(string:IIS_FINAM_TOKEN)%'
+      'string $iisFinamClientId': '%env(string:IIS_FINAM_CLIENT_ID)%'
+      'string $speculativeFinamToken': '%env(string:SPECULATIVE_FINAM_TOKEN)%'
+      'string $speculativeFinamClientId': '%env(string:SPECULATIVE_FINAM_CLIENT_ID)%'
+      'string $motherFinamToken': '%env(string:MOTHER_FINAM_TOKEN)%'
+      'string $motherFinamClientId': '%env(string:MOTHER_FINAM_CLIENT_ID)%'
 
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name
