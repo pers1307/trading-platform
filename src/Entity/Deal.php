@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\DealRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 
 #[ORM\Entity(repositoryClass: DealRepository::class)]
 class Deal
@@ -17,86 +18,44 @@ class Deal
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(type: 'integer', nullable: false)]
+    private int $transactionId;
 
-    /**
-     * @todo набросать сущность
-     */
-
-
-
-
-    #[ORM\ManyToOne(targetEntity: Stock::class, inversedBy: 'trades')]
-    #[ORM\JoinColumn(nullable: false, onDelete: "NO ACTION")]
-    private Stock $stock;
-
-    #[ORM\ManyToOne(targetEntity: Accaunt::class, inversedBy: 'trades')]
+    #[ORM\ManyToOne(targetEntity: Accaunt::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: "NO ACTION")]
     private Accaunt $accaunt;
 
-    #[ORM\ManyToOne(targetEntity: Strategy::class, inversedBy: 'trades')]
-    #[ORM\JoinColumn(nullable: false, onDelete: "NO ACTION")]
-    private Strategy $strategy;
+    #[ORM\ManyToOne(targetEntity: Stock::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: "NO ACTION")]
+    private ?Stock $stock;
 
-    #[ORM\OneToOne(targetEntity: TradeRiskWarning::class, mappedBy: 'trade', cascade: ["remove"])]
-    private ?TradeRiskWarning $tradeRiskWarning = null;
-
-    #[ORM\OneToOne(targetEntity: TradeCloseWarning::class, mappedBy: 'trade', cascade: ["remove"])]
-    private ?TradeCloseWarning $tradeCloseWarning = null;
+    // Поле на случай, если инструмент определить не удалось
+    #[ORM\Column(length: 255, nullable: true)]
+    private string $secId;
 
     #[ORM\Column(type: 'string', nullable: false, options: ['default' => 'long'], columnDefinition: "ENUM('long', 'short')")]
     private string $type;
 
-    #[ORM\Column(type: 'datetime', nullable: false)]
-    private DateTime $openDateTime;
-
-    #[ORM\Column(type: 'float', precision: 5, scale: 6)]
-    private float $openPrice;
-
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?DateTime $closeDateTime;
-
-    #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: true)]
-    private ?float $closePrice;
-
-    #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: true)]
-    private ?float $stopLoss;
-
-    #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: true)]
-    private ?float $takeProfit;
+    #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: false)]
+    private float $price;
 
     #[ORM\Column]
     private int $lots;
 
-    #[ORM\Column(type: 'string', nullable: false, options: ['default' => 'open'], columnDefinition: "ENUM('open', 'close')")]
-    private string $status;
-
-    #[ORM\Column(type: 'text', length: 65535, nullable: true)]
-    private ?string $description;
+    #[ORM\Column(type: 'datetime', nullable: false)]
+    private DateTime $dateTime;
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private DateTime $created;
 
     public function __construct()
     {
-        $this->openDateTime = new DateTime();
         $this->created = new DateTime();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getStock(): Stock
-    {
-        return $this->stock;
-    }
-
-    public function setStock(Stock $stock): self
-    {
-        $this->stock = $stock;
-
-        return $this;
     }
 
     public function getAccaunt(): Accaunt
@@ -111,16 +70,37 @@ class Deal
         return $this;
     }
 
-    public function getStrategy(): Strategy
+    public function getStock(): ?Stock
     {
-        return $this->strategy;
+        return $this->stock;
     }
 
-    public function setStrategy(Strategy $strategy): self
+    public function setStock(?Stock $stock): self
     {
-        $this->strategy = $strategy;
+        $this->stock = $stock;
 
         return $this;
+    }
+
+    public function getSecId(): string
+    {
+        return $this->secId;
+    }
+
+    public function setSecId(string $secId): static
+    {
+        $this->secId = $secId;
+
+        return $this;
+    }
+
+    public function getStockSecId(): string
+    {
+        if (!is_null($this->stock)) {
+            return $this->stock->getSecId();
+        }
+
+        return $this->secId;
     }
 
     public function getType(): string
@@ -129,7 +109,7 @@ class Deal
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function setType(string $type): static
     {
@@ -137,7 +117,7 @@ class Deal
             self::TYPE_LONG !== $type
             && self::TYPE_SHORT !== $type
         ) {
-            throw new \Exception("Не допустимый тип");
+            throw new Exception("Не допустимый тип");
         }
 
         $this->type = $type;
@@ -145,74 +125,14 @@ class Deal
         return $this;
     }
 
-    public function getOpenDateTime(): DateTime
+    public function getPrice(): float
     {
-        return $this->openDateTime;
+        return $this->price;
     }
 
-    public function setOpenDateTime(DateTime $openDateTime): static
+    public function setPrice(float $price): static
     {
-        $this->openDateTime = $openDateTime;
-
-        return $this;
-    }
-
-    public function getOpenPrice(): float
-    {
-        return $this->openPrice;
-    }
-
-    public function setOpenPrice(float $openPrice): static
-    {
-        $this->openPrice = $openPrice;
-
-        return $this;
-    }
-
-    public function getCloseDateTime(): ?DateTime
-    {
-        return $this->closeDateTime;
-    }
-
-    public function setCloseDateTime(?DateTime $closeDateTime): static
-    {
-        $this->closeDateTime = $closeDateTime;
-
-        return $this;
-    }
-
-    public function getClosePrice(): ?float
-    {
-        return $this->closePrice;
-    }
-
-    public function setClosePrice(?float $closePrice): static
-    {
-        $this->closePrice = $closePrice;
-
-        return $this;
-    }
-
-    public function getStopLoss(): ?float
-    {
-        return $this->stopLoss;
-    }
-
-    public function setStopLoss(?float $stopLoss): static
-    {
-        $this->stopLoss = $stopLoss;
-
-        return $this;
-    }
-
-    public function getTakeProfit(): ?float
-    {
-        return $this->takeProfit;
-    }
-
-    public function setTakeProfit(?float $takeProfit): static
-    {
-        $this->takeProfit = $takeProfit;
+        $this->price = $price;
 
         return $this;
     }
@@ -229,36 +149,14 @@ class Deal
         return $this;
     }
 
-    public function getStatus(): string
+    public function getDateTime(): DateTime
     {
-        return $this->status;
+        return $this->dateTime;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function setStatus(string $status): static
+    public function setDateTime(DateTime $dateTime): static
     {
-        if (
-            self::STATUS_OPEN !== $status
-            && self::STATUS_CLOSE !== $status
-        ) {
-            throw new \Exception("Не допустимый статус");
-        }
-
-        $this->status = $status;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
+        $this->dateTime = $dateTime;
 
         return $this;
     }
@@ -268,37 +166,15 @@ class Deal
         return $this->created;
     }
 
-    public function getTradeRiskWarning(): ?TradeRiskWarning
+    public function getTransactionId(): int
     {
-        return $this->tradeRiskWarning;
+        return $this->transactionId;
     }
 
-    public function setTradeRiskWarning(?TradeRiskWarning $tradeRiskWarning): static
+    public function setTransactionId(int $transactionId): static
     {
-        $this->tradeRiskWarning = $tradeRiskWarning;
+        $this->transactionId = $transactionId;
 
         return $this;
-    }
-
-    public function isExistsTradeRiskWarning(): bool
-    {
-        return !is_null($this->tradeRiskWarning);
-    }
-
-    public function getTradeCloseWarning(): ?TradeCloseWarning
-    {
-        return $this->tradeCloseWarning;
-    }
-
-    public function setTradeCloseWarning(?TradeCloseWarning $tradeCloseWarning): static
-    {
-        $this->tradeCloseWarning = $tradeCloseWarning;
-
-        return $this;
-    }
-
-    public function isExistsTradeCloseWarning(): bool
-    {
-        return !is_null($this->tradeCloseWarning);
     }
 }

@@ -18,4 +18,17 @@ class DealRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Deal::class);
     }
+
+    public function findAllForList(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->addSelect('stock')
+            ->addSelect('accaunt')
+            ->leftJoin('d.stock', 'stock')
+            ->innerJoin('d.accaunt', 'accaunt')
+            ->orderBy('d.created', 'DESC')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult();
+    }
 }
