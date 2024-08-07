@@ -2,9 +2,11 @@
 
 namespace App\Controller\Deal;
 
+use App\Entity\Deal;
 use App\Entity\Trade;
 use App\Repository\DealRepository;
 use App\Repository\StrategyRepository;
+use App\Repository\TradeRepository;
 use App\Service\RiskProfileService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,6 +22,7 @@ class DealController extends AbstractController
         private readonly DealRepository $dealRepository,
         private readonly RiskProfileService $riskProfileService,
         private readonly StrategyRepository $strategyRepository,
+        private readonly TradeRepository $tradeRepository,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -45,7 +48,6 @@ class DealController extends AbstractController
         }
 
         $referer = $request->headers->get('referer');
-
         return $this->render('deals/create.html.twig', [
             'deal' => $deal,
             'referer' => $referer,
@@ -86,35 +88,63 @@ class DealController extends AbstractController
     }
 
     #[Route('/deals/{id<\d+>}/close/trade', name: 'app_deal_close_trade')]
-    public function closeTrade(int $id): Response
+    public function closeTrade(int $id, Request $request): Response
     {
-        /**
-         * Выбрать сделку для закрытия!
-         * Подгрузить только открытие сделки
-         */
+        $deal = $this->dealRepository->find($id);
+        if (is_null($deal->getStock())) {
+            throw new \Exception("Нельзя закрыть позицию с неопределенным инструментом");
+        }
 
-        return $this->render('deals/list.html.twig', [
-            //            'trades' => $trades,
+        $type = Trade::TYPE_LONG;
+        if ($deal->getType() === Deal::TYPE_LONG) {
+            $type = Trade::TYPE_SHORT;
+        }
+
+        $trades = $this->tradeRepository->findAllActiveByParams(
+            $deal->getAccaunt()->getId(),
+            $deal->getStock()->getId(),
+            $type
+        );
+
+        $formatTrades = [];
+        foreach ($trades as $trade) {
+            $type = ucfirst($trade->getType());
+            $formatTrades[$trade->getId()] =
+                "{$trade->getStrategy()->getTitle()}. {$trade->getAccaunt()->getTitle()}. {$trade->getStock()->getSecId()}. $type. {$trade->getLots()} лот";
+        }
+
+        $referer = $request->headers->get('referer');
+        return $this->render('deals/close.html.twig', [
+            'deal' => $deal,
+            'referer' => $referer,
+            'formatTrades' => $formatTrades,
         ]);
     }
 
-    #[Route('/deals/close/trade/save', name: 'app_deal_close_trade_save')]
-    public function closeTradeSave(): Response
+    #[Route('/deals/{id<\d+>}/close/trade/save', name: 'app_deal_close_trade_save')]
+    public function closeTradeSave(int $id, Request $request): Response
     {
+        $deal = $this->dealRepository->find($id);
+        $price = $request->get('price');
+        $tradeId = $request->get('tradeId');
 
-        return $this->render('deals/list.html.twig', [
-            //            'trades' => $trades,
-        ]);
+        $trade = $this->tradeRepository->find($tradeId);
+        if (is_null($trade)) {
+            throw new NotFoundHttpException();
+        }
+
+        $trade
+            ->setCloseDateTime($deal->getDateTime())
+            ->setClosePrice(floatval($price))
+            ->setStatus(Trade::STATUS_CLOSE);
+
+        $this->entityManager->persist($trade);
+        $this->entityManager->remove($deal);
+        $this->entityManager->flush();
+
+        $redirectUrl = $this->generateUrl('app_deal_list');
+        return new RedirectResponse($redirectUrl);
     }
-
-    /**
-     * Переместить сделку в позиции
-     * Отдельная страница для этого
-     */
-
-    /**
-     * Приплюсовать объем к позиции
-     */
 
     /**
      * Удалить сделку (без подтверждения)

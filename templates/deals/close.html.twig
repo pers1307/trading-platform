@@ -1,0 +1,81 @@
+{% extends 'base.admin.html.twig' %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ asset('vendor/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Закрыть позицию</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_deal_list') }}">Сделки</a>
+                            </li>
+                            <li class="breadcrumb-item active">Закрыть позицию</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-success">
+                            <div class="card-header">
+                                <h3 class="card-title">Закрыть позицию по сделке: {{ deal.id }}</h3>
+                            </div>
+                            <form action="{{ path('app_deal_close_trade_save', {id: deal.id}) }}" method="post">
+                                <div class="card-body">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <p>Аккаунт: {{ deal.accaunt.title }}</p>
+                                            <p>Инструмент: {{ deal.stockSecId }}</p>
+                                            <p>Направление: {{ deal.type|tradeType }}</p>
+                                            <p>Лоты: {{ deal.lots }}</p>
+                                            <p>Время совершения сделки: {{ deal.dateTime|date('Y-m-d H:m:s') }}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="price">Цена</label>
+                                            <input type="text" class="form-control" id="price" name="price" placeholder="Цена" value="{{ deal.price }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Выбор позиции</label>
+                                            <select class="form-control select2" style="width: 100%;" name="tradeId">
+                                                {% for index,formatTrade in formatTrades %}
+                                                    <option value="{{ index }}">{{ formatTrade }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{{ referer }}" class="btn btn-secondary">Назад</a>
+                                    <button type="submit" class="btn btn-success">Закрыть</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('vendor/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('js/calculate/strategy.js') }}"></script>
+{% endblock %}

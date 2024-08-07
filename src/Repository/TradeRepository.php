@@ -104,6 +104,31 @@ class TradeRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return Trade[]
+     */
+    public function findAllActiveByParams(int $accauntId, int $stockId, string $type): array
+    {
+        return $this->createQueryBuilder('t')
+            ->addSelect('stock')
+            ->addSelect('accaunt')
+            ->addSelect('strategy')
+            ->innerJoin('t.stock', 'stock')
+            ->innerJoin('t.accaunt', 'accaunt')
+            ->innerJoin('t.strategy', 'strategy')
+            ->where('IDENTITY(t.accaunt) = :accauntId')
+            ->andWhere('IDENTITY(t.stock) = :stockId')
+            ->andWhere('t.type = :type')
+            ->andWhere('t.status = :status')
+            ->setParameter('accauntId', $accauntId)
+            ->setParameter('stockId', $stockId)
+            ->setParameter('type', $type)
+            ->setParameter('status', Trade::STATUS_OPEN)
+            ->orderBy('t.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @throws UnknownStatusException
      */
     public function getStrategiesByAccaunts(string $tradeStatus): array
