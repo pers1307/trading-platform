@@ -3,11 +3,11 @@
 namespace App\Controller\Trade;
 
 use App\Entity\Trade;
+use App\Repository\TradeRepository;
 use App\Service\AccauntService;
-use App\Service\CreateTradeStateFormService;
-use App\Service\RiskProfileService;
 use App\Service\StockService;
 use App\Service\StrategyService;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -22,9 +22,8 @@ class EditTradeController extends AbstractController
         private readonly AccauntService $accauntService,
         private readonly StockService $stockService,
         private readonly StrategyService $strategyService,
-        private readonly RiskProfileService $riskProfileService,
+        private readonly TradeRepository $tradeRepository,
         private readonly EntityManagerInterface $entityManager,
-        private readonly CreateTradeStateFormService $createTradeStateFormService,
     ) {
     }
 
@@ -56,64 +55,42 @@ class EditTradeController extends AbstractController
     /**
      * @todo отдельный сервис + тесты
      */
-    #[Route('/trades/edit/save', name: 'app_trade_edit_form_save')]
-    public function save(Request $request, EntityManagerInterface $entityManager): RedirectResponse
+    #[Route('/trades/edit/{id<\d+>}/save', name: 'app_trade_edit_form_save')]
+    public function save(int $id, Request $request): RedirectResponse
     {
-        $stockId = $this->createTradeStateFormService->getStockId();
-        $accauntId = $this->createTradeStateFormService->getAccauntId();
-        $strategyId = $this->createTradeStateFormService->getStrategyId();
-
-        $stockPrice = $request->get('stockPrice');
-        $type = $request->get('type');
-        $stopLossPrice = empty($request->get('stopLossPrice')) ? null : $request->get('stopLossPrice');
-        $takeProfitPrice = empty($request->get('takeProfitPrice')) ? null : $request->get('takeProfitPrice');
-        $openDateTime = $request->get('openDateTime');
+        $closeDateTime = $request->get('closeDateTime');
+        $closePrice = $request->get('closePrice');
+        $stopLossPrice = $request->get('stopLoss');
+        $takeProfitPrice = $request->get('takeProfit');
         $lots = $request->get('lots');
+        $status = $request->get('status');
 
-        if (empty($stockId) || empty($accauntId) || empty($strategyId) || empty($stockPrice) || empty($lots) || empty($type)) {
-            throw new NotFoundHttpException();
+        if (empty($closePrice)) {
+            $closePrice = null;
+        }
+        if (empty($stopLossPrice)) {
+            $stopLossPrice = null;
+        }
+        if (empty($takeProfitPrice)) {
+            $takeProfitPrice = null;
         }
 
-        /**
-         * @todo валидация направления, тейка и лосса
-         */
+        $trade = $this->tradeRepository->find($id);
 
-        /**
-         * @todo валидация риск профиля
-         */
-        // Сразу произвести все проверки!
-
-        /**
-         * @todo обнулить все проверки, которые уже были совершены?
-         */
-
-        $riskProfile = $this->riskProfileService->findByAccauntAndStrategy($accauntId, $strategyId);
-        if (is_null($riskProfile)) {
-            throw new NotFoundHttpException();
+        if (!is_null($closeDateTime)) {
+            $closeDateTime = new DateTime($closeDateTime);
         }
+        $trade->setCloseDateTime($closeDateTime);
 
-        $stock = $this->strategyService->find($stockId);
-        $stock->setPrice($stockPrice);
-        if (is_null($stock)) {
-            throw new NotFoundHttpException();
-        }
-
-        $trade = (new Trade())
-            ->setOpenDateTime(new \DateTime($openDateTime))
-            ->setOpenPrice($stock->getPrice())
+        $trade
+            ->setClosePrice($closePrice)
             ->setStopLoss($stopLossPrice)
             ->setTakeProfit($takeProfitPrice)
-            ->setType($type)
             ->setLots($lots)
-            ->setStatus(Trade::STATUS_OPEN)
-            ->setStock($stock)
-            ->setAccaunt($riskProfile->getAccaunt())
-            ->setStrategy($riskProfile->getStrategy());
+            ->setStatus($status);
 
-        $entityManager->persist($trade);
-        $entityManager->flush();
-
-        $this->createTradeStateFormService->clear();
+        $this->entityManager->persist($trade);
+        $this->entityManager->flush();
 
         return $this->redirectToRoute('app_trade_active_group_by_strategies_list');
     }

@@ -33,17 +33,17 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card card-primary">
+                        <div class="card card-info">
                             <div class="card-header">
                                 <h3 class="card-title">Редактирование позиции: {{ trade.id }}</h3>
                             </div>
-                            <form method="post" action="{{ path('app_trade_edit_form_save') }}">
+                            <form method="post" action="{{ path('app_trade_edit_form_save', {id: trade.id}) }}">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="type">Направление</label>
-                                                <select class="form-control select2" style="width: 100%;" name="type">
+                                                <select disabled class="form-control select2" style="width: 100%;" name="type">
                                                     {% if trade.type == 'long' %}
                                                         <option value="long" selected="selected">Long</option>
                                                         <option value="short">Short</option>
@@ -55,11 +55,11 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="openDateTime">Время открытия</label>
-                                                <input type="text" class="form-control" id="openDateTime" name="openDateTime" placeholder="Время открытия" value="{{ trade.openDateTime.format('Y-m-d H:i:s') }}">
+                                                <input disabled type="text" class="form-control" id="openDateTime" name="openDateTime" placeholder="Время открытия" value="{{ trade.openDateTime.format('Y-m-d H:i:s') }}">
                                             </div>
                                             <div class="form-group">
                                                 <label for="openPrice">Цена открытия</label>
-                                                <input type="text" class="form-control" id="openPrice" name="openPrice" placeholder="Цена" value="{{ trade.openPrice }}">
+                                                <input disabled type="text" class="form-control" id="openPrice" name="openPrice" placeholder="Цена" value="{{ trade.openPrice }}">
                                             </div>
                                             <div class="form-group">
                                                 <label for="closeDateTime">Время закрытия</label>
@@ -74,11 +74,19 @@
                                                 <input type="text" class="form-control" id="closePrice" name="closePrice" placeholder="Цена" value="{{ trade.closePrice }}">
                                             </div>
                                             <div class="form-group">
+                                                <label for="stopLoss">Цена stop loss</label>
+                                                <input type="text" class="form-control" id="stopLoss" name="stopLoss" placeholder="Цена" value="{{ trade.stopLoss }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="takeProfit">Цена take profit</label>
+                                                <input type="text" class="form-control" id="takeProfit" name="takeProfit" placeholder="Цена" value="{{ trade.takeProfit }}">
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="lots">Лот</label>
                                                 <input type="text" class="form-control" id="lots" name="lots" placeholder="Лоты" value="{{ trade.lots }}">
                                             </div>
                                             <div class="form-group">
-                                                <label for="type">Статус</label>
+                                                <label for="status">Статус</label>
                                                 <select class="form-control select2" style="width: 100%;" name="status">
                                                     {% if trade.status == 'open' %}
                                                         <option value="open" selected="selected">Open</option>
@@ -95,7 +103,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Акция</label>
-                                                <select class="form-control select2" style="width: 100%;" name="accauntId">
+                                                <select disabled class="form-control select2" style="width: 100%;" name="accauntId">
                                                     {% for stock in stocks %}
                                                         {% if stock.id == trade.stock.id %}
                                                             <option value="{{ stock.id }}" selected="selected">{{ stock.secId }}</option>
@@ -107,7 +115,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Счет</label>
-                                                <select class="form-control select2" style="width: 100%;" name="accauntId">
+                                                <select disabled class="form-control select2" style="width: 100%;" name="accauntId">
                                                     {% for accaunt in accaunts %}
                                                         {% if accaunt.id == trade.accaunt.id %}
                                                             <option value="{{ accaunt.id }}" selected="selected">{{ accaunt.title }}</option>
@@ -119,7 +127,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Стратегия</label>
-                                                <select class="form-control select2" style="width: 100%;" name="accauntId">
+                                                <select disabled class="form-control select2" style="width: 100%;" name="accauntId">
                                                     {% for strategy in strategies %}
                                                         {% if strategy.id == trade.strategy.id %}
                                                             <option value="{{ strategy.id }}" selected="selected">{{ strategy.title }}</option>
@@ -134,7 +142,7 @@
                                 </div>
                                 <div class="card-footer">
                                     <a href="{{ referer }}" class="btn btn-secondary">Назад</a>
-                                    <button type="submit" class="btn btn-primary">Создать</button>
+                                    <button type="submit" class="btn btn-info">Сохранить</button>
                                 </div>
                             </form>
                         </div>
