@@ -51,11 +51,22 @@ class DowloadDealsCommand extends Command
     {
         try {
             $this->download($this->iisFinamToken, $this->iisFinamClientId, 1);
-            $this->download($this->speculativeFinamToken, $this->speculativeFinamClientId, 1);
-            $this->download($this->motherFinamToken, $this->motherFinamClientId, 3);
-        } catch (\Throwable $exception) {
-            dd($exception);
+        } catch (\Throwable $e) {
+
         }
+
+        try {
+            $this->download($this->speculativeFinamToken, $this->speculativeFinamClientId, 1);
+        } catch (\Throwable $e) {
+
+        }
+
+        try {
+            $this->download($this->motherFinamToken, $this->motherFinamClientId, 3);
+        } catch (\Throwable $e) {
+
+        }
+
         return Command::SUCCESS;
     }
 
