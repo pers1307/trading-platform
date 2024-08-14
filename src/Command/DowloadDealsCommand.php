@@ -91,7 +91,7 @@ class DowloadDealsCommand extends Command
         {
             $deal = $this->dealRepository->findOneBy(['transactionId' => $order['transactionId']]);
             if (!is_null($deal)) {
-                break;
+                continue;
             }
 
             $deal = new Deal();
