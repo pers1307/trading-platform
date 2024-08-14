@@ -258,7 +258,7 @@
                                             <td>{{ extensionTradesCollection.cumulativeTotalArray[key]|number_format(2, '.', ' ') }}</td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <a href="{{ path('app_trade_edit_form', {id: trade.id}) }}" type="button" class="btn btn-info">
+                                                    <a href="{{ path('app_trade_edit_form', {id: extensionTrade.trade.id}) }}" type="button" class="btn btn-info">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                     <a href="{{ path('app_trade_confirm_remove', {id: extensionTrade.trade.id}) }}" type="button" class="btn btn-danger">
