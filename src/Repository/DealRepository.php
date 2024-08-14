@@ -26,7 +26,7 @@ class DealRepository extends ServiceEntityRepository
             ->addSelect('accaunt')
             ->leftJoin('d.stock', 'stock')
             ->innerJoin('d.accaunt', 'accaunt')
-            ->orderBy('d.created', 'DESC')
+            ->orderBy('d.dateTime', 'DESC')
             ->setMaxResults(100)
             ->getQuery()
             ->getResult();
