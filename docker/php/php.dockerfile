@@ -8,9 +8,13 @@ RUN apt-get update \
 
 RUN docker-php-ext-install gd pdo pdo_mysql zip intl bcmath
 
-#RUN pecl install xdebug-3.2.2  docker-php-ext-enable xdebug
+# Xdebug
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+RUN install-php-extensions xdebug-^3.3
 
 COPY my.ini $PHP_INI_DIR/conf.d/x-my.ini
+COPY xdebug.ini $PHP_INI_DIR/conf.d/xdebug.ini
+
 COPY ll /usr/local/bin/ll
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
@@ -21,7 +25,8 @@ RUN curl https://getcomposer.org/download/2.5.4/composer.phar --output /usr/loca
 RUN mkdir /var/www/.composer
 RUN chown www-data:www-data /var/www/.composer
 
-RUN apt-get autoclean && rm -r /var/lib/apt/lists/*
+RUN #apt-get autoclean && rm -r /var/lib/apt/lists/*
+RUN apt-get autoclean
 
 VOLUME /var/www/.composer
 
