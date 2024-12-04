@@ -1,4 +1,4 @@
-FROM php:8.3.0-fpm-bullseye
+FROM php:8.3.14-fpm-bullseye
 
 # make sure apt is up to date
 RUN apt-get update --fix-missing
