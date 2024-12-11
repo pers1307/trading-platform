@@ -1,17 +1,31 @@
 version: '3'
+
 services:
+  nginx:
+    image: nginx:1.19-alpine
+    restart: always
+    volumes:
+      - ./docker/nginx/app.conf:/etc/nginx/conf.d/default.conf
+      - ./public:/var/www/app/public
+      - ./docker/nginx/logs:/var/www/app/docker/nginx/logs
+    ports:
+      - "80:80"
+    links:
+      - php:php
+    networks:
+      - internal
   php:
     restart: always
     build:
       context: ./docker/php
       dockerfile: php.dockerfile
-    ports:
-      - '80:8000'
-    working_dir: '/var/www/app'
+    working_dir: /var/www/app
     volumes:
       - ./:/var/www/app
     networks:
       - internal
+    extra_hosts:
+      - host.docker.internal:host-gateway
   mysql8:
     image: mysql:8.0.33-debian
     container_name: mysql8
