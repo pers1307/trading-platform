@@ -51,5 +51,6 @@ RUN git config --global user.name "pers1307"
 RUN usermod -u 1000 www-data
 USER 1000
 
+# Зачем расшаривать 9000 порт ?
 CMD ["php-fpm"]
 EXPOSE 9000
