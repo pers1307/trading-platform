@@ -9,7 +9,7 @@ services:
       - ./public:/var/www/app/public
       - ./docker/nginx/logs:/var/www/app/docker/nginx/logs
     ports:
-      - "80:80"
+      - '80:80'
     links:
       - php:php
     networks:
@@ -22,6 +22,7 @@ services:
     working_dir: /var/www/app
     volumes:
       - ./:/var/www/app
+      - ./docker/php/xdebug/logs:/var/www/app/docker/nginx/logs
     networks:
       - internal
     extra_hosts:
@@ -36,7 +37,7 @@ services:
     ports:
       - '3306:3306'
     volumes:
-      - '${HOME}/mysql8/data:/var/lib/mysql'
+      - ${HOME}/mysql8/data:/var/lib/mysql
     networks:
       - internal
 networks:
