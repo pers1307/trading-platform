@@ -1,7 +1,7 @@
 DC := docker compose
 
 build:
-	$(DC) build
+	$(DC) build --no-cache
 
 up:
 	$(DC) up -d
@@ -17,9 +17,3 @@ clean: stop
 
 in:
 	$(DC) exec php bash
-
-server-start:
-	$(DC) exec php symfony serve -d
-
-server-stop:
-	$(DC) exec php symfony server:stop

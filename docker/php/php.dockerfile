@@ -13,7 +13,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN install-php-extensions xdebug-^3.3
 
 COPY my.ini $PHP_INI_DIR/conf.d/x-my.ini
-COPY xdebug.ini $PHP_INI_DIR/conf.d/xdebug.ini
+COPY xdebug/xdebug.ini $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini
 
 COPY ll /usr/local/bin/ll
 
@@ -51,6 +51,4 @@ RUN git config --global user.name "pers1307"
 RUN usermod -u 1000 www-data
 USER 1000
 
-# Зачем расшаривать 9000 порт ?
 CMD ["php-fpm"]
-EXPOSE 9000
