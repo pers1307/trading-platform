@@ -3,18 +3,11 @@
 * Разработка строго по TDD
 * Более 130 тестов
 * Докеризация
-* php 8.3
+* php 8.3.14
+* Xdebug 3.3.2
 * Symfony 6.4
 * AdminLTE 3.2.0
 * Интеграция с Telegramm
-
-## При разработке
-
-Запуск сервера внутри контейнера
-
-```bash
-symfony serve -d
-```
 
 ## Тестирование
 
@@ -22,7 +15,7 @@ symfony serve -d
 ./test.sh
 ```
 
-## Telegramm
+## Telegram
 
 [Ссылка на пакет](https://github.com/TelegramBot/Api)
 

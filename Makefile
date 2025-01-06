@@ -1,6 +1,9 @@
 DC := docker compose
 
 build:
+	$(DC) build
+
+build-no-cache:
 	$(DC) build --no-cache
 
 up:
