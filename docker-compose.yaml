@@ -23,6 +23,7 @@ services:
     volumes:
       - ./:/var/www/app
       - ./docker/php/xdebug/logs:/var/www/app/docker/nginx/logs
+      - ./docker/php/logs:/var/www/app/docker/php/logs
     networks:
       - internal
     extra_hosts:
