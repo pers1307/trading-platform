@@ -45,7 +45,12 @@
                                         </thead>
                                         <tbody>
                                         {% for deal in deals %}
-                                            <tr>
+                                            {% set softDeleted = '' %}
+                                            {% if deal.softDeleted %}
+                                                {% set softDeleted = 'bgcolor=#d3d3d3' %}
+                                            {% endif %}
+
+                                            <tr {{ softDeleted }}>
                                                 <td>{{ deal.id }}</td>
                                                 <td>{{ deal.accaunt.title }}</td>
                                                 <td>{{ deal.stockSecId }}</td>
@@ -55,20 +60,22 @@
                                                 <td>{{ deal.dateTime|date('Y-m-d H:m:s') }}</td>
                                                 <td>{{ deal.created|date('Y-m-d H:m:s') }}</td>
                                                 <td>
-                                                    <div class="btn-group">
-                                                        <a href="{{ path('app_deal_create_trade', {id: deal.id}) }}" type="button" class="btn btn-primary">
-                                                            <i class="fa fa-download"></i>
-                                                        </a>
-                                                        <a href="{{ path('app_deal_close_trade', {id: deal.id}) }}" type="button" class="btn btn-success">
-                                                            <i class="fa fa-window-close"></i>
-                                                        </a>
+                                                    {% if not deal.softDeleted %}
+                                                        <div class="btn-group">
+                                                            <a href="{{ path('app_deal_create_trade', {id: deal.id}) }}" type="button" class="btn btn-primary">
+                                                                <i class="fa fa-download"></i>
+                                                            </a>
+                                                            <a href="{{ path('app_deal_close_trade', {id: deal.id}) }}" type="button" class="btn btn-success">
+                                                                <i class="fa fa-window-close"></i>
+                                                            </a>
 {#                                                        <a href="/" type="button" class="btn btn-info">#}
 {#                                                            <i class="fa fa-plus"></i>#}
 {#                                                        </a>#}
 {#                                                        <a href="/" type="button" class="btn btn-danger">#}
 {#                                                            <i class="fa fa-trash-alt"></i>#}
 {#                                                        </a>#}
-                                                    </div>
+                                                        </div>
+                                                    {% endif %}
                                                 </td>
                                             </tr>
                                         {% endfor %}

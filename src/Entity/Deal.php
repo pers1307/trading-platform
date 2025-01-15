@@ -4,21 +4,22 @@ namespace App\Entity;
 
 use App\Repository\DealRepository;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
 #[ORM\Entity(repositoryClass: DealRepository::class)]
 class Deal
 {
-    public const TYPE_LONG = 'long';
-    public const TYPE_SHORT = 'short';
+    public const string TYPE_LONG = 'long';
+    public const string TYPE_SHORT = 'short';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'integer', nullable: false)]
+    #[ORM\Column(type: Types::INTEGER, nullable: false)]
     private int $transactionId;
 
     #[ORM\ManyToOne(targetEntity: Accaunt::class)]
@@ -33,10 +34,10 @@ class Deal
     #[ORM\Column(length: 255, nullable: true)]
     private string $secId;
 
-    #[ORM\Column(type: 'string', nullable: false, options: ['default' => 'long'], columnDefinition: "ENUM('long', 'short')")]
+    #[ORM\Column(type: Types::STRING, nullable: false, options: ['default' => 'long'], columnDefinition: "ENUM('long', 'short')")]
     private string $type;
 
-    #[ORM\Column(type: 'float', precision: 5, scale: 6, nullable: false)]
+    #[ORM\Column(type: Types::FLOAT, precision: 5, scale: 6, nullable: false)]
     private float $price;
 
     #[ORM\Column]
@@ -47,6 +48,9 @@ class Deal
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private DateTime $created;
+
+    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+    private bool $softDeleted = false;
 
     public function __construct()
     {
@@ -174,6 +178,18 @@ class Deal
     public function setTransactionId(int $transactionId): static
     {
         $this->transactionId = $transactionId;
+
+        return $this;
+    }
+
+    public function isSoftDeleted(): bool
+    {
+        return $this->softDeleted;
+    }
+
+    public function setSoftDeleted(bool $softDeleted): static
+    {
+        $this->softDeleted = $softDeleted;
 
         return $this;
     }

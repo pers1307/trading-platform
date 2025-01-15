@@ -9,11 +9,11 @@ use App\Repository\StrategyRepository;
 use App\Repository\TradeRepository;
 use App\Service\RiskProfileService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DealController extends AbstractController
@@ -44,7 +44,7 @@ class DealController extends AbstractController
 
         $riskProfiles = $this->riskProfileService->findByAccaunt($deal->getAccaunt()->getId());
         if (empty($riskProfiles)) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $referer = $request->headers->get('referer');
@@ -65,7 +65,7 @@ class DealController extends AbstractController
 
         $stock = $deal->getStock();
         if (is_null($stock)) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $trade = (new Trade())
@@ -78,8 +78,10 @@ class DealController extends AbstractController
             ->setAccaunt($deal->getAccaunt())
             ->setStrategy($strategy);
 
+        $deal->setSoftDeleted(true);
+
         $this->entityManager->persist($trade);
-        $this->entityManager->remove($deal);
+        $this->entityManager->persist($deal);
         $this->entityManager->flush();
 
         $redirectUrl = $this->generateUrl('app_deal_list');
@@ -92,7 +94,7 @@ class DealController extends AbstractController
     {
         $deal = $this->dealRepository->find($id);
         if (is_null($deal->getStock())) {
-            throw new \Exception("Нельзя закрыть позицию с неопределенным инструментом");
+            throw new Exception("Нельзя закрыть позицию с неопределенным инструментом");
         }
 
         $type = Trade::TYPE_LONG;
@@ -130,7 +132,7 @@ class DealController extends AbstractController
 
         $trade = $this->tradeRepository->find($tradeId);
         if (is_null($trade)) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $trade
@@ -138,8 +140,10 @@ class DealController extends AbstractController
             ->setClosePrice(floatval($price))
             ->setStatus(Trade::STATUS_CLOSE);
 
+        $deal->setSoftDeleted(true);
+
         $this->entityManager->persist($trade);
-        $this->entityManager->remove($deal);
+        $this->entityManager->persist($deal);
         $this->entityManager->flush();
 
         $redirectUrl = $this->generateUrl('app_deal_list');
