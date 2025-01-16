@@ -23,6 +23,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class UpdateAccauntHistoryCommand extends Command
 {
+    /**
+     * @todo перенести токены в БД и сделать их независимое обновление
+     */
     public function __construct(
         private readonly HttpClientInterface $httpClient,
         private readonly string $iisFinamToken,
@@ -45,6 +48,9 @@ class UpdateAccauntHistoryCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
+            /**
+             * Обновление счета ИИС
+             */
             $response = $this->httpClient->request(
                 'GET',
                 'https://trade-api.finam.ru/public/api/v1/portfolio',
@@ -55,7 +61,11 @@ class UpdateAccauntHistoryCommand extends Command
             );
             $iisFinamPortfolio = $response->toArray();
             $iisFinamEquity = floatval($iisFinamPortfolio['data']['equity']);
+            $this->save(1, $iisFinamEquity);
 
+            /**
+             * Обновление Спекулятивного счета
+             */
             $response = $this->httpClient->request(
                 'GET',
                 'https://trade-api.finam.ru/public/api/v1/portfolio',
@@ -66,9 +76,11 @@ class UpdateAccauntHistoryCommand extends Command
             );
             $speculativeFinamPortfolio = $response->toArray();
             $speculativeFinamEquity = floatval($speculativeFinamPortfolio['data']['equity']);
+            $this->save(2, $speculativeFinamEquity);
 
-            $this->save(1, $iisFinamEquity + $speculativeFinamEquity);
-
+            /**
+             * Обновление Маминого ИИС
+             */
             $response = $this->httpClient->request(
                 'GET',
                 'https://trade-api.finam.ru/public/api/v1/portfolio',
