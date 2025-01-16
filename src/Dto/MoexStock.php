@@ -2,18 +2,18 @@
 
 namespace App\Dto;
 
-class MoexStock
+readonly class MoexStock
 {
     public function __construct(
-        private readonly string $title,
-        private readonly string $boardId,
-        private readonly string $secId,
-        private readonly int $lotSize,
-        private readonly float $minStep,
-        private readonly float $price,
-        private readonly float $open,
-        private readonly float $high,
-        private readonly float $low,
+        private string $title,
+        private string $boardId,
+        private string $secId,
+        private int $lotSize,
+        private float $minStep,
+        private float $price,
+        private float $open,
+        private float $high,
+        private float $low,
     ) {
     }
 

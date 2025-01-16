@@ -43,6 +43,12 @@ class MoexApiService
             $result = array_merge($result, $moexStocks);
         }
 
+        /**
+         * @todo отрефакторить
+         */
+        $gld = $this->getGldRubTom();
+        $result = array_merge($result, [$gld]);
+
         return $result;
     }
 
@@ -68,5 +74,27 @@ class MoexApiService
         );
 
         return $moexStock[0];
+    }
+
+    /**
+     * @todo отрефакторить
+     */
+    public function getGldRubTom(): MoexStock
+    {
+        $url = 'https://iss.moex.com/iss/engines/currency/markets/selt/boards/CETS/securities/GLDRUB_TOM.jsonp';
+        $response = $this->httpClient->request('GET', $url);
+        $data = $response->toArray();
+
+        return new MoexStock(
+            title: "GLDRUB_TOM",
+            boardId: "CETS",
+            secId: "GLDRUB_TOM",
+            lotSize: 1,
+            minStep: 0.1,
+            price: floatval($data['securities']['data'][0][14]),
+            open: floatval($data['securities']['data'][0][14]),
+            high: floatval($data['securities']['data'][0][14]),
+            low: floatval($data['securities']['data'][0][14]),
+        );
     }
 }

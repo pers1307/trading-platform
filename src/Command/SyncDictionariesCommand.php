@@ -27,6 +27,7 @@ class SyncDictionariesCommand extends Command
     }
 
     /**
+     * @todo перенести обновление котировок на АПИ Финама
      * @throws ServerExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface

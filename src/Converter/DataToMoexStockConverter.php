@@ -13,15 +13,15 @@ class DataToMoexStockConverter
     {
         return array_map(static function (array $securityItem, array $marketItem) {
             return new MoexStock(
-                $securityItem[9],
-                $securityItem[1],
-                $securityItem[0],
-                intval($securityItem[4]),
-                floatval($securityItem[14]),
-                floatval($marketItem[12]),
-                floatval($marketItem[9]),
-                floatval($marketItem[11]),
-                floatval($marketItem[10]),
+                title: $securityItem[9],
+                boardId: $securityItem[1],
+                secId: $securityItem[0],
+                lotSize: intval($securityItem[4]),
+                minStep: floatval($securityItem[14]),
+                price: floatval($marketItem[12]),
+                open: floatval($marketItem[9]),
+                high: floatval($marketItem[11]),
+                low: floatval($marketItem[10]),
             );
         }, $data['securities']['data'], $data['marketdata']['data']);
     }
