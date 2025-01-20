@@ -80,6 +80,25 @@ class TradeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function countClose(): int
+    {
+        return $this->createQueryBuilder('t')
+            ->select('count(t.id)')
+            ->andWhere('t.status = :status')
+            ->setParameter('status', Trade::STATUS_CLOSE)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function findFirst(): Trade
+    {
+        return $this->createQueryBuilder('t')
+            ->orderBy('t.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     /**
      * @return Trade[]
      */

@@ -2,14 +2,14 @@
 
 namespace App\Dto\Statistic;
 
-class CountStatistic
+readonly class CountStatistic
 {
     public function __construct(
-        private readonly int $countTrades,
-        private readonly int $countProfitTrades,
-        private readonly int $countLossTrades,
-        private readonly float $persentProfitTrades,
-        private readonly float $persentLossTrades,
+        private int $countTrades,
+        private int $countProfitTrades,
+        private int $countLossTrades,
+        private float $persentProfitTrades,
+        private float $persentLossTrades,
     ) {
     }
 

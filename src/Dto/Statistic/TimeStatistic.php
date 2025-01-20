@@ -2,13 +2,13 @@
 
 namespace App\Dto\Statistic;
 
-class TimeStatistic
+readonly class TimeStatistic
 {
     public function __construct(
-        private readonly int $totalTimeIntervalInSecond,
-        private readonly int $averageProfitTradeInterval,
-        private readonly int $averageLossTradeInterval,
-        private readonly int $averageTradeInterval,
+        private int $totalTimeIntervalInSecond,
+        private int $averageProfitTradeInterval,
+        private int $averageLossTradeInterval,
+        private int $averageTradeInterval,
     ) {
     }
 

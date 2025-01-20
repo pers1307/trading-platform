@@ -20,50 +20,25 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-3 col-6">
+                    <div class="col-lg-6 col-12">
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3>150</h3>
-                                <p>Дней уже торгуем</p>
+                                <h3>{{ statistic.timeStatistic.totalTimeIntervalInSecond|toDays }} дней</h3>
+                                <p>Уже торгуем</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-forward"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-6">
+                    <div class="col-lg-6 col-12">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>200+</h3>
-
+                                <h3>{{ statistic.countStatistic.countTrades }}</h3>
                                 <p>Совершенных сделок</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-plus"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-warning">
-                            <div class="inner">
-                                <h3>1,25<sup style="font-size: 20px">%</sup></h3>
-
-                                <p>Математическое ожидание</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-calculator"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <h3>75<sup style="font-size: 20px">%</sup> / 25<sup style="font-size: 20px">%</sup></h3>
-
-                                <p>Profit / Loss</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-pie-graph"></i>
                             </div>
                         </div>
                     </div>

@@ -129,4 +129,31 @@ $(function() {
         options: salesGraphChartOptions,
     });
 
+    const salesGraphChartCanvas4 = $('#line-chart-accaunt-4').get(0).getContext('2d');
+    const data4 = $('#line-chart-accaunt-4').data('graph-data-encode');
+    const label4 = $('#line-chart-accaunt-4').data('accaunt-name');
+    const salesGraphChartData4 = {
+        labels: data4.labels,
+        datasets: [
+            {
+                label: label4,
+                fill: false,
+                borderWidth: 2,
+                lineTension: 0,
+                spanGaps: true,
+                borderColor: '#efefef',
+                pointRadius: 3,
+                pointHoverRadius: 7,
+                pointColor: '#efefef',
+                pointBackgroundColor: '#efefef',
+                data: data4.values,
+            },
+        ],
+    };
+
+    const salesGraphChart4 = new Chart(salesGraphChartCanvas4, { // lgtm[js/unused-local-variable]
+        type: 'line',
+        data: salesGraphChartData4,
+        options: salesGraphChartOptions,
+    });
 });

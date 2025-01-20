@@ -2,12 +2,12 @@
 
 namespace App\Dto\Statistic;
 
-class Statistic
+readonly class Statistic
 {
     public function __construct(
-        private readonly CountStatistic $countStatistic,
-        private readonly ExpectedStatistic $expectedStatistic,
-        private readonly TimeStatistic $timeStatistic,
+        private CountStatistic $countStatistic,
+        private ExpectedStatistic $expectedStatistic,
+        private TimeStatistic $timeStatistic,
     ) {
     }
 

@@ -4,30 +4,20 @@ namespace App\Service;
 
 use App\Entity\Accaunt;
 use App\Entity\AccauntHistory;
-use Doctrine\ORM\EntityManagerInterface;
-use Psr\Cache\CacheItemInterface;
-use Symfony\Contracts\Cache\CacheInterface;
+use App\Repository\AccauntHistoryRepository;
+use App\Repository\AccauntRepository;
 
-class DashboardService
+readonly class DashboardService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly CacheInterface $cache,
+        private AccauntRepository $accauntRepository,
+        private AccauntHistoryRepository $accauntHistoryRepository,
     ) {
-    }
-
-    public function getCachedAccauntsDataForGraph(): array
-    {
-        return $this->cache->get('dashboard_accaunts', function (CacheItemInterface $cacheItem) {
-            $cacheItem->expiresAfter(60 * 60 * 24);
-            return $this->getAccauntsDataForGraph();
-        });
     }
 
     public function getAccauntsDataForGraph(): array
     {
-        $accauntRepository = $this->entityManager->getRepository(Accaunt::class);
-        $accaunts = $accauntRepository->findAll();
+        $accaunts = $this->accauntRepository->findAll();
 
         $result = [];
         foreach ($accaunts as $accaunt) {
@@ -39,8 +29,7 @@ class DashboardService
 
     private function getFormatGraphDataByAccaunt(Accaunt $accaunt): string
     {
-        $accauntHistoryRepository = $this->entityManager->getRepository(AccauntHistory::class);
-        $accauntHistoryItems = $accauntHistoryRepository->findBy(['accaunt' => $accaunt->getId()], ['created' => 'DESC'], 20);
+        $accauntHistoryItems = $this->accauntHistoryRepository->findBy(['accaunt' => $accaunt->getId()], ['created' => 'DESC'], 20);
 
         return $this->formatGraphData(array_reverse($accauntHistoryItems));
     }
