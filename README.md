@@ -15,6 +15,24 @@
 ./test.sh
 ```
 
+## CRON задачи
+```bash
+# Обновление цен акций
+0 13-22 * * 1-5 cd /home/www && /usr/bin/php bin/console app:sync-dictionaries
+
+# Проверка соблюдения рисков в позициях
+*/10 10-22 * * 1-5 cd /home/www && /usr/bin/php bin/console app:risk-trade-check
+
+# Проверить состояние открытых позиций
+10 14,22 * * 1-5 cd /home/www && /usr/bin/php bin/console app:check-open-trades
+
+# Скачать совершенные сделки
+*/5 * * * * cd /home/www && /usr/bin/php bin/console app:dowload-deals
+
+# Обновлять состояние счетов
+0 15 * * 1-5 cd /home/www && /usr/bin/php bin/console app:update-accaunt-history
+```
+
 ## Telegram
 
 [Ссылка на пакет](https://github.com/TelegramBot/Api)
