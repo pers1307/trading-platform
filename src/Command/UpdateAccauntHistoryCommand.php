@@ -49,55 +49,95 @@ class UpdateAccauntHistoryCommand extends Command
     {
         try {
             /**
+             * Получение токена
+             */
+            $token = $this->getJwtTokenByApiKey($this->iisFinamToken);
+            $accountId = $this->getAccountIdByToken($token);
+
+            /**
              * Обновление счета ИИС
              */
             $response = $this->httpClient->request(
                 'GET',
-                'https://trade-api.finam.ru/public/api/v1/portfolio',
+                'https://api.finam.ru/v1/accounts/' . $accountId,
                 [
-                    'headers' => ['X-Api-Key' => $this->iisFinamToken],
-                    'query' => ['clientId' => urlencode($this->iisFinamClientId)]
+                    'headers' => [
+                        'Authorization' => $token,
+                        'Accept' => 'application/json',
+                    ],
                 ]
             );
-            $iisFinamPortfolio = $response->toArray();
-            $iisFinamEquity = floatval($iisFinamPortfolio['data']['equity']);
-            $this->save(1, $iisFinamEquity);
+            $iisAccount = $response->toArray();
+            $iisAccountEquity = floatval($iisAccount['equity']['value']);
+            /**
+             * @todo пригодится для оперативного отслеживания поступления средств
+             */
+            $iisAccountCash = floatval($iisAccount['cash'][0]['units']);
+            $this->save(1, $iisAccountEquity);
 
             /**
              * Обновление Спекулятивного счета
              */
-            $response = $this->httpClient->request(
-                'GET',
-                'https://trade-api.finam.ru/public/api/v1/portfolio',
-                [
-                    'headers' => ['X-Api-Key' => $this->speculativeFinamToken],
-                    'query' => ['clientId' => urlencode($this->speculativeFinamClientId)]
-                ]
-            );
-            $speculativeFinamPortfolio = $response->toArray();
-            $speculativeFinamEquity = floatval($speculativeFinamPortfolio['data']['equity']);
-            $this->save(2, $speculativeFinamEquity);
+            $token = $this->getJwtTokenByApiKey($this->speculativeFinamToken);
+            $accountId = $this->getAccountIdByToken($token);
 
             /**
-             * Обновление Маминого ИИС
+             * Обновление счета ИИС
              */
             $response = $this->httpClient->request(
                 'GET',
-                'https://trade-api.finam.ru/public/api/v1/portfolio',
+                'https://api.finam.ru/v1/accounts/' . $accountId,
                 [
-                    'headers' => ['X-Api-Key' => $this->motherFinamToken],
-                    'query' => ['clientId' => urlencode($this->motherFinamClientId)]
+                    'headers' => [
+                        'Authorization' => $token,
+                        'Accept' => 'application/json',
+                    ],
                 ]
             );
-            $speculativeFinamPortfolio = $response->toArray();
-            $motherFinamEquity = floatval($speculativeFinamPortfolio['data']['equity']);
-
-            $this->save(3, $motherFinamEquity);
+            $speculativeAccount = $response->toArray();
+            $speculativeAccountEquity = floatval($speculativeAccount['equity']['value']);
+            /**
+             * @todo пригодится для оперативного отслеживания поступления средств
+             */
+            $speculativeAccountCash = floatval($speculativeAccount['cash'][0]['units']);
+            $this->save(2, $speculativeAccountEquity);
         } catch (\Throwable $exception) {
             return Command::FAILURE;
         }
 
         return Command::SUCCESS;
+    }
+
+    private function getJwtTokenByApiKey(string $apiKey): string
+    {
+        $response = $this->httpClient->request(
+            'POST',
+            'https://api.finam.ru/v1/sessions',
+            [
+                'body' => json_encode([
+                    'secret' => $apiKey
+                ])
+            ]
+        );
+
+        $responseAsArray = $response->toArray();
+        return $responseAsArray['token'];
+    }
+
+    private function getAccountIdByToken(string $token): string
+    {
+        $response = $this->httpClient->request(
+            'POST',
+            'https://api.finam.ru/v1/sessions/details',
+            [
+                'body' => json_encode([
+                    'token' => $token
+                ])
+            ]
+        );
+
+        $responseAsArray = $response->toArray();
+        return $responseAsArray['account_ids'][0];
     }
 
     private function save(int $accauntId, float $value): void
