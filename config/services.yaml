@@ -16,8 +16,6 @@ services:
       'string $iisFinamClientId': '%env(string:IIS_FINAM_CLIENT_ID)%'
       'string $speculativeFinamToken': '%env(string:SPECULATIVE_FINAM_TOKEN)%'
       'string $speculativeFinamClientId': '%env(string:SPECULATIVE_FINAM_CLIENT_ID)%'
-      'string $motherFinamToken': '%env(string:MOTHER_FINAM_TOKEN)%'
-      'string $motherFinamClientId': '%env(string:MOTHER_FINAM_CLIENT_ID)%'
 
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name
@@ -42,3 +40,22 @@ services:
     calls:
       - addSender: [ '@telegramm_sender' ]
       - addSender: [ '@db_sender' ]
+
+  finam_http_client:
+    class: App\Service\Finam\HttpClient
+
+  finam_auth_resource:
+    class: App\Service\Finam\Resource\AuthResource
+    arguments:
+      $httpClient: '@finam_http_client'
+
+  finam_account_resource:
+    class: App\Service\Finam\Resource\AccountResource
+    arguments:
+      $httpClient: '@finam_http_client'
+
+  finam_client:
+    class: App\Service\Finam\Client
+    arguments:
+      $authResource: '@finam_auth_resource'
+      $accountResource: '@finam_account_resource'

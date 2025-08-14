@@ -8,6 +8,7 @@
 * Symfony 6.4
 * AdminLTE 3.2.0
 * Интеграция с Telegramm
+* Интеграция с Finam API
 
 ## Тестирование
 
