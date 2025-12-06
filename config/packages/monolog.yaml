@@ -2,6 +2,8 @@ monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
         - dictionary
+        - history
+        - deals
     handlers:
         dictionary:
             type: rotating_file
@@ -9,6 +11,18 @@ monolog:
             level: debug
             max_files: 1
             channels: [ "dictionary" ]
+        history:
+            type: rotating_file
+            path: '%kernel.logs_dir%/history.log'
+            level: debug
+            max_files: 1
+            channels: [ "history" ]
+        deals:
+            type: rotating_file
+            path: '%kernel.logs_dir%/deals.log'
+            level: debug
+            max_files: 1
+            channels: [ "deals" ]
 
 when@dev:
     monolog:
