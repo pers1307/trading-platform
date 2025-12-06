@@ -1,10 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Entity\AccauntHistory;
 use App\Repository\AccauntRepository;
+use App\Service\Finam\Request\AuthDetailsRequest;
+use App\Service\Finam\Request\AuthRequest;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +18,7 @@ use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Service\Finam\Client as FinamClient;
 
 /**
  * @todo зарефакторить и покрыть тестами
@@ -23,19 +29,14 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class UpdateAccauntHistoryCommand extends Command
 {
-    /**
-     * @todo перенести токены в БД и сделать их независимое обновление
-     */
     public function __construct(
+        private readonly FinamClient $finamClient,
         private readonly HttpClientInterface $httpClient,
         private readonly string $iisFinamToken,
-        private readonly string $iisFinamClientId,
         private readonly string $speculativeFinamToken,
-        private readonly string $speculativeFinamClientId,
-        private readonly string $motherFinamToken,
-        private readonly string $motherFinamClientId,
         private readonly AccauntRepository $accauntRepository,
         private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $historyLogger,
     ) {
         parent::__construct();
     }
@@ -48,21 +49,18 @@ class UpdateAccauntHistoryCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
-            /**
-             * Получение токена
-             */
-            $token = $this->getJwtTokenByApiKey($this->iisFinamToken);
-            $accountId = $this->getAccountIdByToken($token);
+            $authResponse = $this->finamClient->authResource->getAuthToken(new AuthRequest($this->iisFinamToken));
+            $authDetailsResponse = $this->finamClient->authResource->getAuthDetails(new AuthDetailsRequest($authResponse->token));
 
             /**
              * Обновление счета ИИС
              */
             $response = $this->httpClient->request(
                 'GET',
-                'https://api.finam.ru/v1/accounts/' . $accountId,
+                'https://api.finam.ru/v1/accounts/' . $authDetailsResponse->accountId,
                 [
                     'headers' => [
-                        'Authorization' => $token,
+                        'Authorization' => $authResponse->token,
                         'Accept' => 'application/json',
                     ],
                 ]
@@ -78,18 +76,18 @@ class UpdateAccauntHistoryCommand extends Command
             /**
              * Обновление Спекулятивного счета
              */
-            $token = $this->getJwtTokenByApiKey($this->speculativeFinamToken);
-            $accountId = $this->getAccountIdByToken($token);
+            $authResponse = $this->finamClient->authResource->getAuthToken(new AuthRequest($this->speculativeFinamToken));
+            $authDetailsResponse = $this->finamClient->authResource->getAuthDetails(new AuthDetailsRequest($authResponse->token));
 
             /**
-             * Обновление счета ИИС
+             * Обновление счета Вклада
              */
             $response = $this->httpClient->request(
                 'GET',
-                'https://api.finam.ru/v1/accounts/' . $accountId,
+                'https://api.finam.ru/v1/accounts/' . $authDetailsResponse->accountId,
                 [
                     'headers' => [
-                        'Authorization' => $token,
+                        'Authorization' => $authResponse->token,
                         'Accept' => 'application/json',
                     ],
                 ]
@@ -102,42 +100,12 @@ class UpdateAccauntHistoryCommand extends Command
             $speculativeAccountCash = floatval($speculativeAccount['cash'][0]['units']);
             $this->save(2, $speculativeAccountEquity);
         } catch (\Throwable $exception) {
+            $this->historyLogger->error($exception);
+
             return Command::FAILURE;
         }
 
         return Command::SUCCESS;
-    }
-
-    private function getJwtTokenByApiKey(string $apiKey): string
-    {
-        $response = $this->httpClient->request(
-            'POST',
-            'https://api.finam.ru/v1/sessions',
-            [
-                'body' => json_encode([
-                    'secret' => $apiKey
-                ])
-            ]
-        );
-
-        $responseAsArray = $response->toArray();
-        return $responseAsArray['token'];
-    }
-
-    private function getAccountIdByToken(string $token): string
-    {
-        $response = $this->httpClient->request(
-            'POST',
-            'https://api.finam.ru/v1/sessions/details',
-            [
-                'body' => json_encode([
-                    'token' => $token
-                ])
-            ]
-        );
-
-        $responseAsArray = $response->toArray();
-        return $responseAsArray['account_ids'][0];
     }
 
     private function save(int $accauntId, float $value): void
