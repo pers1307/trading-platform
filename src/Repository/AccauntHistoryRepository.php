@@ -20,4 +20,15 @@ class AccauntHistoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, AccauntHistory::class);
     }
+
+    public function findLatestByAccauntId(int $accauntId): ?AccauntHistory
+    {
+        return $this->createQueryBuilder('ah')
+            ->where('ah.accaunt = :accauntId')
+            ->setParameter('accauntId', $accauntId)
+            ->orderBy('ah.created', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

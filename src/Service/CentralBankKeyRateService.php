@@ -31,7 +31,15 @@ class CentralBankKeyRateService
      */
     public function getLatestKeyRate(): float
     {
-        $response = $this->httpClient->request('GET', self::URL);
+        $url = getenv('CBR_KEYRATE_URL') ?: self::URL;
+        $hostHeader = getenv('CBR_KEYRATE_HOST') ?: null;
+
+        $options = [];
+        if ($hostHeader) {
+            $options['headers']['Host'] = $hostHeader;
+        }
+
+        $response = $this->httpClient->request('GET', $url, $options);
 
         if ($response->getStatusCode() !== 200) {
             throw new RuntimeException('Не удалось получить ключевую ставку ЦБ: HTTP ' . $response->getStatusCode());

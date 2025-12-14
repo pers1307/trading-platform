@@ -49,3 +49,21 @@ https://api.telegram.org/bot<Token>/getUpdates
 ```
 https://api.telegram.org/bot<Token>/getMe
 ```
+
+## Расчет инфляционных показателей счета
+
+Консольная команда `inflation:calculate` пересчитывает баланс счета с учетом инфляции и альтернативного депозита и сохраняет срез в таблицу `accaunt_inflation` (upsert по `accaunt_id` + `date`).
+
+Аргументы:
+- `movement_amount` — движение средств за период (пополнение/вывод).
+- `accaunt_id` — идентификатор счета.
+- `date` — дата среза в формате `YYYY-MM-DD`.
+
+Примеры (docker-compose):
+```bash
+# Рассчитать срез для счета 1 на 2025-12-14 с движением +100
+docker compose run --rm php php bin/console inflation:calculate 100 1 2025-12-14
+
+# Рассчитать срез для счета 2 на сегодня (пример даты)
+docker compose run --rm php php bin/console inflation:calculate 0 2 $(date +%F)
+```
