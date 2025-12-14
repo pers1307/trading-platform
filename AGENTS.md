@@ -47,3 +47,10 @@
 ## Security & Configuration Tips
 - Keep database credentials, tokens (Telegram/Finam), and API keys in env vars; never commit them.
 - When adding cron-like logic, prefer Symfony commands under `bin/console` and document schedules to keep ops in sync.
+
+## Подключение к БД (dev/test)
+- Основной URL в `.env`: `mysql://root:root@mysql8:3306/trading_platform?serverVersion=8.0.33&charset=utf8mb4`. Хост `mysql8` и порт 3306 используются внутри контейнеров; с хоста доступ через прокинутый `localhost:3307` из `docker-compose.yaml`. Для dev достаточно поднять `mysql8` (`make up`) и выполнить миграции (`bin/console doctrine:migrations:migrate`).
+- Doctrine конфиг в `config/packages/doctrine.yaml` читает `DATABASE_URL` и задает `server_version: 8`. ORM использует маппинги из `src/Entity`, репозитории лежат в `src/Repository` и работают через `ManagerRegistry`.
+- Тестовая среда (`APP_ENV=test`, устанавливается в `phpunit.xml`) берёт тот же `DATABASE_URL`, но Doctrine автоматически добавляет суффикс `_test%TEST_TOKEN%` (`config/packages/doctrine.yaml`), поэтому БД называется `trading_platform_test` (или с токеном для параллельных прогонов).
+- Перед тестами `test.sh` вызывает `tests/Script/Helpers/reloadTestDatabase.sh`: дроп/создание БД, миграции и загрузка фикстур (`doctrine:fixtures:load`) с `--env=test`. Аналогично можно вручную выполнить эти команды внутри PHP-контейнера (`make in`).
+- Чтение данных в коде через Doctrine: инжектировать нужный репозиторий из `src/Repository` и вызывать методы (пример `TradeRepository::findAll()`/`findCompletely()`), либо использовать `EntityManager`/`createNativeQuery` для raw SQL. Для разовых проверок из CLI — `bin/console doctrine:query:sql "SELECT ..."` с нужным `APP_ENV`.
