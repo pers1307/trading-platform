@@ -1,12 +1,28 @@
+{% set currentRoute = currentRoute ?? (app.request ? app.request.attributes.get('_route') : '') %}
+{% set dashboardActive = currentRoute == 'app_dashboard_index' %}
+{% set tradeGroupActive = currentRoute starts with 'app_trade_' %}
+{% set tradeListActive = currentRoute == 'app_trade_list' %}
+{% set tradeActiveListActive = currentRoute == 'app_trade_active_group_by_strategies_list' %}
+{% set dealsActive = currentRoute starts with 'app_deal_' %}
+{% set statisticsActive = currentRoute starts with 'app_statistics_' %}
+{% set statisticsStrategiesActive = currentRoute in ['app_statistics_strategies_list', 'app_statistics_strategy_accaunt'] %}
+{% set statisticsAccauntsActive = currentRoute in ['app_statistics_accaunts_list', 'app_statistics_accaunt'] %}
+{% set strategiesActive = currentRoute == 'app_strategies_index' %}
+{% set accauntsActive = currentRoute starts with 'app_accaunt_' or currentRoute starts with 'app_accaunts_' %}
+{% set riskProfileActive = currentRoute == 'app_risk_profile_index' %}
+{% set calculateActive = currentRoute starts with 'app_calculate_' %}
+{% set dictionaryGroupActive = currentRoute starts with 'app_dictionary_' %}
+{% set dictionaryStocksActive = currentRoute == 'app_dictionary_stock_index' %}
+
 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
     <li class="nav-item">
-        <a href="{{ path('app_dashboard_index') }}" class="nav-link">
+        <a href="{{ path('app_dashboard_index') }}" class="nav-link {{ dashboardActive ? 'active' : '' }}">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Дашборд</p>
         </a>
     </li>
-    <li class="nav-item">
-        <a href="/" class="nav-link">
+    <li class="nav-item {{ tradeGroupActive ? 'menu-open' : '' }}">
+        <a href="/" class="nav-link {{ tradeGroupActive ? 'active' : '' }}">
             <i class="nav-icon fas fa-briefcase"></i>
             <p>
                 Позиции
@@ -15,13 +31,13 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="{{ path('app_trade_list') }}" class="nav-link">
+                <a href="{{ path('app_trade_list') }}" class="nav-link {{ tradeListActive ? 'active' : '' }}">
                     <i class="fa fa-circle-notch nav-icon"></i>
                     <p>Все</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('app_trade_active_group_by_strategies_list') }}" class="nav-link">
+                <a href="{{ path('app_trade_active_group_by_strategies_list') }}" class="nav-link {{ tradeActiveListActive ? 'active' : '' }}">
                     <i class="fa fa-circle-notch nav-icon"></i>
                     <p>Активные</p>
                 </a>
@@ -29,18 +45,11 @@
         </ul>
     </li>
     <li class="nav-item">
-        <a href="{{ path('app_deal_list') }}" class="nav-link">
+        <a href="{{ path('app_deal_list') }}" class="nav-link {{ dealsActive ? 'active' : '' }}">
             <i class="nav-icon fas fa-inbox"></i>
             <p>Сделки</p>
         </a>
     </li>
-    {% set statisticsRoutes = [
-        'app_statistics_strategies_list',
-        'app_statistics_strategy_accaunt',
-        'app_statistics_accaunts_list',
-        'app_statistics_accaunt'
-    ] %}
-    {% set statisticsActive = app.request.attributes.get('_route') in statisticsRoutes %}
     <li class="nav-item {{ statisticsActive ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ statisticsActive ? 'active' : '' }}">
             <i class="nav-icon fas fa-flask"></i>
@@ -51,13 +60,13 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="{{ path('app_statistics_strategies_list') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_statistics_strategies_list' or app.request.attributes.get('_route') == 'app_statistics_strategy_accaunt' ? 'active' : '' }}">
+                <a href="{{ path('app_statistics_strategies_list') }}" class="nav-link {{ statisticsStrategiesActive ? 'active' : '' }}">
                     <i class="fa fa-circle-notch nav-icon"></i>
                     <p>По стратегиям</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('app_statistics_accaunts_list') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_statistics_accaunts_list' or app.request.attributes.get('_route') == 'app_statistics_accaunt' ? 'active' : '' }}">
+                <a href="{{ path('app_statistics_accaunts_list') }}" class="nav-link {{ statisticsAccauntsActive ? 'active' : '' }}">
                     <i class="fa fa-circle-notch nav-icon"></i>
                     <p>По счетам</p>
                 </a>
@@ -65,31 +74,31 @@
         </ul>
     </li>
     <li class="nav-item">
-        <a href="{{ path('app_strategies_index') }}" class="nav-link">
+        <a href="{{ path('app_strategies_index') }}" class="nav-link {{ strategiesActive ? 'active' : '' }}">
             <i class="nav-icon fas fa-chess"></i>
             <p>Стратегии</p>
         </a>
     </li>
     <li class="nav-item">
-        <a href="{{ path('app_accaunts_index') }}" class="nav-link">
+        <a href="{{ path('app_accaunts_index') }}" class="nav-link {{ accauntsActive ? 'active' : '' }}">
             <i class="nav-icon fas fa-sticky-note"></i>
             <p>Счета</p>
         </a>
     </li>
     <li class="nav-item">
-        <a href="{{ path('app_risk_profile_index') }}" class="nav-link">
+        <a href="{{ path('app_risk_profile_index') }}" class="nav-link {{ riskProfileActive ? 'active' : '' }}">
             <i class="nav-icon fas fa-shield-alt"></i>
             <p>Риск профиль</p>
         </a>
     </li>
     <li class="nav-item">
-        <a href="{{ path('app_calculate_accaunt_index') }}" class="nav-link">
+        <a href="{{ path('app_calculate_accaunt_index') }}" class="nav-link {{ calculateActive ? 'active' : '' }}">
             <i class="nav-icon fas fa-calculator"></i>
             <p>Калькулятор</p>
         </a>
     </li>
-    <li class="nav-item">
-        <a href="/" class="nav-link">
+    <li class="nav-item {{ dictionaryGroupActive ? 'menu-open' : '' }}">
+        <a href="/" class="nav-link {{ dictionaryGroupActive ? 'active' : '' }}">
             <i class="nav-icon fas fa-book"></i>
             <p>
                 Справочники
@@ -98,7 +107,7 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="{{ path('app_dictionary_stock_index') }}" class="nav-link">
+                <a href="{{ path('app_dictionary_stock_index') }}" class="nav-link {{ dictionaryStocksActive ? 'active' : '' }}">
                     <i class="fa fa-circle-notch nav-icon"></i>
                     <p>Акции</p>
                 </a>
