@@ -1,0 +1,113 @@
+{% extends 'base.admin.html.twig' %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Статистика по счету: {{ accaunt.title }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_dashboard_index') }}">Главная панель</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_statistics_accaunts_list') }}">Статистика по счетам</a>
+                            </li>
+                            <li class="breadcrumb-item active">Счет</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                {% if accauntInflationItems is not empty %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">График</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card bg-gradient-info">
+                                        <div class="card-body">
+                                            <canvas
+                                                    class="chart"
+                                                    id="line-chart"
+                                                    style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"
+                                                    data-graph-data-encode="{{ graphDataEncode }}"
+                                            ></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Список</h3>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 10px">#</th>
+                                            <th>Дата</th>
+                                            <th>Пополнение</th>
+                                            <th>Ставка ЦБ</th>
+                                            <th>Инфляция</th>
+                                            <th>Процент по вкладу</th>
+                                            <th>Вклад</th>
+                                            <th>Счет</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for index,accauntInflationItem in accauntInflationItems %}
+                                            <tr>
+                                                <td>{{ accauntInflationItem.id }}.</td>
+                                                <td>{{ accauntInflationItem.date|date('Y-m-d') }}</td>
+                                                <td>{{ accauntInflationItem.movementAmount|number_format(2, '.', ' ') }}</td>
+                                                <td>{{ accauntInflationItem.centralBankKeyRate|number_format(2, '.', ' ') }}%</td>
+                                                <td>{{ accauntInflationItem.accauntInflationBalance|number_format(2, '.', ' ') }}</td>
+                                                <td>{{ accauntInflationItem.depositRate|number_format(2, '.', ' ') }}%</td>
+                                                <td>{{ accauntInflationItem.accauntDepositBalance|number_format(2, '.', ' ') }}</td>
+                                                <td>{{ accauntInflationItem.accauntBalance|number_format(2, '.', ' ') }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Список</h3>
+                                </div>
+                                <div class="card-body">
+                                    Здесь ещё нет значений.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('vendor/js/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ asset('vendor/js/accaunt_inflation.js') }}"></script>
+{% endblock %}

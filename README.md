@@ -57,13 +57,21 @@ https://api.telegram.org/bot<Token>/getMe
 Аргументы:
 - `movement_amount` — движение средств за период (пополнение/вывод).
 - `accaunt_id` — идентификатор счета.
-- `date` — дата среза в формате `YYYY-MM-DD`.
+- `deposit_rate` — ставка по банковскому депозиту, % годовых (обязательно).
+- `date` — дата среза в формате `YYYY-MM-DD` (опционально, по умолчанию — текущая дата).
+- `central_bank_key_rate` — ключевая ставка ЦБ, % годовых (опционально; если не задана — берется через `\App\Service\CentralBankKeyRateService`).
 
 Примеры (docker-compose):
 ```bash
-# Рассчитать срез для счета 1 на 2025-12-14 с движением +100
-docker compose run --rm php php bin/console inflation:calculate 100 1 2025-12-14
+# Базовый расчет: движение +100, ставка депозита 12%, дата среза 2025-12-14
+docker compose run --rm php php bin/console inflation:calculate 100 1 12 2025-12-14
 
-# Рассчитать срез для счета 2 на сегодня (пример даты)
-docker compose run --rm php php bin/console inflation:calculate 0 2 $(date +%F)
+# Расчет на сегодня (date не передаем)
+docker compose run --rm php php bin/console inflation:calculate 0 2 10
+
+# Расчет с принудительной ключевой ставкой ЦБ (например, ретроспективный анализ)
+docker compose run --rm php php bin/console inflation:calculate 100 1 12 2025-12-14 16.5
+
+# Расчет на сегодня с принудительной ключевой ставкой
+docker compose run --rm php php bin/console inflation:calculate 0 2 10 "" 16.5
 ```

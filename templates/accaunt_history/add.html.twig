@@ -29,11 +29,35 @@
                 </li>
             </ul>
         </li>
-        <li class="nav-item">
-            <a href="{{ path('app_statistics_strategies_list') }}" class="nav-link">
+        {% set statisticsRoutes = [
+            'app_statistics_strategies_list',
+            'app_statistics_strategy_accaunt',
+            'app_statistics_accaunts_list',
+            'app_statistics_accaunt'
+        ] %}
+        {% set statisticsActive = app.request.attributes.get('_route') in statisticsRoutes %}
+        <li class="nav-item {{ statisticsActive ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ statisticsActive ? 'active' : '' }}">
                 <i class="nav-icon fas fa-flask"></i>
-                <p>Статистика</p>
+                <p>
+                    Статистика
+                    <i class="right fas fa-angle-left"></i>
+                </p>
             </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ path('app_statistics_strategies_list') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_statistics_strategies_list' or app.request.attributes.get('_route') == 'app_statistics_strategy_accaunt' ? 'active' : '' }}">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>По стратегиям</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_statistics_accaunts_list') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_statistics_accaunts_list' or app.request.attributes.get('_route') == 'app_statistics_accaunt' ? 'active' : '' }}">
+                        <i class="fa fa-circle-notch nav-icon"></i>
+                        <p>По счетам</p>
+                    </a>
+                </li>
+            </ul>
         </li>
         <li class="nav-item">
             <a href="{{ path('app_strategies_index') }}" class="nav-link">
