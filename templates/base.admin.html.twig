@@ -35,13 +35,6 @@
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
 
-            <li class="nav-item d-none d-sm-inline-block">
-                <a href="#" class="nav-link">🪙 Золотой запас</a>
-            </li>
-
-            <li class="nav-item d-none d-sm-inline-block">
-                <a href="#" class="nav-link">💰 Вклад</a>
-            </li>
         </ul>
 
         {{ render(controller('App\\Widget\\NotificationWidget::show')) }}
@@ -167,7 +160,7 @@
         <strong>Copyright &copy; 2024 - {{ "now"|date("Y") }} <a href="/">Торговая платформа</a></strong>
         Все права защищены.
         <div class="float-right d-none d-sm-inline-block">
-            <b>Версия</b> 0.14.12
+            <b>Версия</b> 0.15.0
         </div>
     </footer>
 </div>
@@ -185,4 +178,3 @@
 {% endblock %}
 </body>
 </html>
-

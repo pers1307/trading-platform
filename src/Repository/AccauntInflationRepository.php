@@ -33,4 +33,12 @@ class AccauntInflationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @return AccauntInflation[]
+     */
+    public function findByAccauntIdOrdered(int $accauntId): array
+    {
+        return $this->findBy(['accaunt' => $accauntId], ['date' => 'ASC']);
+    }
 }
