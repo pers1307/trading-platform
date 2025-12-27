@@ -33,8 +33,13 @@ class CentralBankKeyRateService
     {
         $url = getenv('CBR_KEYRATE_URL') ?: self::URL;
         $hostHeader = getenv('CBR_KEYRATE_HOST') ?: null;
+        $userAgent = getenv('CBR_KEYRATE_USER_AGENT') ?: 'trading-platform/1.0';
 
         $options = [];
+        $options['headers'] = [
+            'User-Agent' => $userAgent,
+            'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        ];
         if ($hostHeader) {
             $options['headers']['Host'] = $hostHeader;
         }

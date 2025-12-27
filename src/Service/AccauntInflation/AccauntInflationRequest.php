@@ -11,6 +11,8 @@ final readonly class AccauntInflationRequest
         public Accaunt $accaunt,
         public float $movementAmount,
         public DateTimeInterface $date,
+        public float $depositRate,
+        public float $centralBankKeyRate,
     ) {
     }
 }
