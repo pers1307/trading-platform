@@ -21,7 +21,6 @@ class AccauntInflationCalculator
     {
         $latestHistory = $this->accauntHistoryRepository->findLatestByAccauntId($request->accaunt->getId());
         $historyBalance = $latestHistory?->getBalance() ?? 0.0;
-        $accauntBalance = $historyBalance + $request->movementAmount;
 
         /** @var AccauntInflation $previousSlice */
         $previousSlice = $this->accauntInflationRepository->findLatestBeforeDate($request->accaunt->getId(), $request->date);
@@ -56,7 +55,7 @@ class AccauntInflationCalculator
             movementAmount: $request->movementAmount,
             centralBankKeyRate: $centralBankKeyRate,
             depositRate: $depositRate,
-            accauntBalance: $accauntBalance,
+            accauntBalance: $historyBalance,
             accauntInflationBalance: intval($inflationResponse->totalAmount + $request->movementAmount),
             accauntDepositBalance: intval($depositResponse->totalAmount + $request->movementAmount),
             date: $request->date,
