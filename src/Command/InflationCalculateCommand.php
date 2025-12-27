@@ -7,6 +7,7 @@ use App\Repository\AccauntInflationRepository;
 use App\Repository\AccauntRepository;
 use App\Service\AccauntInflation\AccauntInflationCalculator;
 use App\Service\AccauntInflation\AccauntInflationRequest;
+use App\Service\CentralBankKeyRateService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -26,6 +27,7 @@ class InflationCalculateCommand extends Command
         private readonly AccauntRepository $accauntRepository,
         private readonly AccauntInflationRepository $accauntInflationRepository,
         private readonly AccauntInflationCalculator $accauntInflationCalculator,
+        private readonly CentralBankKeyRateService $centralBankKeyRateService,
         private readonly EntityManagerInterface $entityManager,
     ) {
         parent::__construct();
@@ -36,7 +38,13 @@ class InflationCalculateCommand extends Command
         $this
             ->addArgument('movement_amount', InputArgument::REQUIRED, 'Движение средств за период')
             ->addArgument('accaunt_id', InputArgument::REQUIRED, 'Идентификатор счета')
-            ->addArgument('date', InputArgument::REQUIRED, 'Дата среза в формате Y-m-d');
+            ->addArgument('deposit_rate', InputArgument::REQUIRED, 'Ставка по банковскому депозиту, % годовых')
+            ->addArgument('date', InputArgument::OPTIONAL, 'Дата среза в формате Y-m-d (по умолчанию: текущая дата)')
+            ->addArgument(
+                'central_bank_key_rate',
+                InputArgument::OPTIONAL,
+                'Ключевая ставка ЦБ, % годовых (если не задана — берется через CentralBankKeyRateService)'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -45,25 +53,51 @@ class InflationCalculateCommand extends Command
 
         $movementAmount = (float) $input->getArgument('movement_amount');
         $accauntId = (int) $input->getArgument('accaunt_id');
-        $dateString = (string) $input->getArgument('date');
+        $depositRateArgument = $input->getArgument('deposit_rate');
+        $dateString = $input->getArgument('date');
+        $centralBankKeyRateArgument = $input->getArgument('central_bank_key_rate');
 
         $accaunt = $this->accauntRepository->find($accauntId);
-        if (null === $accaunt) {
+        if ($accaunt === null) {
             $io->error(sprintf('Счет с id=%d не найден.', $accauntId));
 
             return Command::FAILURE;
         }
 
-        $date = DateTimeImmutable::createFromFormat('Y-m-d', $dateString);
-        if (false === $date) {
-            $io->error(sprintf('Некорректная дата: %s. Ожидается формат Y-m-d.', $dateString));
-
+        $date = $this->resolveSliceDate($dateString, $io);
+        if ($date === null) {
             return Command::FAILURE;
         }
 
+        $depositRate = $this->resolveDepositRate($depositRateArgument, $io);
+        if ($depositRate === false) {
+            return Command::FAILURE;
+        }
+
+        $centralBankKeyRate = $this->resolveCentralBankKeyRate($centralBankKeyRateArgument, $io);
+        if ($centralBankKeyRate === false) {
+            return Command::FAILURE;
+        }
+
+        if ($centralBankKeyRate === null) {
+            try {
+                $centralBankKeyRate = $this->centralBankKeyRateService->getLatestKeyRate();
+            } catch (\Throwable $exception) {
+                $io->error($exception->getMessage());
+
+                return Command::FAILURE;
+            }
+        }
+
         try {
-            $result = $this->accauntInflationCalculator->calculate(
-                new AccauntInflationRequest($accaunt, $movementAmount, $date)
+            $accauntInflationResponse = $this->accauntInflationCalculator->calculate(
+                new AccauntInflationRequest(
+                    accaunt: $accaunt,
+                    movementAmount: $movementAmount,
+                    date: $date,
+                    depositRate: $depositRate,
+                    centralBankKeyRate: $centralBankKeyRate,
+                )
             );
         } catch (\Throwable $exception) {
             $io->error($exception->getMessage());
@@ -73,36 +107,94 @@ class InflationCalculateCommand extends Command
 
         $existing = $this->accauntInflationRepository->findOneBy([
             'accaunt' => $accaunt,
-            'date' => $result->getDate(),
+            'date' => $accauntInflationResponse->getDate(),
         ]);
 
-        if (null === $existing) {
+        if ($existing === null) {
             $existing = new AccauntInflation();
             $existing->setAccaunt($accaunt);
-            $existing->setDate($result->getDate());
+            $existing->setDate($accauntInflationResponse->getDate());
             $this->entityManager->persist($existing);
         }
 
         $existing
-            ->setMovementAmount($result->getMovementAmount())
-            ->setCentralBankKeyRate($result->getCentralBankKeyRate())
-            ->setDepositRate($result->getDepositRate())
-            ->setAccauntBalance($result->getAccauntBalance())
-            ->setAccauntInflationBalance($result->getAccauntInflationBalance())
-            ->setAccauntDepositBalance($result->getAccauntDepositBalance());
+            ->setMovementAmount($accauntInflationResponse->getMovementAmount())
+            ->setCentralBankKeyRate($accauntInflationResponse->getCentralBankKeyRate())
+            ->setDepositRate($accauntInflationResponse->getDepositRate())
+            ->setAccauntBalance($accauntInflationResponse->getAccauntBalance())
+            ->setAccauntInflationBalance($accauntInflationResponse->getAccauntInflationBalance())
+            ->setAccauntDepositBalance($accauntInflationResponse->getAccauntDepositBalance());
 
         $this->entityManager->flush();
 
         $io->success(sprintf(
             'Счет %d (%s): ставка ЦБ %0.2f%%, инфляц. баланс %0.2f, депозит %0.2f, номинал %0.2f',
             $accauntId,
-            $result->getDate()->format('Y-m-d'),
-            $result->getCentralBankKeyRate(),
-            $result->getAccauntInflationBalance(),
-            $result->getAccauntDepositBalance(),
-            $result->getAccauntBalance(),
+            $accauntInflationResponse->getDate()->format('Y-m-d'),
+            $accauntInflationResponse->getCentralBankKeyRate(),
+            $accauntInflationResponse->getAccauntInflationBalance(),
+            $accauntInflationResponse->getAccauntDepositBalance(),
+            $accauntInflationResponse->getAccauntBalance(),
         ));
 
         return Command::SUCCESS;
+    }
+
+    private function resolveSliceDate(mixed $dateArgument, SymfonyStyle $io): ?DateTimeImmutable
+    {
+        if ($dateArgument === null || '' === trim((string) $dateArgument)) {
+            return (new DateTimeImmutable())->setTime(0, 0);
+        }
+
+        $date = DateTimeImmutable::createFromFormat('!Y-m-d', (string) $dateArgument);
+        if ($date === false) {
+            $io->error(sprintf('Некорректная дата: %s. Ожидается формат Y-m-d.', (string) $dateArgument));
+
+            return null;
+        }
+
+        return $date;
+    }
+
+    private function resolveCentralBankKeyRate(mixed $rateArgument, SymfonyStyle $io): float|false|null
+    {
+        if ($rateArgument === null || '' === trim((string) $rateArgument)) {
+            return null;
+        }
+
+        $normalized = str_replace(',', '.', trim((string) $rateArgument));
+        if (!is_numeric($normalized)) {
+            $io->error(sprintf('Некорректная ключевая ставка ЦБ: %s. Ожидается число.', (string) $rateArgument));
+
+            return false;
+        }
+
+        $rate = (float) $normalized;
+        if (0 > $rate || 100 < $rate) {
+            $io->error(sprintf('Некорректная ключевая ставка ЦБ: %s. Ожидается диапазон 0..100.', (string) $rateArgument));
+
+            return false;
+        }
+
+        return $rate;
+    }
+
+    private function resolveDepositRate(mixed $rateArgument, SymfonyStyle $io): float|false
+    {
+        $normalized = str_replace(',', '.', trim((string) $rateArgument));
+        if (!is_numeric($normalized)) {
+            $io->error(sprintf('Некорректная ставка по депозиту: %s. Ожидается число.', (string) $rateArgument));
+
+            return false;
+        }
+
+        $rate = (float) $normalized;
+        if (0 > $rate || 100 < $rate) {
+            $io->error(sprintf('Некорректная ставка по депозиту: %s. Ожидается диапазон 0..100.', (string) $rateArgument));
+
+            return false;
+        }
+
+        return $rate;
     }
 }

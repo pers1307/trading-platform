@@ -9,11 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: AccauntInflationRepository::class)]
 #[ORM\Table(
     name: 'accaunt_inflation',
-    uniqueConstraints: [
-        new ORM\UniqueConstraint(name: 'uniq_accaunt_inflation_accaunt_date', columns: ['accaunt_id', 'date'])
-    ],
     indexes: [
         new ORM\Index(name: 'idx_accaunt_inflation_date', columns: ['date'])
+    ],
+    uniqueConstraints: [
+        new ORM\UniqueConstraint(name: 'uniq_accaunt_inflation_accaunt_date', columns: ['accaunt_id', 'date'])
     ]
 )]
 class AccauntInflation

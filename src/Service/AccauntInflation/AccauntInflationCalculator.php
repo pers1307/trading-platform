@@ -2,44 +2,64 @@
 
 namespace App\Service\AccauntInflation;
 
+use App\Entity\AccauntInflation;
+use App\Repository\AccauntInflationRepository;
 use App\Repository\AccauntHistoryRepository;
-use App\Service\CentralBankKeyRateService;
+use App\Service\PercentCalculator\PercentCalculator;
+use App\Service\PercentCalculator\PercentCalculatorRequest;
 
 class AccauntInflationCalculator
 {
     public function __construct(
-        private readonly CentralBankKeyRateService $centralBankKeyRateService,
         private readonly AccauntHistoryRepository $accauntHistoryRepository,
+        private readonly AccauntInflationRepository $accauntInflationRepository,
+        private readonly PercentCalculator $percentCalculator,
     ) {
     }
 
     public function calculate(AccauntInflationRequest $request): AccauntInflationResponse
     {
-        $accaunt = $request->accaunt;
-        $movementAmount = $request->movementAmount;
-        $date = $request->date;
+        $latestHistory = $this->accauntHistoryRepository->findLatestByAccauntId($request->accaunt->getId());
+        $historyBalance = $latestHistory?->getBalance() ?? 0.0;
+        $accauntBalance = $historyBalance + $request->movementAmount;
 
-        $latestHistory = $this->accauntHistoryRepository->findLatestByAccauntId($accaunt->getId());
-        $baseBalance = $latestHistory?->getBalance() ?? 0.0;
+        /** @var AccauntInflation $previousSlice */
+        $previousSlice = $this->accauntInflationRepository->findLatestBeforeDate($request->accaunt->getId(), $request->date);
+        $termDays = 0;
+        $accauntInflationHistoryBalance = 0;
+        $accauntDepositHistoryBalance = 0;
+        if ($previousSlice !== null) {
+            $days = (int) $previousSlice->getDate()->diff($request->date)->format('%r%a');
+            $termDays = max(0, $days);
+            $accauntInflationHistoryBalance = $previousSlice->getAccauntInflationBalance();
+            $accauntDepositHistoryBalance = $previousSlice->getAccauntDepositBalance();
+        }
 
-        $accauntBalance = $baseBalance + $movementAmount;
+        $centralBankKeyRate = $request->centralBankKeyRate;
+        $depositRate = $request->depositRate;
 
-        $centralBankKeyRate = $this->centralBankKeyRateService->getLatestKeyRate();
-        $depositRate = $centralBankKeyRate;
+        $depositResponse = $this->percentCalculator->calculate(new PercentCalculatorRequest(
+            principal: $accauntDepositHistoryBalance,
+            annualRatePercent: $depositRate,
+            termDays: $termDays,
+            daysInYear: 365,
+        ));
 
-        $inflationFactor = 1 + ($centralBankKeyRate / 100);
-        $accauntInflationBalance = $inflationFactor > 0 ? $accauntBalance / $inflationFactor : $accauntBalance;
-
-        $accauntDepositBalance = $accauntBalance * (1 + ($depositRate / 100));
+        $inflationResponse = $this->percentCalculator->calculate(new PercentCalculatorRequest(
+            principal: $accauntInflationHistoryBalance,
+            annualRatePercent: $centralBankKeyRate,
+            termDays: $termDays,
+            daysInYear: 365,
+        ));
 
         return new AccauntInflationResponse(
-            movementAmount: $movementAmount,
+            movementAmount: $request->movementAmount,
             centralBankKeyRate: $centralBankKeyRate,
             depositRate: $depositRate,
             accauntBalance: $accauntBalance,
-            accauntInflationBalance: $accauntInflationBalance,
-            accauntDepositBalance: $accauntDepositBalance,
-            date: $date,
+            accauntInflationBalance: intval($inflationResponse->totalAmount + $request->movementAmount),
+            accauntDepositBalance: intval($depositResponse->totalAmount + $request->movementAmount),
+            date: $request->date,
         );
     }
 }
